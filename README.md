@@ -28,13 +28,13 @@ Smalltalk systems like Pharo, Glamorous Toolkit or Newspeak offer a completely o
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
-The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an online browser-based notebook platform that we've also developed part of our day-to-day work life.
+The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an [online browser-based notebook platform][nextjournal] that we've also developed part of our day-to-day work life.
 
 When working with Clerk, a split-view is typically used with the code editor next to the browser showing Clerk’s representation of the same document, see Figure 1).
 
 Clerk’s audience is experienced Clojure developers that are familiar with interactive development at the Clojure REPL. Clerk is meant to complement this workflow. Programmers continue to use the Clojure REPL to build up their programs incrementally, one form at a time and inspect intermediate results. Clerk’s evaluation model intentionally does not offer the same level of granularity: it only works on files or source code strings. To keep the feedback loops short, Clerk caches the results of computations and only recomputes what needs to be changed.
 
-Clerk is a Clojure library that runs in-process, allowing it to access any library code. Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by maria.cloud. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
+Clerk is a Clojure library that runs in-process, allowing it to access any library code. Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
 
 Clerk offers two main modes of interaction: 
 
@@ -59,7 +59,7 @@ Clojure encourages programming with pure functions and using mutable containers 
 
 ### Built-in Viewers
 
-Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem (e.g. `plotly`, `vega`, `codemirror` and KaTeX). Users have successfully experimented with in-process rendering without a browser. 
+Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem (e.g. plotly, vega, codemirror` and KaTeX). Users have successfully experimented with in-process rendering without a browser. 
 
 In order to not overload the browser, Clerk’s built-in collection views will only show the first 20 items, allowing to request more data on demand. Besides this simple limit, there’s a second global budget per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
 
@@ -83,3 +83,5 @@ Clerk also supports bidirectional sync of state between the SCI viewer environme
 Clerk also comes with a way to turn a collection of notebooks into static HTML pages for publishing to the web.
 
 [book-of-clerk]:https://book.clerk.vision
+[nextjournal]:https://nextjournal.com
+[maria]:https://maria.cloud
