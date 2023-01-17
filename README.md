@@ -14,7 +14,7 @@
 
 This paper presents Clerk, a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow.
 
-## **Introduction: Literate Programming, Notebooks and REPL-Driven Development**
+## Introduction: Literate Programming, Notebooks and REPL-Driven Development
 
 With Literate Programming, Knuth highlighted the importance of focusing on human beings as the consumers of computer programs. He was generating two derived artifacts from a single file: source code for the computer and a typeset document in natural language to help fellow humans understand what the program should do.
 
@@ -24,7 +24,7 @@ REPL-Driven Development in LISPs generally and Clojure specifically allow for co
 
 Smalltalk systems like Pharo, Glamorous Toolkit or Newspeak offer a completely open and customizable programming environment. Glamorous Toolkit wants to reduce the time developers spend reading code in order to figure the system out.
 
-## **Programming with Clerk**
+## Programming with Clerk
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
@@ -59,7 +59,7 @@ Clojure encourages programming with pure functions and using mutable containers 
 
 ### Built-in Viewers
 
-Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk](https://book.clerk.vision) gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem (e.g. `plotly`, `vega`, `codemirror` and KaTeX). Users have successfully experimented with in-process rendering without a browser. 
+Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem (e.g. `plotly`, `vega`, `codemirror` and KaTeX). Users have successfully experimented with in-process rendering without a browser. 
 
 In order to not overload the browser, Clerk’s built-in collection views will only show the first 20 items, allowing to request more data on demand. Besides this simple limit, there’s a second global budget per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
 
@@ -81,3 +81,5 @@ Clerk also supports bidirectional sync of state between the SCI viewer environme
 ### Static Publishing
 
 Clerk also comes with a way to turn a collection of notebooks into static HTML pages for publishing to the web.
+
+[book-of-clerk]:https://book.clerk.vision
