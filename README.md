@@ -1,5 +1,11 @@
 # Clerk: Moldable Live Programming for Clojure
 
+``` clojure
+(ns nextjournal.clerk.px-23
+  {:nextjournal.clerk/toc true
+   :nextjournal.clerk/visibility {:code :hide}})
+```
+
 ## Abstract
 
 > In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.
