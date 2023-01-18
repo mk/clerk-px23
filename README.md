@@ -9,7 +9,7 @@
 
 ## Abstract
 
-This paper presents Clerk, a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow.
+_We present Clerk, a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow._
 
 ## Introduction: Literate Programming, Notebooks and REPL-Driven Development
 
