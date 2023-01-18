@@ -3,7 +3,8 @@
 ``` clojure
 (ns nextjournal.clerk.px-23
   {:nextjournal.clerk/toc true
-   :nextjournal.clerk/visibility {:code :hide}})
+   :nextjournal.clerk/visibility {:code :hide}}
+  (:require [nextjournal.clerk :as clerk]))
 ```
 
 ## Abstract
@@ -43,7 +44,17 @@ Smalltalk systems like Pharo, Glamorous Toolkit or Newspeak offer a completely o
 
 The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an [online browser-based notebook platform][nextjournal] that we've also developed part of our day-to-day work life.
 
-When working with Clerk, a split-view is typically used with the code editor next to the browser showing Clerk’s representation of the same document, see Figure 1).
+``` clojure
+^{::clerk/width :full}
+(clerk/html
+ [:div#figure-1.not-prose
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
+  [:div.bg-slate-100.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Clerk side-by-side with Emacs"]]])
+```
+
+When working with Clerk, a split-view is typically used with the code editor next to the browser showing Clerk’s representation of the same document, [see Figure 1](#figure-1).
 
 Clerk’s audience is experienced Clojure developers that are familiar with interactive development at the Clojure REPL. Clerk is meant to complement this workflow. Programmers continue to use the Clojure REPL to build up their programs incrementally, one form at a time and inspect intermediate results. Clerk’s evaluation model intentionally does not offer the same level of granularity: it only works on files or source code strings. To keep the feedback loops short, Clerk caches the results of computations and only recomputes what needs to be changed.
 
