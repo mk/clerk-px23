@@ -1,3 +1,3 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        io.github.nextjournal/clerk {:git/sha "9c4e2385e1f9eab7ad886bf148773c99aff691ee"}}
+        io.github.nextjournal/clerk {:git/sha "bc137cb51ce98236f48d8dfcb420f6e9df3342c1"}}
  :aliases {:dev {:paths ["dev"]}}}

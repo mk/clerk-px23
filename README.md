@@ -8,10 +8,6 @@
 
 ## Abstract
 
-> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.
->
-> – Douglas Engelbart
-
 This paper presents Clerk, a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow.
 
 ## Introduction: Literate Programming, Notebooks and REPL-Driven Development
@@ -22,6 +18,13 @@ Computational notebooks like Jupyter or Observable have gained popularity in rec
 
 [^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
 
+
+> That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot. [^sandewall]
+>
+> – Erik Sandewall
+
+[^sandewall]: See [Programming in an Interactive Environment: the "Lisp" Experience](https://doi.org/10.1145/356715.356719) by Erik Sandewall
+
 REPL-Driven Development in LISPs generally and Clojure specifically allow for code evaluation with even greater fidelity letting the programmer evaluate individual forms. Clojure's single pass compilation strategy together with its focus on functional semantics make it very well suited to interactive development. The REPL output is limited to textual output however which imposes a severe limitation on its information design. Problems typically arise when printing structurally large results that cause either the editor performance to degrade or truncate output with only limiting customization abilities and no way to request more data. Furthermore, the output is dead text without interactivity.
 
 Smalltalk systems like Pharo, Glamorous Toolkit or Newspeak offer a completely open and customizable programming environment. Glamorous Toolkit wants to reduce the time developers spend reading code in order to figure the system out [^moldable-tools].
@@ -29,6 +32,12 @@ Smalltalk systems like Pharo, Glamorous Toolkit or Newspeak offer a completely o
 [^moldable-tools]: See [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
 ## Programming with Clerk
+
+> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.[^engelbart]
+>
+> – Douglas Engelbart
+
+[^engelbart]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
@@ -40,7 +49,7 @@ Clerk’s audience is experienced Clojure developers that are familiar with inte
 
 Clerk is a Clojure library that runs in-process, allowing it to access any library code. Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
 
-Clerk offers two main modes of interaction: 
+Clerk offers two main modes of interaction:
 
 * an optional file watcher that can show a notebook as a result of saving a Clojure namespace on the filesystem; or alternatively,
 * an editor hotkey that can be bound to show the current document. As authors, we prefer the editor hotkey over the file watcher as it feels more direct and gives more control over when to show something in Clerk.
@@ -53,7 +62,7 @@ Clerk’s caching works at the granularity of top-level forms. 
 
 Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed as the hash of the form and the hash of all its dependencies.
 
-Following the analysis, Clerk will proceed to evaluate the document. Here, it will traverse the doc and evaluate each form unless if finds a cached value for the hash of the form. Each result is stored in an in-memory cache and in an on-disk cache using the nippy serialization library. Clerk currently restricts caching to anonymous forms or forms that define a single var. For the on-disk cache, Clerk additionally checks if the result is cacheable and does not contain lazy sequences beyond a configurable size to avoid infinite loops. Every result cached on-disk is stored in a content-addressed store where the filename is derived from the SHA512 of the contents using a base58-encoded multihash to support changing the hash algorithm in the future. Additionally, a file contains a pointer from a SHA-1 hash of the form to the contents of the result. This setup allows to distribute the Clerk cache. 
+Following the analysis, Clerk will proceed to evaluate the document. Here, it will traverse the doc and evaluate each form unless if finds a cached value for the hash of the form. Each result is stored in an in-memory cache and in an on-disk cache using the nippy serialization library. Clerk currently restricts caching to anonymous forms or forms that define a single var. For the on-disk cache, Clerk additionally checks if the result is cacheable and does not contain lazy sequences beyond a configurable size to avoid infinite loops. Every result cached on-disk is stored in a content-addressed store where the filename is derived from the SHA512 of the contents using a base58-encoded multihash to support changing the hash algorithm in the future. Additionally, a file contains a pointer from a SHA-1 hash of the form to the contents of the result. This setup allows to distribute the Clerk cache.
 
 Clerk is consumable as a library published on Clojars or as a git dependency using Clojure `tools.deps`. This allows to reproducibly compute a classpath from a deps.edn file. Because Clerk’s hashing is also deterministic (given unchanged dependencies) results can be shared by distributing the cache without needing to track them in version control.
 
@@ -84,7 +93,7 @@ Clerk also supports bidirectional sync of state between the SCI viewer environme
 
 ### Static Publishing
 
-Clerk also comes with a way to turn a collection of notebooks into static HTML pages for publishing to the web.
+Clerk also comes with a way to turn a collection of notebooks into static HTML pages for publishing to the web. We could not resist the temptation to leverage Clerk for the production of this document.
 
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
