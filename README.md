@@ -50,7 +50,7 @@ The main idea behind Clerk is meeting Clojure programmers where they are, lettin
  [:div#figure-1.not-prose
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
-  [:div.bg-slate-100.text-xs.font-sans.py-4
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Clerk side-by-side with Emacs"]]])
 ```
 
