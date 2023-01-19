@@ -123,7 +123,7 @@ The database’s column names are made up of 8 character sequences that can’t 
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose
+ [:div#figure-2.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "AS/400 Column Names"]]])
@@ -134,7 +134,7 @@ One can’t read much out of those names but it turns out there is a metaschema 
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-3.not-prose
+ [:div#figure-3.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
@@ -146,7 +146,7 @@ With Clerk, we can render the output as graphical table without the limitations 
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-4.not-prose
+ [:div#figure-4.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
@@ -158,7 +158,7 @@ With Clerk, we can render the output as graphical table without the limitations 
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-5.not-prose
+ [:div#figure-5.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 5: "] "Custom Viewers for Clojure2d’s Colors Library"]]])
@@ -166,11 +166,44 @@ With Clerk, we can render the output as graphical table without the limitations 
 
 This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces.
 
-**Example 3:** Regex Dictionary
+**Example 3:** Interactive Regex Dictionary
 
-**Example 4:** Lucene-powered Log Search
+Built as a showcase for Clerk’s sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-6.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 6: "] "Interactive Regex Dictionary"]]])
+```
 
+It is built using a Clojure atom containing the text input’s current value that is synced between the JVM and the browser. As you type into the input, the atom’s content will be updated and synced. As such, printing the atom’s content in your editor will show the input’s current value:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-7.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 7: "] "Printing the value of a synced Clojure atom"]]])
+```
+
+**Example 4:** [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
+
+Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk’s default styling) via Clerk’s CSS customization options.
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-8.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 8: "] "Interactive Log Search"]]])
+```
 
 ### Experience
 
