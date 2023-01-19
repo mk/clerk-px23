@@ -84,13 +84,15 @@ Clojure encourages programming with pure functions and using mutable containers 
 ### Presentation
 Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp. In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
 
-It's possible to use Clerk's presentation system in other contexts we know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.
+It's possible to use Clerk's presentation system in other contexts we know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
+
+[^desk]: [Desk](https://github.com/phronmophobic/desk) by Adrian Smith.
 
 ### Built-in Viewers
 
 Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells and [KaTeX](https://katex.org) for typesetting math.
 
-Another benefit of the using the browser for Clerk's rendering layer is that Clerk can produce static HTML pages for publishing to the web. We could not resist the temptation to leverage Clerk for the production of this document.
+Another benefit of the using the browser for Clerk's rendering layer is that Clerk can produce static HTML pages for publishing to the web. We could not resist the temptation to leverage Clerk for the production of this document and have used it as an excuse to improve the display of sidenotes.
 
 In order to not overload the browser, Clerk’s built-in collection viewer carry an attribute to control for the number of items displayed, allowing to request more data on demand. Besides this simple limit, there’s a second global budget per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
 
@@ -103,9 +105,13 @@ Viewer selection and elision of data happens on the JVM in Clojure.  Clerk’s v
 * A `:render-fn` key containing a quoted form that will be sent to the browser where it will be evaluated using sci[^sci] and turned into a function;
 * A `:page-size` key on collection viewers to control how many items to show.
 
-[^sci]: See [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
+[^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
 Viewers can also be explicitly selected using functions like `clerk/with-viewer` which will wrap a given value in a map with the given viewer. Alternatively to the explicit functional API, viewers can be selected using metadata on the form. This has no meaning in Clojure and thus won’t in any way affect the value of the program when run without Clerk and is also useful for when downstream consumers rely on a value being used unmodified.
+
+### Sync
+
+Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps.
 
 ### Examples of Moldable Development with Clerk
 
@@ -164,9 +170,20 @@ This example illustrates the use of Clerk to create rich documentation for `cloj
 
 **Example 4:** Lucene-powered Log Search
 
-### Sync
 
-Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps.
+
+### Experience
+
+Our experience as the developers and users of Clerk has been surprisingly positive but of course we're heavily biased. We've  chosen a few quotes from Clerk's userbase.
+
+> [Clerk] is making the training of junior #Clojure programmers a massive pleasure! [...]
+> 
+> It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
+> 
+> – Robert Stuttaford[^tweets]
+
+[^tweets]: Via a [rapidly degrading social media platform](https://web.archive.org/web/20230119113752/https://twitter.com/RobStuttaford/status/1574328589306281987)
+
 
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
