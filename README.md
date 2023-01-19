@@ -14,7 +14,22 @@
 
 ## Abstract
 
-_Clerk is a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow._
+```clojure
+(clerk/html
+ [:div.flex.flex-col.not-prose
+  {:class "min-[860px]:flex-row"}
+  [:div
+   [:p.italic.leading.leading-snug
+    "Clerk is a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
+  [:div.font-sans.flex-shrink-0.mt-6.text-sm
+   {:class "min-[860px]:w-[165px] min-[860px]:ml-[40px] min-[860px]:text-xs min-[860px]:mt-1"}
+   [:a.hover:opacity-70 {:href "https://nextjournal.com"}
+    [:img.block.dark:hidden {:src "https://nextjournal.com/images/nextjournal-logo.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]
+    [:img.hidden.dark:block {:src "https://nextjournal.com/images/nextjournal-logo-white.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]]
+   [:a.block.mt-2.hover:opacity-70 {:href "https://twitter.com/mkvlr"} "Martin Kavalar"]
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/unkai"} "Philippa Markovics"]
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
+```
 
 ## Introduction: Literate Programming, Notebooks and REPL-Driven Development
 
