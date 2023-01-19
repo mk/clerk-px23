@@ -233,28 +233,33 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 🚧 🚧 🚧
 
-* Related
-  * org-mode
-  * Ron Avitzur's Milo
-  * Macsyma
-  * Tioga/Camino Real
-  * MathCAD
-  * Mathematica
-  * Jupyter
-  * Observable Notebooks
-  * R Markdown
-  * Newspeak
-  * Glamorous Toolkit
+Related:
+* org-mode
+* Ron Avitzur's Milo
+* Macsyma
+* Tioga/Camino Real
+* MathCAD
+* Mathematica
+* Jupyter
+* Observable Notebooks
+* R Markdown
+* Newspeak
+* Glamorous Toolkit
 
-* Future Work
-  * Viewers: lets `:pred` function opt into more context
-  * Open up caching
-  * Use distributed cache more
-  * Make caching more granular, also allow caching functions?
-  * Clerk printer to fix REPL printing problem
-  * Open toolbox
+Future Work
+* Viewers: lets `:pred` function opt into more context
+* Open up caching
+* Use distributed cache more
+* Make caching more granular, also allow caching functions?
+* Clerk printer to fix REPL printing problem
+* Open toolbox
 
 
+## Conclusion
+
+🚧 🚧 🚧
+
+-----------------------------------------------
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
 [maria]:https://maria.cloud
