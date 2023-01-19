@@ -1,10 +1,15 @@
 # Clerk: Moldable Live Programming for Clojure
 
-``` clojure
+```clojure
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
    :nextjournal.clerk/visibility {:code :hide}}
   (:require [nextjournal.clerk :as clerk]))
+```
+
+```clojure
+(nextjournal.clerk/html [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
+"⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
 ```
 
 ## Abstract
