@@ -107,6 +107,63 @@ Viewer selection and elision of data happens on the JVM in Clojure.  Clerk’s v
 
 Viewers can also be explicitly selected using functions like `clerk/with-viewer` which will wrap a given value in a map with the given viewer. Alternatively to the explicit functional API, viewers can be selected using metadata on the form. This has no meaning in Clojure and thus won’t in any way affect the value of the program when run without Clerk and is also useful for when downstream consumers rely on a value being used unmodified.
 
+### Examples of Moldable Development with Clerk
+
+**Example 1:** Augmenting table names
+
+This example illustrates an approach that we needed to make working with a legacy AS/400 database easier.
+The database’s column names are made up of 8 character sequences that can’t be read much out of:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-2.not-prose
+  [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "AS/400 Column Names"]]])
+```
+
+One can’t read much out of those names but it turns out there is a metaschema available that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical LISP fashion, we go on and inspect a query from the REPL. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-3.not-prose
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 3: "] "Inspecting A Query Using the REPL"]]])
+```
+
+With Clerk, we can render the output as graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren’t lost). We can go further still and also show the original German names when move the mouse over the headings:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-4.not-prose
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 4: "] "Augmented Table Headings"]]])
+```
+
+**Example 2:** Rich documentation features
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-5.not-prose
+  [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 5: "] "Custom Viewers for Clojure2d’s Colors Library"]]])
+```
+
+This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces.
+
+**Example 3:** Regex Dictionary
+
+**Example 4:** Lucene-powered Log Search
+
 ### Sync
 
 Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps.
