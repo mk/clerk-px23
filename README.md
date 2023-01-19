@@ -111,13 +111,32 @@ Viewers can also be explicitly selected using functions like `clerk/with-viewer`
 
 ### Sync
 
-Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps.
+Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps as shown in the [Regex Dictionary Example](#regex-dictionary).
 
-### Examples of Moldable Development with Clerk
+### Experience
 
-**Example 1:** Augmenting table names
+Our experience as the developers and users of Clerk has been surprisingly positive but of course we're heavily biased. We've  chosen a few quotes from Clerk's userbase.
 
-This example illustrates an approach that we needed to make working with a legacy AS/400 database easier.
+> [Clerk] is making the training of junior #Clojure programmers a massive pleasure! [...]
+> 
+> It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
+> 
+> – Robert Stuttaford[^tweets]
+
+[^tweets]: Via a [rapidly degrading social media platform](https://web.archive.org/web/20230119113752/https://twitter.com/RobStuttaford/status/1574328589306281987)
+
+> I'm using Clerk to visualize statistics properties from a simulation in a model checker [...] it's basically a wrapper over TLA+ [...]
+>
+> Amazing that Clerk just lets you focus on what really matters and nothing else!
+>
+> – Paulo Feodrippe
+
+
+## Examples of Moldable Development with Clerk
+
+### Augmenting table names
+
+This example illustrates an approach that we needed to make working with a legacy Db2 database easier.
 The database’s column names are made up of 8 character sequences that can’t be read much out of:
 
 ``` clojure
@@ -153,7 +172,7 @@ With Clerk, we can render the output as graphical table without the limitations 
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 4: "] "Augmented Table Headings"]]])
 ```
 
-**Example 2:** Rich documentation features
+### Rich documentation features
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -166,7 +185,7 @@ With Clerk, we can render the output as graphical table without the limitations 
 
 This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces.
 
-**Example 3:** Interactive Regex Dictionary
+### Regex Dictionary
 
 Built as a showcase for Clerk’s sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
@@ -191,7 +210,7 @@ It is built using a Clojure atom containing the text input’s current value tha
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 7: "] "Printing the value of a synced Clojure atom"]]])
 ```
 
-**Example 4:** [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
+### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
 
 Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk’s default styling) via Clerk’s CSS customization options.
 
@@ -205,17 +224,6 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 8: "] "Interactive Log Search"]]])
 ```
 
-### Experience
-
-Our experience as the developers and users of Clerk has been surprisingly positive but of course we're heavily biased. We've  chosen a few quotes from Clerk's userbase.
-
-> [Clerk] is making the training of junior #Clojure programmers a massive pleasure! [...]
-> 
-> It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
-> 
-> – Robert Stuttaford[^tweets]
-
-[^tweets]: Via a [rapidly degrading social media platform](https://web.archive.org/web/20230119113752/https://twitter.com/RobStuttaford/status/1574328589306281987)
 
 
 [book-of-clerk]:https://book.clerk.vision
