@@ -81,18 +81,18 @@ Clerk’s audience is experienced Clojure developers that are familiar with inte
 
 To keep the feedback loops short in the presence of whole-file evaluation, Clerk caches the results of computations and only recomputes changed expressions.
 
-Clerk is a Clojure library that runs in-process, allowing it to access any library code. Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
+As a Clojure library that runs in-process, Clerk has access any library code on the classpath. 
+
+Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
 
 Clerk offers two main modes of interaction:
 
-* an optional file watcher that can show a notebook as a result of saving a Clojure namespace on the filesystem; or alternatively,
+* an optional file watcher that can show a notebook xas a result of saving a Clojure namespace on the filesystem; or alternatively,
 * an editor hotkey that can be bound to show the current document. As authors, we prefer the editor hotkey over the file watcher as it feels more direct and gives more control over when to show something in Clerk.
 
 ### Fast Feedback: Caching & Incremental Computation
 
-Control of Clerk also happens through the Clojure REPL. Besides showing a specific namespace, there are functions to control Clerk’s caching behavior.
-
-Clerk’s caching works at the granularity of top-level forms. 
+Control of Clerk also happens through the Clojure REPL. Besides showing a specific namespace, there are functions to control Clerk’s caching behavior. Clerk’s caching works at the granularity of top-level forms. 
 
 Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed from the form and its dependencies.
 
@@ -103,6 +103,19 @@ Clerk is consumable as a library published on Clojars or as a git dependency usi
 Caching behavior can be disabled on a per-form or per-namespace basis using metadata annotations. There’s also an option to disable Clerk’s caching globally using a system property.
 
 Clojure encourages programming with pure functions and using mutable containers called atoms to isolate mutable state. The value inside an atom can be accessed by dereferencing it for which Clojure includes `@` as a syntax affordance. When using atoms for mutable state, Clerk will attempt to compute a hash based on the value inside an atom for any expression that dereferences it, making Clerk’s caching play nice with how mutable state is most commonly modeled in Clojure.
+
+### Semantic Differences from regular Clojure
+
+The compilation unit in regular Clojure is the top-level form. This allows for excellent interactive development. On the flip side, it's easy for the filesystem state to diverge from the state of the running system. A problem often occurring in practice is deleting a definition from a file without also removing the definition from the runtime. This is often only observed after a restart of the process.
+
+In order to avoid this, Clerk will default to showing an error unless it can find all referenced definitions in the file it is asked to show.
+
+It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there's limits to what Clerk's caching will understand. Here's some of the things we currently do not support:
+
+* Re-definitions of the same var in a file
+* Setting dynamic variables using [`set!`](https://clojuredocs.org/clojure.core/set!)
+* Dynamically altering vars using [`alter-var-root`](https://clojuredocs.org/clojure.core/alter-var-root)
+* Temporarily redefining vars using [`with-redefs`](https://clojuredocs.org/clojure.core/with-redefs)
 
 ### Presentation
 Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp. In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
