@@ -35,10 +35,11 @@
 
 With Literate Programming, Knuth highlighted the importance of focusing on human beings as the consumers of computer programs. He was generating two derived artifacts from a single file: source code for the computer and a typeset document in natural language to help fellow humans understand what the program should do.
 
-Computational notebooks like Jupyter or Observable have gained popularity in recent years. These systems allow developers to mix code, text and visualizations in a document and improve upon Knuth's original idea by shortening the feedback loop from per-file processing to having a stateful process with which one can execute individual cells. Both Jupyter and Observable require the programmer to use the browser-based editing  environment and custom formats leading to issues around archival, reuse and archival[^notebook-pain-points].
+Computational notebooks like Jupyter or Observable have gained popularity in recent years. These systems allow developers to mix code, text and visualizations in a document and improve upon Knuth's original idea by shortening the feedback loop from per-file processing to having a stateful process with which one can execute individual cells. Both Jupyter and Observable require the programmer to use the browser-based editing  environment and custom formats leading to archival and reuse issues[^notebook-pain-points].
 
 [^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
 
+REPL-Driven Development in LISPs generally and Clojure specifically allow for code evaluation with even greater fidelity than notebook cells, letting the programmer evaluate individual forms. Clojure's single pass compilation strategy together with its focus on functional semantics make it very well suited to interactive development. 
 
 > That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.[^sandewall]
 >
@@ -46,9 +47,9 @@ Computational notebooks like Jupyter or Observable have gained popularity in rec
 
 [^sandewall]: See [Programming in an Interactive Environment: the "Lisp" Experience](https://doi.org/10.1145/356715.356719) by Erik Sandewall
 
-REPL-Driven Development in LISPs generally and Clojure specifically allow for code evaluation with even greater fidelity letting the programmer evaluate individual forms. Clojure's single pass compilation strategy together with its focus on functional semantics make it very well suited to interactive development. The REPL output is limited to textual output however which imposes a severe limitation on its information design. Problems typically arise when printing structurally large results that cause either the editor performance to degrade or truncate output with only limiting customization abilities and no way to request more data. Furthermore, the output is dead text without interactivity.
+The REPL output is limited to textual output however, which imposes a severe limitation on its information design. Problems typically arise when printing structurally large results that cause either the editor performance to degrade or the truncation of output, with limited room for customization or support for requesting more data. Furthermore, the output is dead text without interactivity.
 
-Smalltalk systems like Pharo, Glamorous Toolkit[^moldable-tools] or Newspeak offer a completely open and customizable programming environment. Glamorous Toolkit wants to reduce the time developers spend reading code in order to figure the system out.
+Pioneering work in freeing programming from the limitations of text has been done in Smalltalk-based systems like Pharo, Glamorous Toolkit[^moldable-tools] or Newspeak, which offer completely open and customizable integrated programming environments. Glamorous Toolkit wants to reduce the time developers spend reading code in order to figure the system out and was a big inspiration and what we'll present here.
 
 [^moldable-tools]: See [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
@@ -62,7 +63,7 @@ Smalltalk systems like Pharo, Glamorous Toolkit[^moldable-tools] or Newspeak off
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
-The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an [online browser-based notebook platform][nextjournal] that we've also developed part of our day-to-day work life.
+The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an [online browser-based notebook platform][nextjournal] that we developed as part of our day-to-day work life.
 
 ``` clojure
 ^{::clerk/width :full}
@@ -76,7 +77,9 @@ The main idea behind Clerk is meeting Clojure programmers where they are, lettin
 
 When working with Clerk, a split-view is typically used with the code editor next to the browser showing Clerk’s representation of the same document, [see Figure 1](#figure-1).
 
-Clerk’s audience is experienced Clojure developers that are familiar with interactive development at the Clojure REPL. Clerk is meant to complement this workflow. Programmers continue to use the Clojure REPL to build up their programs incrementally, one form at a time and inspect intermediate results. Clerk’s evaluation model intentionally does not offer the same level of granularity: it only works on files or source code strings. To keep the feedback loops short, Clerk caches the results of computations and only recomputes what needs to be changed.
+Clerk’s audience is experienced Clojure developers that are familiar with interactive development at the Clojure REPL. Clerk is meant to complement this workflow. Programmers continue to use the Clojure REPL to build up their programs incrementally, one form at a time and inspect intermediate results. In contrast, Clerk’s evaluation model is intentionally limited to the file, allowing for a simple editor integration.
+
+To keep the feedback loops short in the presence of whole-file evaluation, Clerk caches the results of computations and only recomputes changed expressions.
 
 Clerk is a Clojure library that runs in-process, allowing it to access any library code. Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
 
@@ -91,7 +94,7 @@ Control of Clerk also happens through the Clojure REPL. Besides showing a specif
 
 Clerk’s caching works at the granularity of top-level forms. 
 
-Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed as the hash of the form and the hash of all its dependencies.
+Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed from the form and its dependencies.
 
 Following the analysis, Clerk will proceed to evaluate the document. Here, it will traverse the doc and evaluate each form unless if finds a cached value for the hash of the form. Each result is stored in an in-memory cache and in an on-disk cache using the nippy serialization library. Clerk currently restricts caching to anonymous forms or forms that define a single var. For the on-disk cache, Clerk additionally checks if the result is cacheable and does not contain lazy sequences beyond a configurable size to avoid infinite loops. Every result cached on-disk is stored in a content-addressed store where the filename is derived from the SHA512 of the contents using a base58-encoded multihash to support changing the hash algorithm in the future. Additionally, a file contains a pointer from a SHA-1 hash of the form to the contents of the result. This setup allows to distribute the Clerk cache.
 

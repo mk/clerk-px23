@@ -1,3 +1,6 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
         io.github.nextjournal/clerk {:git/sha "60f2399dcdaf39f5d7bc2c213a8dde9a6e0081a9"}}
- :aliases {:dev {:paths ["dev"]}}}
+ :aliases {:dev {:paths ["dev"]}
+           :nextjournal/clerk {:exec-fn nextjournal.clerk/build!
+                               :exec-args {:git/url "https://github.com/mk/clerk-px23"
+                                           :paths ["README.md"]}}}}
