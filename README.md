@@ -20,7 +20,7 @@
   {:class "min-[860px]:flex-row"}
   [:div
    [:p.italic.leading.leading-snug
-    "Clerk is a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis and browser-based rich graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
+    "Clerk is a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
   [:div.font-sans.flex-shrink-0.mt-6.text-sm
    {:class "min-[860px]:w-[165px] min-[860px]:ml-[40px] min-[860px]:text-xs min-[860px]:mt-1"}
    [:a.hover:opacity-70 {:href "https://nextjournal.com"}
@@ -31,15 +31,17 @@
    [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
 ```
 
-## Introduction: Literate Programming, Notebooks and REPL-Driven Development
+## Introduction: Literate Programming, Notebooks and Interactive Development
 
-With Literate Programming, Knuth highlighted the importance of focusing on human beings as the consumers of computer programs. He was generating two derived artifacts from a single file: source code for the computer and a typeset document in natural language to help fellow humans understand what the program should do.
+Knuth's _Literate Programming_ emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combined source code and documentations, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
 
-Computational notebooks like Jupyter or Observable have gained popularity in recent years. These systems allow developers to mix code, text and visualizations in a document and improve upon Knuth's original idea by shortening the feedback loop from per-file processing to having a stateful process with which one can execute individual cells. Both Jupyter and Observable require the programmer to use the browser-based editing  environment and custom formats leading to archival and reuse issues[^notebook-pain-points].
+At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's _Milo_ and _MathCAD_.
 
-[^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like Jupyter and Observable. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's _Literate Programming_ with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)[^notebook-pain-points].
 
-REPL-Driven Development in LISPs generally and Clojure specifically allow for code evaluation with even greater fidelity than notebook cells, letting the programmer evaluate individual forms. Clojure's single pass compilation strategy together with its focus on functional semantics make it very well suited to interactive development. 
+[^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik. TODO why is this broken?
+
+Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are loath to lose.
 
 > That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.[^sandewall]
 >
@@ -47,9 +49,13 @@ REPL-Driven Development in LISPs generally and Clojure specifically allow for co
 
 [^sandewall]: See [Programming in an Interactive Environment: the "Lisp" Experience](https://doi.org/10.1145/356715.356719) by Erik Sandewall
 
-The REPL output is limited to textual output however, which imposes a severe limitation on its information design. Problems typically arise when printing structurally large results that cause either the editor performance to degrade or the truncation of output, with limited room for customization or support for requesting more data. Furthermore, the output is dead text without interactivity.
+At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], the default Clojure development experience relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state.
 
-Pioneering work in freeing programming from the limitations of text has been done in Smalltalk-based systems like Pharo, Glamorous Toolkit[^moldable-tools] or Newspeak, which offer completely open and customizable integrated programming environments. Glamorous Toolkit wants to reduce the time developers spend reading code in order to figure the system out and was a big inspiration and what we'll present here.
+[^mcclim]: TODO https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager
+
+Additional problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
+
+In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like Pharo, Glamorous Toolkit[^moldable-tools] and Newspeak, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
 [^moldable-tools]: See [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
