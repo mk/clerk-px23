@@ -69,7 +69,9 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
-The main idea behind Clerk is meeting Clojure programmers where they are, letting Clerk progressively enhance their existing workflows in their favorite editors. This is a hard-learnt lesson after years of unsuccessfully trying to get our Clojure dev team to use an [online browser-based notebook platform][nextjournal] that we developed as part of our day-to-day work life.
+Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our _own team_ to use an [online browser-based notebook platform][nextjournal] that we also developed.
+
+When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same document, as [seen in Figure 1](#figure-1).
 
 ``` clojure
 ^{::clerk/width :full}
@@ -81,24 +83,24 @@ The main idea behind Clerk is meeting Clojure programmers where they are, lettin
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Clerk side-by-side with Emacs"]]])
 ```
 
-When working with Clerk, a split-view is typically used with the code editor next to the browser showing Clerk’s representation of the same document, [see Figure 1](#figure-1).
+As shown here, our "notebooks" are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control, and because files decorated with these comment blocks are legal code without Clerk loaded, it has been extensively used to publish documentation for libraries that are then able to ship without any dependency on Clerk itself[^maria].
 
-Clerk’s audience is experienced Clojure developers that are familiar with interactive development at the Clojure REPL. Clerk is meant to complement this workflow. Programmers continue to use the Clojure REPL to build up their programs incrementally, one form at a time and inspect intermediate results. In contrast, Clerk’s evaluation model is intentionally limited to the file, allowing for a simple editor integration.
+[^maria]: We have borrowed this approach from [maria.cloud][maria], a web-hosted interactive Clojure learning tool created by Matt Huebert, David Liepmann, and one of the authors of this paper.
 
-To keep the feedback loops short in the presence of whole-file evaluation, Clerk caches the results of computations and only recomputes changed expressions.
+Clerk’s audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to `show!` a namespace/file in Clerk. A visual representation of the file is then re-computed either:
 
-As a Clojure library that runs in-process, Clerk has access any library code on the classpath. 
+* every time the file is saved, using an an optional file watcher; or alternatively,
+* via an editor hot-key that can be bound to show the current document. (The authors generally prefer the hot-key over the file watcher, as it feels more direct and gives more control over when to show something in Clerk.)
 
-Clerk does not introduce a separate format, it works on top of regular Clojure namespaces in which line comments are interpreted as Markdown and are displayed as prose. As in many other programming languages, line comments have no effect on the program’s semantics. The same format was previously used by [maria.cloud][maria]. This allows Clerk to avoid a lot of the problems that alternative notebooks with bespoke formats face and makes putting the notebooks into version control or using them as library code trivial.
-
-Clerk offers two main modes of interaction:
-
-* an optional file watcher that can show a notebook xas a result of saving a Clojure namespace on the filesystem; or alternatively,
-* an editor hotkey that can be bound to show the current document. As authors, we prefer the editor hotkey over the file watcher as it feels more direct and gives more control over when to show something in Clerk.
+Lastly, configuration and control of Clerk primarily occurs through evaluation of Clojure forms from within the programmer's environment, rather than using outside control panels and settings. This integration with the programmer's existing tooling eases adoption and allows advanced customization of the system through code.
 
 ### Fast Feedback: Caching & Incremental Computation
 
-Control of Clerk also happens through the Clojure REPL. Besides showing a specific namespace, there are functions to control Clerk’s caching behavior. Clerk’s caching works at the granularity of top-level forms. 
+To keep the feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to allow one to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+
+[^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable. It's also possible to share Clerk's immutable, content-addressed cache between users so a given computation is performed only once for a workgroup.
+
+🐉
 
 Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed from the form and its dependencies.
 
