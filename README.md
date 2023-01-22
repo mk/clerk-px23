@@ -96,23 +96,19 @@ Lastly, configuration and control of Clerk primarily occurs through evaluation o
 
 ### Fast Feedback: Caching & Incremental Computation
 
-To keep the feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to allow one to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+To keep the feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
 
 [^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable. It's also possible to share Clerk's immutable, content-addressed cache between users so a given computation is performed only once for a workgroup.
 
-🐉
+Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 
-Clerk will first perform an analysis of the forms to be evaluated. In this step, we will perform macro-expansion in order to collect all dependency vars. We then go on to recursively analyze all dependencies until the full graph is discovered. For each top-level form, a hash is computed from the form and its dependencies.
+On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial.
 
-Following the analysis, Clerk will proceed to evaluate the document. Here, it will traverse the doc and evaluate each form unless if finds a cached value for the hash of the form. Each result is stored in an in-memory cache and in an on-disk cache using the nippy serialization library. Clerk currently restricts caching to anonymous forms or forms that define a single var. For the on-disk cache, Clerk additionally checks if the result is cacheable and does not contain lazy sequences beyond a configurable size to avoid infinite loops. Every result cached on-disk is stored in a content-addressed store where the filename is derived from the SHA512 of the contents using a base58-encoded multihash to support changing the hash algorithm in the future. Additionally, a file contains a pointer from a SHA-1 hash of the form to the contents of the result. This setup allows to distribute the Clerk cache.
-
-Clerk is consumable as a library published on Clojars or as a git dependency using Clojure `tools.deps`. This allows to reproducibly compute a classpath from a deps.edn file. Because Clerk’s hashing is also deterministic (given unchanged dependencies) results can be shared by distributing the cache without needing to track them in version control.
-
-Caching behavior can be disabled on a per-form or per-namespace basis using metadata annotations. There’s also an option to disable Clerk’s caching globally using a system property.
-
-Clojure encourages programming with pure functions and using mutable containers called atoms to isolate mutable state. The value inside an atom can be accessed by dereferencing it for which Clojure includes `@` as a syntax affordance. When using atoms for mutable state, Clerk will attempt to compute a hash based on the value inside an atom for any expression that dereferences it, making Clerk’s caching play nice with how mutable state is most commonly modeled in Clojure.
+There are some special cases in the caching system designed to make it better fit with Clojure's built-in primitives. In particular, Clojure features `atom`s, which are thread-safe boxed values that support functional update semantics. When Clerk caches an atom, it uses the unboxed value of the `atom` in dependency calculations. This leads to behavior that feels natural to Clojure programmers.
 
 ### Semantic Differences from regular Clojure
+
+🐉
 
 The compilation unit in regular Clojure is the top-level form. This allows for excellent interactive development. On the flip side, it's easy for the filesystem state to diverge from the state of the running system. A problem often occurring in practice is deleting a definition from a file without also removing the definition from the runtime. This is often only observed after a restart of the process.
 
@@ -126,6 +122,7 @@ It is our goal to match the semantics of Clojure as closely as possible but as a
 * Temporarily redefining vars using [`with-redefs`](https://clojuredocs.org/clojure.core/with-redefs)
 
 ### Presentation
+
 Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp. In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
 
 It's possible to use Clerk's presentation system in other contexts we know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
@@ -181,7 +178,6 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 > Amazing that Clerk just lets you focus on what really matters and nothing else!
 >
 > – Paulo Feodrippe
-
 
 ## Examples of Moldable Development with Clerk
 
