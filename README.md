@@ -108,22 +108,24 @@ There are some special cases in the caching system designed to make it better fi
 
 ### Semantic Differences from regular Clojure
 
-🐉
+Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
-The compilation unit in regular Clojure is the top-level form. This allows for excellent interactive development. On the flip side, it's easy for the filesystem state to diverge from the state of the running system. A problem often occurring in practice is deleting a definition from a file without also removing the definition from the runtime. This is often only observed after a restart of the process.
+A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in both the runtime and the source file.
 
-In order to avoid this, Clerk will default to showing an error unless it can find all referenced definitions in the file it is asked to show.
-
-It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there's limits to what Clerk's caching will understand. Here's some of the things we currently do not support:
+It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there are limits to what Clerk's analysis can handle. Here's some of the things we currently do not support:
 
 * Re-definitions of the same var in a file
 * Setting dynamic variables using [`set!`](https://clojuredocs.org/clojure.core/set!)
 * Dynamically altering vars using [`alter-var-root`](https://clojuredocs.org/clojure.core/alter-var-root)
 * Temporarily redefining vars using [`with-redefs`](https://clojuredocs.org/clojure.core/with-redefs)
 
+We have included a mechanism to override Clerk's error checking in cases where the user knows that one or more of these things are in use.
+
 ### Presentation
 
-Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp. In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
+🐉
+
+Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp (TODO ref, screen shot). In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
 
 It's possible to use Clerk's presentation system in other contexts we know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
