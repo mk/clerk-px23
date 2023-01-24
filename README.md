@@ -127,7 +127,7 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 
 [^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
-The process of conveying a value to the client is a _presentation_, a term taken from Common Lisp systems that support similar features (TODO ref, screen shot). The process of presentation makes use of _viewers_, which are quoted forms containing the source code for a Clojure function that specifies how the client should render a given data structure. When a viewer form is received on the client side, it is compiled into a function that will be then called on data sent by the server.
+The process of conveying a value to the client is a _presentation_, a term taken from Common Lisp systems that support similar features (TODO ref, screen shot). The process of presentation makes use of _viewers_, which a set of keys to quoted forms containing the source code for a Clojure function that specifies how the client should render a given data structure. When a viewer form is received on the client side, it is compiled into a function that will be then called on data sent by the server.
 
 When the `present` function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client. TODO can this section be more clear?
 
@@ -152,24 +152,26 @@ Clerk comes with a set of built-in viewers for common situations. These include 
 
 ### Moldable Viewer API
 
-🐉
+Clerk’s viewers are an ordered (and thus prioritized) collection of plain Clojure hash maps. Clerk interprets the following optional keys in each viewer map:
 
-Viewer selection and elision of data happens on the JVM in Clojure.  Clerk’s viewers are an ordered collection of plain Clojure hash maps. Clerk willl interpret the following optional keys:
+* `:pred` is a predicate function that tests whether a given viewer should be selected
+* `:transform-fn` is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget
+* `:render-fn` is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display data
+* `:page-size` is a number that indicates how many items to send in each chunk during elision/pagination
 
-* A `:pred` function to test if a given viewer should be selected;
-* a function on the `:transform-fn` key that can perform a transformation of the value. This receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack and the budget.
-* A `:render-fn` key containing a quoted form that will be sent to the browser where it will be evaluated using sci[^sci] and turned into a function;
-* A `:page-size` key on collection viewers to control how many items to show.
+Viewers can also be explicitly selected by wraping a value in the `clerk/with-viewer` function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser.
 
-Viewers can also be explicitly selected using functions like `clerk/with-viewer` which will wrap a given value in a map with the given viewer. Alternatively to the explicit functional API, viewers can be selected using metadata on the form. This has no meaning in Clojure and thus won’t in any way affect the value of the program when run without Clerk and is also useful for when downstream consumers rely on a value being used unmodified.
+The process of selecting viewers happens programmatically on the server side, thus using the already existing interactive programming environment as a user interface. TODO
 
 ### Sync
 
-Clerk also supports bidirectional sync of state between the SCI viewer environment and the JVM. If an atom is annotated (via metadata) to be synced, Clerk will create a corresponding var in the SCI environment and watch this atom for modifications on both the JVM Clojure and the SCI browser side and broadcast a diff to the other side. In addition, a JVM-side change will cause a recompilation of the currently active document, which means no re-parsing or analysis of the document will be performed but only a re-evaluation of cells dependent on the value inside this atom. This allows to use Clerk for small local-first apps as shown in the [Regex Dictionary Example](#regex-dictionary).
+To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure `atom` on the server is annotated with metadata indicating it is `sync`, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a _diff_ to the other side.
+
+In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#regex-dictionary).
 
 ### Experience
 
-Our experience as the developers and users of Clerk has been surprisingly positive but of course we're heavily biased. We've  chosen a few quotes from Clerk's userbase.
+Our experience as the developers and users of Clerk has been surprisingly positive, but we're heavily biased. We've  chosen a few quotes from Clerk's user base:
 
 > [Clerk] is making the training of junior #Clojure programmers a massive pleasure! [...]
 > 
@@ -187,10 +189,11 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 
 ## Examples of Moldable Development with Clerk
 
+In addition to traditional data science use cases, we intend Clerk to be a programmer's assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner. 
+
 ### Augmenting table names
 
-This example illustrates an approach that we needed to make working with a legacy Db2 database easier.
-The database’s column names are made up of 8 character sequences that can’t be read much out of:
+This example illustrates an approach we used to make working with a legacy DB2 database easier. The database’s column names are made up of largely human-unreadable 8 character sequences:
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -201,7 +204,7 @@ The database’s column names are made up of 8 character sequences that can’t 
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "AS/400 Column Names"]]])
 ```
 
-One can’t read much out of those names but it turns out there is a metaschema available that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical LISP fashion, we go on and inspect a query from the REPL. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
+We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical Lisp fashion, we go on and inspect a query interactively. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -213,7 +216,7 @@ One can’t read much out of those names but it turns out there is a metaschema 
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 3: "] "Inspecting A Query Using the REPL"]]])
 ```
 
-With Clerk, we can render the output as graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren’t lost). We can go further still and also show the original German names when move the mouse over the headings:
+With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -227,6 +230,8 @@ With Clerk, we can render the output as graphical table without the limitations 
 
 ### Rich documentation features
 
+This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
@@ -235,8 +240,6 @@ With Clerk, we can render the output as graphical table without the limitations 
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 5: "] "Custom Viewers for Clojure2d’s Colors Library"]]])
 ```
-
-This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces.
 
 ### Regex Dictionary
 
@@ -252,7 +255,7 @@ Built as a showcase for Clerk’s sync feature, this example allows entering a r
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 6: "] "Interactive Regex Dictionary"]]])
 ```
 
-It is built using a Clojure atom containing the text input’s current value that is synced between the JVM and the browser. As you type into the input, the atom’s content will be updated and synced. As such, printing the atom’s content in your editor will show the input’s current value:
+It is built using a Clojure atom containing the text input’s current value that is synced between the client and server. As you type into the input, the atom’s content will be updated and synced. Consequently, printing the atom’s content in your editor will show the input’s current value:
 
 ``` clojure
 ^{::clerk/width :wide}
