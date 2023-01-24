@@ -123,11 +123,19 @@ We have included a mechanism to override Clerk's error checking in cases where t
 
 ### Presentation
 
-🐉
+Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user's development environment. The client executes in a web browser running an embedded Clojure interpreter[^sci].
 
-Clerk's rendering happens in the browser. On the JVM Clojure-side, a given document is _presented_. The name is a nod to a similar system in Common Lisp (TODO ref, screen shot). In its generalized form, `present` is a function that does a depth-first traversal of a given tree, starting at the root node. It will select a viewer for this root node, and unless told otherwise, descend further down the tree to present its child nodes.
+[^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
-It's possible to use Clerk's presentation system in other contexts we know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
+The process of conveying a value to the client is a _presentation_, a term taken from Common Lisp systems that support similar features (TODO ref, screen shot). The process of presentation makes use of _viewers_, which are quoted forms containing the source code for a Clojure function that specifies how the client should render a given data structure. When a viewer form is received on the client side, it is compiled into a function that will be then called on data sent by the server.
+
+When the `present` function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client. TODO can this section be more clear?
+
+To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global budget per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
+
+Another benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+
+It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
 [^desk]: [Desk](https://github.com/phronmophobic/desk) by Adrian Smith.
 
@@ -140,13 +148,11 @@ It's possible to use Clerk's presentation system in other contexts we know of at
   [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
 ```
 
-Clerk comes with a number of built-in viewers. These include viewers for Clojure’s built-in data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly, Vega, tables, math code, images, grids as well as a fallback viewer that builds on top of Clojure’s printer via `pr-str`. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Clerk’s view is running in the browser. We made this choice in order to benefit from its rendering engine and leverage the vast number of libraries in the JS ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells and [KaTeX](https://katex.org) for typesetting math.
-
-Another benefit of the using the browser for Clerk's rendering layer is that Clerk can produce static HTML pages for publishing to the web. We could not resist the temptation to leverage Clerk for the production of this document and have used it as an excuse to improve the display of sidenotes.
-
-In order to not overload the browser, Clerk’s built-in collection viewer carry an attribute to control for the number of items displayed, allowing to request more data on demand. Besides this simple limit, there’s a second global budget per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
+Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the hiccup variant that is often used for Clojure and SVG), Plotly and Vega (data visualization), tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells and [KaTeX](https://katex.org) for typesetting math.
 
 ### Moldable Viewer API
+
+🐉
 
 Viewer selection and elision of data happens on the JVM in Clojure.  Clerk’s viewers are an ordered collection of plain Clojure hash maps. Clerk willl interpret the following optional keys:
 
@@ -154,8 +160,6 @@ Viewer selection and elision of data happens on the JVM in Clojure.  Clerk’s v
 * a function on the `:transform-fn` key that can perform a transformation of the value. This receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack and the budget.
 * A `:render-fn` key containing a quoted form that will be sent to the browser where it will be evaluated using sci[^sci] and turned into a function;
 * A `:page-size` key on collection viewers to control how many items to show.
-
-[^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
 Viewers can also be explicitly selected using functions like `clerk/with-viewer` which will wrap a given value in a map with the given viewer. Alternatively to the explicit functional API, viewers can be selected using metadata on the form. This has no meaning in Clojure and thus won’t in any way affect the value of the program when run without Clerk and is also useful for when downstream consumers rely on a value being used unmodified.
 
