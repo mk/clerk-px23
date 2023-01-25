@@ -189,7 +189,7 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 
 ## Examples of Moldable Development with Clerk
 
-In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general puepose programmer's assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer's assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
 
 ### Augmenting table names
 
