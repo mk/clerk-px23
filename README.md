@@ -157,7 +157,7 @@ It's also possible to use Clerk's presentation system in other contexts. We know
   [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
 ```
 
-Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells and [KaTeX](https://katex.org) for typesetting math.
+Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
 
 ### Moldable Viewer API
 
@@ -177,6 +177,14 @@ The process of selecting viewers happens programmatically on the server side, th
 To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure `atom` on the server is annotated with metadata indicating it is `sync`, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a _diff_ to the other side.
 
 In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#regex-dictionary).
+
+## Prose-oriented Documents
+
+The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from _some_ computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with “code-fenced” source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
+
+This format is very similar to other markdown-based notebooks, like [R Markdown](https://rmarkdown.rstudio.com), but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located [on Github](https://github.com/mk/clerk-px23)[^github-format].
+
+[^github-format]: One nice thing about this approach is that other systems, like Github, are able to render a reasonable version of the document, though without evaluation.
 
 ## Examples of Moldable Development with Clerk
 
@@ -273,9 +281,9 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 ### Experience
 
-Our experience as the developers and users of Clerk has been surprisingly positive, but we're heavily biased. We've  chosen a few quotes from Clerk's user base:
+Our experience as the developers and users of Clerk has been surprisingly positive, but we're heavily biased. We've chosen a few quotes from Clerk's user base to give a sense of how it has been received in the community:
 
-> [Clerk] is making the training of junior #Clojure programmers a massive pleasure! [...]
+> [Clerk] is making the training of junior Clojure programmers a massive pleasure! [...]
 > 
 > It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
 > 
@@ -293,14 +301,17 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 >
 > – Jeffrey Simon
 
-## Related & Future Work
+## 🚧 🚧 🚧 WORK IN PROGRESS 🚧 🚧 🚧
 
-🚧 🚧 🚧
+## Open Toolkit
+
+TODO discuss open library toolkit approach
+
+## Related & Future Work
 
 Related:
 * org-mode
 * Mathematica
-* R Markdown
 
 Future Work
 * Viewers: lets `:pred` function opt into more context
@@ -308,11 +319,8 @@ Future Work
 * Use distributed cache more
 * Make caching more granular, also allow caching functions?
 * Clerk printer to fix REPL printing problem
-* Open toolbox
 
 ## Conclusion
-
-🚧 🚧 🚧
 
 -----------------------------------------------
 [book-of-clerk]:https://book.clerk.vision
