@@ -1,5 +1,6 @@
 /.clerk
 /.cpcache/
+/public/build
 .cache
 .nrepl-port
 .DS_Store

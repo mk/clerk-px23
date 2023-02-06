@@ -1,0 +1,16 @@
+{:tasks
+ {:init (do
+          (require '[clojure.string :as str])
+          
+          (def sha
+            (str/trim (:out (shell {:out :string} "git rev-parse HEAD")))))
+
+  build (apply clojure "-X:nextjournal/clerk" ":git/sha" (pr-str sha) *command-line-args*)
+  
+  deploy (do (println "# Run the following to deploy: 👇")
+             (println "scp public/build/index.html clerk.garden:/tmp/index.html")
+             (println (format "ssh clerk.garden sudo mkdir /var/lib/garden/notebooks/mk/clerk-px23/%s" sha))
+             (println (format "ssh clerk.garden sudo mv /tmp/index.html /var/lib/garden/notebooks/mk/clerk-px23/%s" sha))
+             (println "garden domains remove --env production px23.clerk.vision")
+             (println (format "garden domains add --env production px23.clerk.vision --garden-url https://github.clerk.garden/mk/clerk-px23/%s" sha)))}
+ }
