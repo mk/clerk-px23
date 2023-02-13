@@ -20,7 +20,7 @@
   {:class "min-[860px]:flex-row"}
   [:div
    [:p.italic.leading.leading-snug
-    "Clerk is a Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
+    "Clerk is am open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
   [:div.font-sans.flex-shrink-0.mt-6.text-sm
    {:class "min-[860px]:w-[165px] min-[860px]:ml-[40px] min-[860px]:text-xs min-[860px]:mt-1"}
    [:a.hover:opacity-70 {:href "https://nextjournal.com"}
@@ -57,7 +57,7 @@ At the same time, though a number of Lisp environments have included graphical p
 
 [^mcclim]: See, for example, the [Common Lisp Interface Manager](https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager).
 
-[^clojure]: See [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
+[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org), [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org)[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
@@ -89,40 +89,40 @@ When working with Clerk, a split-view is typically used with a code editor next 
    [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Clerk side-by-side with Emacs"]]])
 ```
 
-As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control, and because files decorated with these comment blocks are legal code without Clerk loaded, it has been extensively used to publish documentation for libraries that are then able to ship without any dependency on Clerk itself[^maria].
+As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself[^maria].
 
-[^maria]: We have borrowed this approach from [maria.cloud][maria], a web-hosted interactive Clojure learning tool created by [Matt Huebert](https://matt.is), [Dave Liepmann](https://www.daveliepmann.com/), and [Jack Rusher](https://jackrusher.com/). Maria was an extension of [work presented at PX16](https://px16.matt.is) by Matt Huebert.
+[^maria]: We have borrowed this approach from [maria.cloud][maria], a web-hosted interactive Clojure learning tool created by [Matt Huebert](https://matt.is), [Dave Liepmann](https://www.daveliepmann.com/), and [Jack Rusher](https://jackrusher.com/). Maria grew out of [work presented at PX16](https://px16.matt.is) by Matt Huebert.
 
 Clerk’s audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to `show!` a namespace/file in Clerk. A visual representation of the file is then re-computed either:
 
 * every time the file is saved, using an an optional file watcher; or alternatively,
 * via an editor hot-key that can be bound to show the current document. (The authors generally prefer the hot-key over the file watcher, as it feels more direct and gives more control over when to show something in Clerk.)
 
-Lastly, configuration and control of Clerk primarily occurs through evaluation of Clojure forms from within the programmer's environment, rather than using outside control panels and settings. This integration with the programmer's existing tooling eases adoption and allows advanced customization of the system through code.
+Control and configuration of Clerk primarily occurs through evaluation of Clojure forms from within the programmer's environment, rather than using outside control panels and settings. This integration with the programmer's existing tooling eases adoption and allows advanced customization of the system through code.
 
 ### Fast Feedback: Caching & Incremental Computation
 
-To keep the feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+To keep feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
 
 [^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable. It's also possible to share Clerk's immutable, content-addressed cache between users so a given computation is performed only once for a workgroup.
 
+🚧 TODO too low level/not focused on end-user experience? 🤔
+
 Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 
-On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial.
+On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial. 
 
-Clojure encourages the use of stateful boxes to manage mutable state[^clojure-state].
+🚧
+
+> While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
+
+[^history-of-clojure]: [A History of Clojure](https://download.clojure.org/papers/clojure-hopl-iv-final.pdf), Rich Hickey
+
+It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value with [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
 
 [^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
 
-> While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
-> 
-> – Rich Hickey
-
-[^history-of-clojure]: [A History of Clojure](https://download.clojure.org/papers/clojure-hopl-iv-final.pdf) – By Rich Hickey
-
-While Clojure provides several constructs in language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular construct used by far. An atom allows reading the current value inside it using [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value using [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
-
-When Clerk encounters an expression in which an atom's mutable value is being read using deref, it will at runtime attempt to compute a hash based on the value _inside_ the atom and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with with mutable state and frees programmers from needing to manually opt out of caching for those expressions.
+When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
 
 ### Semantic Differences from regular Clojure
 
@@ -146,15 +146,15 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 [^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
 The process of conveying a value to the client is a _presentation_, a
-term taken from Common Lisp systems that support similar features [^presentations]. The process of presentation makes use of _viewers_, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type, about which more below. When a viewer form is received on the client side, it is compiled into a function that will be then called on data sent by the server.
+term taken from Common Lisp systems that support similar features [^presentations]. The process of presentation makes use of _viewers_, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
 [^presentations]: This feature originated on the Lisp Machine, and lives on in a reduced form as a feature of the emacs package [Slime](https://slime.common-lisp.dev/doc/html/Presentations.html).
 
 When the `present` function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
 
-To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global _budget_ per result to limit the total number of items also for deeply nested data. We’ve found this simple system to work fairly well in practice.
+To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global _budget_ per result to limit the total number of items shown in deeply nested data structures. We’ve found this simple system to work fairly well in practice.
 
-Another benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
