@@ -171,6 +171,62 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
 
+Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Showing result data"]]])
+```
+
+Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-1.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Expanding multiple sub-structures at once"]]])
+```
+
+Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Clerk tables"]]])
+```
+
+Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a `vega-lite` plot using the built-in `clerk/vl` viewer:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Plotting using the vega grammar"]]])
+```
+
+While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like `clerk/image`, `clerk/katex`, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species’ names, with exemplary images and geo-spatial plots:
+
+``` clojure
+^{::clerk/width :wide}
+(clerk/html
+ [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Combining multiple, built-in viewers"]]])
+```
+
 ### Moldable Viewer API
 
 Clerk’s viewers are an ordered (and thus prioritized) collection of plain Clojure hash maps. Clerk interprets the following optional keys in each viewer map:
