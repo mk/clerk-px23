@@ -110,7 +110,19 @@ Clerk begins by parsing and analyzing the code in a given file, then performs ma
 
 On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial.
 
-There are some special cases in the caching system designed to make it better fit with Clojure's built-in primitives. In particular, Clojure features `atom`s, which are thread-safe boxed values that support functional update semantics. When Clerk caches an atom, it uses the unboxed value of the `atom` in dependency calculations. This leads to behavior that feels natural to Clojure programmers.
+Clojure encourages the use of stateful boxes to manage mutable state[^clojure-state].
+
+[^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
+
+> While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
+> 
+> – Rich Hickey
+
+[^history-of-clojure]: [A History of Clojure](https://download.clojure.org/papers/clojure-hopl-iv-final.pdf) – By Rich Hickey
+
+While Clojure provides several constructs in language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular construct used by far. An atom allows reading the current value inside it using [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value using [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
+
+When Clerk encounters an expression in which an atom's mutable value is being read using deref, it will at runtime attempt to compute a hash based on the value _inside_ the atom and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with with mutable state and frees programmers from needing to manually opt out of caching for those expressions.
 
 ### Semantic Differences from regular Clojure
 
