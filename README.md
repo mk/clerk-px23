@@ -20,7 +20,7 @@
   {:class "min-[860px]:flex-row"}
   [:div
    [:p.italic.leading.leading-snug
-    "Clerk is am open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
+    "Clerk is an open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
   [:div.font-sans.flex-shrink-0.mt-6.text-sm
    {:class "min-[860px]:w-[165px] min-[860px]:ml-[40px] min-[860px]:text-xs min-[860px]:mt-1"}
    [:a.hover:opacity-70 {:href "https://nextjournal.com"}
