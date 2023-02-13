@@ -77,16 +77,16 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 
 Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our _own team_ to use an [online browser-based notebook platform][nextjournal] that we also developed.
 
-When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as [seen in Figure 1](#figure-1).
+When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as [seen in _Clerk side-by-side with Emacs_](#clerk-side-by-side-with-emacs).
 
 ``` clojure
 ^{::clerk/width :full}
 (clerk/html
- [:div#figure-1.not-prose
+ [:div#clerk-side-by-side-with-emacs.not-prose
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Clerk side-by-side with Emacs"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
 ```
 
 As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself[^maria].
@@ -176,10 +176,10 @@ Clerk’s built-in viewers try to suit themselves to typical Data Science use ca
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+ [:div#showing-result-data.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Showing result data"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Showing result data"]]])
 ```
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
@@ -187,11 +187,11 @@ Additional affordances are modes to auto-expand nested structures based on shape
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-1.not-prose.overflow-hidden.rounded-lg
+ [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 1: "] "Expanding multiple sub-structures at once"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
 ```
 
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
@@ -199,10 +199,10 @@ Using the built-in `clerk/table` viewer, the same data structure can also be ren
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+ [:div#clerk-tables.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Clerk tables"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk tables"]]])
 ```
 
 Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a `vega-lite` plot using the built-in `clerk/vl` viewer:
@@ -210,10 +210,10 @@ Together with tables, plots make up for the most common Data Science use cases. 
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+ [:div#plotting-using-the-vega-grammar.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Plotting using the vega grammar"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Plotting using the vega grammar"]]])
 ```
 
 While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like `clerk/image`, `clerk/katex`, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species’ names, with exemplary images and geo-spatial plots:
@@ -221,10 +221,10 @@ While these viewers may cover the bulk of Data Science use cases, additional bui
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+ [:div#combining-multiple-built-in-viewers.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "Combining multiple, built-in viewers"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Combining multiple, built-in viewers"]]])
 ```
 
 ### Moldable Viewer API
@@ -267,10 +267,10 @@ This example illustrates an approach we used to make working with a legacy DB2 d
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-2.not-prose.overflow-hidden.rounded-lg
+ [:div#as400-column-names.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 2: "] "AS/400 Column Names"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
 ```
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical Lisp fashion, we go on and inspect a query interactively. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
@@ -278,11 +278,11 @@ We were able to automatically translate these names using a metaschema extracted
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-3.not-prose.overflow-hidden.rounded-lg
+ [:div#inspecting-a-query-using-the-repl.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 3: "] "Inspecting A Query Using the REPL"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
 ```
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
@@ -290,11 +290,11 @@ With Clerk, were able to render the output as a graphical table without the limi
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-4.not-prose.overflow-hidden.rounded-lg
+ [:div#augmented-table-headings.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 4: "] "Augmented Table Headings"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Augmented Table Headings"]]])
 ```
 
 ### Rich documentation features
@@ -304,10 +304,10 @@ This example illustrates the use of Clerk to create rich documentation for `cloj
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-5.not-prose.overflow-hidden.rounded-lg
+ [:div#custom-viewers-for-clojure2ds-colors-library.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 5: "] "Custom Viewers for Clojure2d’s Colors Library"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Custom Viewers for Clojure2d’s Colors Library"]]])
 ```
 
 ### Regex Dictionary
@@ -317,11 +317,11 @@ Built as a showcase for Clerk’s sync feature, this example allows entering a r
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-6.not-prose.overflow-hidden.rounded-lg
+ [:div#interactive-regex-dictionary.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 6: "] "Interactive Regex Dictionary"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Regex Dictionary"]]])
 ```
 
 It is built using a Clojure atom containing the text input’s current value that is synced between the client and server. As you type into the input, the atom’s content will be updated and synced. Consequently, printing the atom’s content in your editor will show the input’s current value:
@@ -329,10 +329,10 @@ It is built using a Clojure atom containing the text input’s current value tha
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-7.not-prose.overflow-hidden.rounded-lg
+ [:div#printing-the-value-of-a-synced-clojure-atom.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 7: "] "Printing the value of a synced Clojure atom"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Printing the value of a synced Clojure atom"]]])
 ```
 
 ### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
@@ -342,11 +342,11 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 ``` clojure
 ^{::clerk/width :wide}
 (clerk/html
- [:div#figure-8.not-prose.overflow-hidden.rounded-lg
+ [:div#interactive-log-search.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
    [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong "Figure 8: "] "Interactive Log Search"]]])
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Log Search"]]])
 ```
 
 ### Experience
