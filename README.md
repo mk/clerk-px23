@@ -33,7 +33,7 @@
 
 ## Introduction: Literate Programming, Notebooks and Interactive Development
 
-Knuth's _Literate Programming_ [^literateprogramming] emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combined source code and documentations, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
+Knuth's _Literate Programming_ [^literateprogramming] emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
 
 [^literateprogramming]: An extensive archive of related material is maintained [here](http://www.literateprogramming.com).
 
@@ -53,13 +53,13 @@ Although notebooks of this kind present an improvement on the programming experi
 
 [^sandewall]: See [Programming in an Interactive Environment: the "Lisp" Experience](https://doi.org/10.1145/356715.356719) by Erik Sandewall
 
-At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], the default Clojure development experience relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state.
+At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], the default Clojure[^clojure] development experience relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
 
 [^mcclim]: See, for example, the [Common Lisp Interface Manager](https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager).
 
-Additional problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
+[^clojure]: See [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
 
-In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org)[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
+In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org), [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org)[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
 [^moldable-tools]: See [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
@@ -200,7 +200,9 @@ This format is very similar to other markdown-based notebooks, like [R Markdown]
 
 ## Examples of Moldable Development with Clerk
 
-In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer's assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer's assistant[^programmers-assistant] that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+
+[^programmers-assistant]: We use this term in appreciation of pioneering historical work by Warren Teitelman.
 
 ### Augmenting table names
 
