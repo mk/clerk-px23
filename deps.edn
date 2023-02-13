@@ -1,5 +1,5 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        io.github.nextjournal/clerk {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}}
+        io.github.nextjournal/clerk {:git/sha "0ecdfa629c5186bb2c4699e4885ea3745cd258b7"}}
  :aliases {:dev {:paths ["dev"]}
            :nextjournal/clerk {:exec-fn nextjournal.clerk/build!
                                :exec-args {:git/url "https://github.com/mk/clerk-px23"

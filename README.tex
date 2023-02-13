@@ -1,0 +1,485 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\hypertarget{id}{%
+\section{Clerk: Moldable Live Programming for Clojure}\label{id}}
+
+\begin{lstlisting}
+(ns nextjournal.clerk.px23
+  {:nextjournal.clerk/toc true
+   :nextjournal.clerk/visibility {:code :hide}}
+  (:require [nextjournal.clerk :as clerk]))
+\end{lstlisting}
+
+\begin{lstlisting}
+(nextjournal.clerk/html [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
+"⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsection{Abstract}\label{id}}
+
+\begin{lstlisting}
+(clerk/html
+ [:div.flex.flex-col.not-prose
+  {:class "min-[860px]:flex-row"}
+  [:div
+   [:p.italic.leading.leading-snug
+    "Clerk is an open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."]]
+  [:div.font-sans.flex-shrink-0.mt-6.text-sm
+   {:class "min-[860px]:w-[165px] min-[860px]:ml-[40px] min-[860px]:text-xs min-[860px]:mt-1"}
+   [:a.hover:opacity-70 {:href "https://nextjournal.com"}
+    [:img.block.dark:hidden {:src "https://nextjournal.com/images/nextjournal-logo.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]
+    [:img.hidden.dark:block {:src "https://nextjournal.com/images/nextjournal-logo-white.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]]
+   [:a.block.mt-2.hover:opacity-70 {:href "https://twitter.com/mkvlr"} "Martin Kavalar"]
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/unkai"} "Philippa Markovics"]
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsection{Introduction: Literate Programming, Notebooks and Interactive Development}\label{id}}
+
+Knuth's \emph{Literate Programming}  emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
+
+At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's \emph{Milo}, PARC's \emph{Tioga} and \emph{Camino Real}, and commercial software like \emph{MathCAD}.
+
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices).
+
+Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are loath to lose.
+
+\begin{quote}
+That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.
+
+-- Erik Sandewall
+\end{quote}
+
+At the same time, though a number of Lisp environments have included graphical presentations of program objects, the default Clojure development experience relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
+
+In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit} and \href{https://newspeaklanguage.org}{Newspeak}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
+
+\hypertarget{id}{%
+\subsection{Programming with Clerk}\label{id}}
+
+\begin{quote}
+In such a future working relationship between human problem-solver and computer `clerk', the capability of the computer for executing mathematical processes would be used whenever it was needed.
+
+-- Douglas Engelbart
+\end{quote}
+
+\hypertarget{id}{%
+\subsubsection{Basic Interaction: Bring-Your-Own-Editor}\label{id}}
+
+Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our \emph{own team} to use an \href{https://nextjournal.com}{online browser-based notebook platform} that we also developed.
+
+When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
+
+\begin{lstlisting}
+^{::clerk/width :full}
+(clerk/html
+ [:div#clerk-side-by-side-with-emacs.not-prose
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
+\end{lstlisting}
+
+As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
+
+Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \passthrough{\lstinline"show!"} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
+
+\begin{itemize}
+\tightlist
+\item
+  every time the file is saved, using an an optional file watcher; or alternatively,
+\item
+  via an editor hot-key that can be bound to show the current document. (The authors generally prefer the hot-key over the file watcher, as it feels more direct and gives more control over when to show something in Clerk.)
+\end{itemize}
+
+Control and configuration of Clerk primarily occurs through evaluation of Clojure forms from within the programmer's environment, rather than using outside control panels and settings. This integration with the programmer's existing tooling eases adoption and allows advanced customization of the system through code.
+
+\hypertarget{id}{%
+\subsubsection{Fast Feedback: Caching \& Incremental Computation}\label{id}}
+
+To keep feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations. This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+
+🚧 TODO too low level/not focused on end-user experience? 🤔
+
+Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+
+On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial.
+
+🚧
+
+\begin{quote}
+While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.
+\end{quote}
+
+It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it's value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.
+
+When Clerk encounters an expression in which an atom's mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
+
+\hypertarget{id}{%
+\subsubsection{Semantic Differences from regular Clojure}\label{id}}
+
+Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
+
+A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in both the runtime and the source file.
+
+It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there are limits to what Clerk's analysis can handle. Here are some of the things we currently do not support:
+
+\begin{itemize}
+\tightlist
+\item
+  Multiple definitions of the same var in a file
+\item
+  Setting dynamic variables using \href{https://clojuredocs.org/clojure.core/set!}{\passthrough{\lstinline"set!"}}
+\item
+  Dynamically altering vars using \href{https://clojuredocs.org/clojure.core/alter-var-root}{\passthrough{\lstinline!alter-var-root!}}
+\item
+  Temporarily redefining vars using \href{https://clojuredocs.org/clojure.core/with-redefs}{\passthrough{\lstinline!with-redefs!}}
+\end{itemize}
+
+We have included a mechanism to override Clerk's error checking in cases where the user knows that one or more of these techniques are in use.
+
+\hypertarget{id}{%
+\subsubsection{Presentation}\label{id}}
+
+Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user's development environment. The client executes in a web browser running an embedded Clojure interpreter.
+
+The process of conveying a value to the client is a \emph{presentation}, a
+term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
+
+When the \passthrough{\lstinline!present!} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
+
+To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
+
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+
+It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.
+
+\hypertarget{id}{%
+\subsubsection{Built-in Viewers}\label{id}}
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
+\end{lstlisting}
+
+Clerk comes with a set of built-in viewers for common situations. These include support for Clojure's immutable data structures, HTML (including the \href{https://github.com/weavejester/hiccup}{hiccup variant} that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure's printer. The \href{https://book.clerk.vision}{Book of Clerk} gives a good overview of the available built-ins. Because Clerk's client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using \href{https://plotly.com/javascript/}{Plotly} and \href{https://github.com/vega/vega-embed}{vega} for plotting, \href{https://codemirror.net}{CodeMirror} for rendering code cells, and \href{https://katex.org}{KaTeX} for typesetting math.
+
+Clerk's built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block's result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#showing-result-data.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Showing result data"]]])
+\end{lstlisting}
+
+Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
+\end{lstlisting}
+
+Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#clerk-tables.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk tables"]]])
+\end{lstlisting}
+
+Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a \passthrough{\lstinline!vega-lite!} plot using the built-in \passthrough{\lstinline!clerk/vl!} viewer:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#plotting-using-the-vega-grammar.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Plotting using the vega grammar"]]])
+\end{lstlisting}
+
+While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like \passthrough{\lstinline!clerk/image!}, \passthrough{\lstinline!clerk/katex!}, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species' names, with exemplary images and geo-spatial plots:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#combining-multiple-built-in-viewers.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Combining multiple, built-in viewers"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsubsection{Moldable Viewer API}\label{id}}
+
+Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojure hash maps. Clerk interprets the following optional keys in each viewer map:
+
+\begin{itemize}
+\tightlist
+\item
+  \passthrough{\lstinline!:pred!} is a predicate function that tests whether this viewer should be used for a given data structure
+\item
+  \passthrough{\lstinline!:transform-fn!} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
+\item
+  \passthrough{\lstinline!:render-fn!} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
+\item
+  \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
+\end{itemize}
+
+Viewers can also be explicitly selected by wraping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
+
+The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
+
+\hypertarget{id}{%
+\subsubsection{Sync}\label{id}}
+
+To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \passthrough{\lstinline!atom!} on the server is annotated with metadata indicating it is \passthrough{\lstinline!sync!}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
+
+In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the \protect\hyperlink{regex-dictionary}{Regex Dictionary Example}.
+
+\hypertarget{id}{%
+\subsection{Prose-oriented Documents}\label{id}}
+
+The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from \emph{some} computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with ``code-fenced'' source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
+
+This format is very similar to other markdown-based notebooks, like \href{https://rmarkdown.rstudio.com}{R Markdown}, but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located \href{https://github.com/mk/clerk-px23}{on Github}.
+
+\hypertarget{id}{%
+\subsection{Examples of Moldable Development with Clerk}\label{id}}
+
+In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer's assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+
+\hypertarget{id}{%
+\subsubsection{Augmenting table names}\label{id}}
+
+This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#as400-column-names.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
+\end{lstlisting}
+
+We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical Lisp fashion, we go on and inspect a query interactively. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#inspecting-a-query-using-the-repl.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
+\end{lstlisting}
+
+With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer's headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren't lost). We can go further still, showing the original German names when move the mouse over the headings:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#augmented-table-headings.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Augmented Table Headings"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsubsection{Rich documentation features}\label{id}}
+
+This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#custom-viewers-for-clojure2ds-colors-library.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Custom Viewers for Clojure2d’s Colors Library"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsubsection{Regex Dictionary}\label{id}}
+
+Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#interactive-regex-dictionary.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Regex Dictionary"]]])
+\end{lstlisting}
+
+It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#printing-the-value-of-a-synced-clojure-atom.not-prose.overflow-hidden.rounded-lg
+  [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Printing the value of a synced Clojure atom"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsubsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
+
+Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk's default styling) via Clerk's CSS customization options.
+
+\begin{lstlisting}
+^{::clerk/width :wide}
+(clerk/html
+ [:div#interactive-log-search.not-prose.overflow-hidden.rounded-lg
+  [:video {:loop true :controls true}
+   [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
+  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Log Search"]]])
+\end{lstlisting}
+
+\hypertarget{id}{%
+\subsubsection{Experience}\label{id}}
+
+Our experience as the developers and users of Clerk has been surprisingly positive, but we're heavily biased. We've chosen a few quotes from Clerk's user base to give a sense of how it has been received in the community:
+
+\begin{quote}
+{[}Clerk{]} is making the training of junior Clojure programmers a massive pleasure! {[}...{]}
+
+It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
+
+--~Robert Stuttaford
+\end{quote}
+
+\begin{quote}
+I'm using Clerk to visualize statistics properties from a simulation in a model checker {[}...{]} it's basically a wrapper over TLA+ {[}...{]}
+
+Amazing that Clerk just lets you focus on what really matters and nothing else!
+
+--~Paulo Feodrippe
+\end{quote}
+
+\begin{quote}
+I just wanted to express some gratitude for Clerk. It's been a game changer for me in terms of understanding problems and communicating that understanding to other people.
+
+-- Jeffrey Simon
+\end{quote}
+
+\hypertarget{id}{%
+\subsection{🚧 🚧 🚧 WORK IN PROGRESS 🚧 🚧 🚧}\label{id}}
+
+\hypertarget{id}{%
+\subsection{Open Toolkit}\label{id}}
+
+TODO discuss open library toolkit approach
+
+\hypertarget{id}{%
+\subsection{Related \& Future Work}\label{id}}
+
+Related:
+
+\begin{itemize}
+\tightlist
+\item
+  org-mode
+\item
+  Mathematica
+\end{itemize}
+
+Future Work
+
+\begin{itemize}
+\tightlist
+\item
+  Viewers: lets \passthrough{\lstinline!:pred!} function opt into more context
+\item
+  Open up caching
+\item
+  Use distributed cache more
+\item
+  Make caching more granular, also allow caching functions?
+\item
+  Clerk printer to fix REPL printing problem
+\end{itemize}
+
+\hypertarget{id}{%
+\subsection{Conclusion}\label{id}}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\end{document}
