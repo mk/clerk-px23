@@ -4,7 +4,8 @@
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
    :nextjournal.clerk/visibility {:code :hide}}
-  (:require [nextjournal.clerk :as clerk]))
+  (:require [nextjournal.clerk :as clerk]
+            [applied-science.edn-datasets :as data]))
 ```
 
 ```clojure
@@ -171,15 +172,13 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
 
-Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
+Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default. 
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#showing-result-data.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Showing result data"]]])
+Here is an interactive example of the well-known `iris` data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
+
+```clojure
+^{::clerk/visibility {:code :show}}
+sample-data/iris
 ```
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
@@ -189,7 +188,7 @@ Additional affordances are modes to auto-expand nested structures based on shape
 (clerk/html
  [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
+   [:source {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
 ```
@@ -197,34 +196,70 @@ Additional affordances are modes to auto-expand nested structures based on shape
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
 ``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#clerk-tables.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk tables"]]])
+^{::clerk/visibility {:code :show}}
+(clerk/table sample-data/iris)
 ```
 
-Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a `vega-lite` plot using the built-in `clerk/vl` viewer:
+Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
+
+In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive `vega-lite` plot using the `clerk/vl` viewer:
 
 ``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#plotting-using-the-vega-grammar.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Plotting using the vega grammar"]]])
+^{::clerk/visibility {:code :show}}
+(clerk/vl {:data {:values sample-data/iris}
+           :width 500
+           :height 500
+           :title "sepal-length vs. sepal-width"
+           :mark {:type "point"
+                  :tooltip {:field :species}}
+           :encoding {:color {:field :species}
+                      :x {:field :sepal-length
+                          :type :quantitative
+                          :scale {:zero false}}
+                      :y {:field :sepal-width
+                          :type :quantitative
+                          :scale {:zero false}}}})
 ```
 
-While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like `clerk/image`, `clerk/katex`, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species’ names, with exemplary images and geo-spatial plots:
+It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers[^box+jenkins] by year and quarter and embedding a sparkline graph into the table row for each year.
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#combining-multiple-built-in-viewers.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Combining multiple, built-in viewers"]]])
+[^box+jenkins]: using a [Clojure port](https://github.com/applied-science/edn-datasets) of R’s built-in dataset of [Box & Jenkins classic airline data](https://search.r-project.org/R/refmans/datasets/html/AirPassengers.html).
+
+A typical Clerk workflow for this would be to first take a look at the shape of the data:
+
+```clojure
+^{::clerk/visibility {:code :show}}
+sample-data/air-passengers
+```
+
+Then, a `sparkline` function is defined that generates the graph (using `clerk/vl`) to be embedded into each table row later:
+
+```clojure
+^{::clerk/visibility {:code :show}}
+(defn sparkline [values]
+  (clerk/vl {:data {:values (map-indexed (fn [i n] {:x i :y n}) values)}
+             :mark {:type :line :strokeWidth 1.2}
+             :width 140
+             :height 20
+             :config {:background nil :border nil :view {:stroke "transparent"}}
+             :encoding {:x {:field :x :axis nil :background nil}
+                        :y {:field :y :axis nil :background nil}}}))
+```
+
+And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
+
+🚧 Todo: Sparklines aren’t rendering yet when using `clerk/table`’s `:head` & `:rows` format.
+
+```clojure
+^{::clerk/visibility {:code :show}}
+(clerk/table
+ {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
+  :rows (->> sample-data/air-passengers
+             (group-by :year)
+             (map (fn [[year months]]
+                    (let [quarters (->> months (map :n) (partition 3) (map #(reduce + 0 %)))]
+                      (concat [year] quarters (sparkline quarters)))))
+             (sort-by first))})
 ```
 
 ### Moldable Viewer API
