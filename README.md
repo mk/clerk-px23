@@ -218,7 +218,8 @@ In the following figure, the same `iris` dataset, as shown in the above table ex
                           :scale {:zero false}}
                       :y {:field :sepal-width
                           :type :quantitative
-                          :scale {:zero false}}}})
+                          :scale {:zero false}}}
+           :embed/opts {:actions false}})
 ```
 
 It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers[^box+jenkins] by year and quarter and embedding a sparkline graph into the table row for each year.
@@ -228,7 +229,8 @@ It is important to note that Clerk’s viewers work in a way that encourages com
 A typical Clerk workflow for this would be to first take a look at the shape of the data:
 
 ```clojure
-^{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show}
+  ::clerk/opts {:auto-expand-results? true}}
 sample-data/air-passengers
 ```
 
@@ -243,7 +245,8 @@ Then, a `sparkline` function is defined that generates the graph (using `clerk/v
              :height 20
              :config {:background nil :border nil :view {:stroke "transparent"}}
              :encoding {:x {:field :x :axis nil :background nil}
-                        :y {:field :y :axis nil :background nil}}}))
+                        :y {:field :y :axis nil :background nil}}
+             :embed/opts {:actions false}}))
 ```
 
 And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
