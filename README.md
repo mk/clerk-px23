@@ -251,8 +251,6 @@ Then, a `sparkline` function is defined that generates the graph (using `clerk/v
 
 And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
 
-🚧 Todo: Sparklines aren’t rendering yet when using `clerk/table`’s `:head` & `:rows` format.
-
 ```clojure
 ^{::clerk/visibility {:code :show}}
 (clerk/table
@@ -261,7 +259,7 @@ And finally reducing the data to quarters and years and adding the sparkline gra
              (group-by :year)
              (map (fn [[year months]]
                     (let [quarters (->> months (map :n) (partition 3) (map #(reduce + 0 %)))]
-                      (concat [year] quarters (sparkline quarters)))))
+                      (concat [year] quarters [(sparkline quarters)]))))
              (sort-by first))})
 ```
 
