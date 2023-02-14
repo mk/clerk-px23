@@ -5,7 +5,7 @@
   {:nextjournal.clerk/toc true
    :nextjournal.clerk/visibility {:code :hide}}
   (:require [nextjournal.clerk :as clerk]
-            [applied-science.edn-datasets :as data]))
+            [applied-science.edn-datasets :as datasets]))
 ```
 
 ```clojure
@@ -178,7 +178,7 @@ Here is an interactive example of the well-known `iris` data set that has been a
 
 ```clojure
 ^{::clerk/visibility {:code :show}}
-sample-data/iris
+datasets/iris
 ```
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
@@ -197,7 +197,7 @@ Using the built-in `clerk/table` viewer, the same data structure can also be ren
 
 ``` clojure
 ^{::clerk/visibility {:code :show}}
-(clerk/table sample-data/iris)
+(clerk/table datasets/iris)
 ```
 
 Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
@@ -206,7 +206,7 @@ In the following figure, the same `iris` dataset, as shown in the above table ex
 
 ``` clojure
 ^{::clerk/visibility {:code :show}}
-(clerk/vl {:data {:values sample-data/iris}
+(clerk/vl {:data {:values datasets/iris}
            :width 500
            :height 500
            :title "sepal-length vs. sepal-width"
@@ -231,7 +231,7 @@ A typical Clerk workflow for this would be to first take a look at the shape of 
 ```clojure
 ^{::clerk/visibility {:code :show}
   ::clerk/opts {:auto-expand-results? true}}
-sample-data/air-passengers
+datasets/air-passengers
 ```
 
 Then, a `sparkline` function is defined that generates the graph (using `clerk/vl`) to be embedded into each table row later:
@@ -257,7 +257,7 @@ And finally reducing the data to quarters and years and adding the sparkline gra
 ^{::clerk/visibility {:code :show}}
 (clerk/table
  {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
-  :rows (->> sample-data/air-passengers
+  :rows (->> datasets/air-passengers
              (group-by :year)
              (map (fn [[year months]]
                     (let [quarters (->> months (map :n) (partition 3) (map #(reduce + 0 %)))]
