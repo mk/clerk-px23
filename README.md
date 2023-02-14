@@ -244,8 +244,8 @@ Then, a `sparkline` function is defined that generates the graph (using `clerk/v
              :width 140
              :height 20
              :config {:background nil :border nil :view {:stroke "transparent"}}
-             :encoding {:x {:field :x :axis nil :background nil}
-                        :y {:field :y :axis nil :background nil}}
+             :encoding {:x {:field :x :type :ordinal :axis nil :background nil}
+                        :y {:field :y :type :quantitative :axis nil :background nil}}
              :embed/opts {:actions false}}))
 ```
 
@@ -258,8 +258,8 @@ And finally reducing the data to quarters and years and adding the sparkline gra
   :rows (->> datasets/air-passengers
              (group-by :year)
              (map (fn [[year months]]
-                    (let [quarters (->> months (map :n) (partition 3) (map #(reduce + 0 %)))]
-                      (concat [year] quarters [(sparkline quarters)]))))
+                    (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
+                      (concat [year] qs [(sparkline qs)]))))
              (sort-by first))})
 ```
 
