@@ -407,28 +407,38 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 >
 > – Jeffrey Simon
 
-## 🚧 🚧 🚧 WORK IN PROGRESS 🚧 🚧 🚧
-
-## Open Toolkit
-
-TODO discuss open library toolkit approach
 
 ## Related & Future Work
 
-Related:
-* org-mode
-* Mathematica
+Besides the aforementioned work there's a number of contemporary related systems:
 
-Future Work
-* Viewers: lets `:pred` function opt into more context
-* Open up caching
-* Use distributed cache more
-* Make caching more granular, also allow caching functions?
-* Clerk printer to fix REPL printing problem
+* [Org mode][org-mode] is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
+* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. It's [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
+* [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. It's format a plain Julia files comment annotations for cell ids and order.
+* [Livebook][livebook] is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
 
-## Conclusion
+Our goal with the development of Clerk is to _leave the toolbox open_: we want Clerk's users to be able to customize behavior, often by providing functions.
+
+Clerk's viewer api is a first example of that but we want to take this further by letting users:
+
+* provide functions to control the caching e.g. to support more efficient caching of dataframes
+* letting the viewer api's `:pred` function opt into receiving more context like the path in the tree
+* make caching more granular and support caching function invocations
+* override `parse` and `eval` to support different syntaxes than markdown and different semantics
+
+So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
+
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, it's insufficient for this to be on the level of source files but concurrent modifications without intermediate saving should be supported. Since this is a significant chunk of work, we've avoided it until now.
+
+## Conclusion 
+🚧
 
 -----------------------------------------------
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
 [maria]:https://maria.cloud
+[streamlit]:https://streamlit.io
+[streamlit-cache]:https://docs.streamlit.io/library/get-started/main-concepts#caching
+[pluto]:https://plutojl.org
+[livebook]:https://livebook.dev
+[org-mode]:https://orgmode.org
