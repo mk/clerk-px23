@@ -103,17 +103,25 @@ Control and configuration of Clerk primarily occurs through evaluation of Clojur
 
 ### Fast Feedback: Caching & Incremental Computation
 
-To keep feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+To keep feedback loops short, Clerk uses dependency analysis to limit recomputation to forms that haven't previously been evaluated in Clerk.
 
-[^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable. It's also possible to share Clerk's immutable, content-addressed cache between users so a given computation is performed only once for a workgroup.
+In practice this means most changes to a Clerk document are reflected instantly (within 100ms) after saving a file or hitting the keybinding to update the open document.
 
-🚧 TODO too low level/not focused on end-user experience? 🤔
+The caching works on the level of top-level forms. A hash is computed for each top-level form. A change to the form or one of its transitive dependencies will lead to a new hash value. 
 
-Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 
-On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial. 
+When Clerk is asked to show a notebook, it will only evaluate forms that aren't cached in one of Clerk's two caches:
 
-🚧
+* an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
+* An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+
+[^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable.
+
+This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+
+The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing [multihash format](https://multiformats.io/multihash/) to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
+
+This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 > While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
 
@@ -123,7 +131,9 @@ It is idiomatic in Clojure to use boxed containers to manage mutable state[^cloj
 
 [^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
 
-When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
+When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. 
+
+This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
 
 ### Semantic Differences from regular Clojure
 
@@ -413,22 +423,22 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 Besides the aforementioned work there's a number of contemporary related systems:
 
 * [Org mode][org-mode] is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
-* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. It's [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
-* [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. It's format a plain Julia files comment annotations for cell ids and order.
+* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
+* [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
 * [Livebook][livebook] is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
 
 Our goal with the development of Clerk is to _leave the toolbox open_: we want Clerk's users to be able to customize behavior, often by providing functions.
 
 Clerk's viewer api is a first example of that but we want to take this further by letting users:
 
-* provide functions to control the caching e.g. to support more efficient caching of dataframes
+* provide functions to control the caching e.g. to support more efficient caching of data frames
 * letting the viewer api's `:pred` function opt into receiving more context like the path in the tree
 * make caching more granular and support caching function invocations
 * override `parse` and `eval` to support different syntaxes than markdown and different semantics
 
 So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
 
-We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, it's insufficient for this to be on the level of source files but concurrent modifications without intermediate saving should be supported. Since this is a significant chunk of work, we've avoided it until now.
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now.
 
 ## Conclusion 
 🚧
