@@ -18,12 +18,13 @@
 ;; The following changes are needed for `sample-sigconf.tex` to be used as a Pandoc template
 ;; - well, `$body` somewhere
 ;; - \tightlist command
+;; - `$title$` and `$authors$` variables
 ;;
 ;; ## Todos
 ;; - [x]  Title
-;; - [ ] Authors
+;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._)
 ;; - [ ] Bibliography (Bibtex vs. Biblatex)
-;; - [ ] Decide which template to use `sample-sigconf` vs. `sample-sigconf-biblatex`
+;; - [ ] Decide which template to use (e.g. `sample-sigconf`)
 ;; - [ ] Adapt Heading (Sections) Hierarchy
 ;; - [ ] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
 
@@ -31,6 +32,18 @@
 
 (defn doc->meta [{:keys [title]}]
   {:title {:t "MetaInlines" :c [{:t "Str" :c title}]}})
+
+(defn add-authors [pandoc & authors]
+  (assoc-in pandoc
+            [:meta :author]
+            {:t "MetaList"
+             :c (map (fn [author]
+                       {:t "MetaMap"
+                        :c (into {}
+                                 (map (fn [[k v]] [k {:t "MetaInlines" :c [{:t "Str" :c v}]}]))
+                                 author)}) authors)}))
+#_
+(add-authors {} {:name "X" :affiliation "Penguin Village University"})
 
 (def md-type->transform
   {:doc (fn [{:as doc :keys [title content]}]
@@ -90,28 +103,32 @@
       :out (json/read-str :key-fn keyword)))
 
 (comment
-
   ;; to latex
   (-> (md/parse (slurp "README.md"))
       md->pandoc
-      (pandoc-> "latex")
-      (->> (spit "README.tex")))
+      (add-authors {:name "Martin Kavalar"
+                    :email "martin@nextjournal.com"}
+                   {:name "Philippa Markovics"
+                    :email "philippa@nextjournal.com"}
+                   {:name "Jack Rusher"
+                    :email "jack@nextjournal.com"})
 
-  ;; to pdf
-  (-> (md/parse (slurp "README.md"))
-      md->pandoc
-      (pandoc-> "pdf"))
+      (pandoc-> "pdf")
+      ;;(pandoc-> "latex") (->> (spit "README.tex"))
+      )
 
-  ;; equivalent to
-  (sh "tectonic" "--print" "README.tex")
+  (sh "open" "README.pdf")
+
+  ;; debug tectonic
+  (sh "tectonic" "README.tex")
 
   ;; get Pandoc AST for testing
   (-> "
 ---
 title: 'This is the title: it contains a colon'
 author:
-- Author One
-- Author Two
+- name: Author One
+- name: Author Two
 ---
 # Hey
 
@@ -123,7 +140,4 @@ This is a paragraph[^note]
 ---
 [^note]: Hello Note
 
-" (pandoc<- "markdown+footnotes"))
-
-  (-> (md/parse (slurp "README.md")) :title)
-  )
+" (pandoc<- "markdown+footnotes") :meta))
