@@ -1,11 +1,12 @@
 (ns latex
   {:nextjournal.clerk/visibility {:code :hide :result :hide} }
-  (:require [nextjournal.clerk.parser :as parser]
+  (:require [clojure.data.json :as json]
             [clojure.java.shell :refer [sh]]
+            [clojure.zip :as z]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.eval :as clerk.eval]
             [nextjournal.markdown :as md]
-            [clojure.data.json :as json]
+            [nextjournal.markdown.parser :as md.parser]
             [nextjournal.markdown.transform :as md.transform]))
 
 ;; # $\LaTeX$ Conversion
@@ -27,33 +28,17 @@
 ;; ## Todos
 ;; - [x]  Title
 ;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
-;; - [ ] Bibliography (Bibtex vs. Biblatex)
+;; - [ ] Bibliography (Bibtex vs. ~~Biblatex~~)
 ;; - [ ] Decide which template to use (e.g. `sample-sigconf`)
-;; - [ ] Adapt Heading (Sections) Hierarchy
+;; - [x] Adapt Heading (Sections) Hierarchy
 ;; - [ ] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
 
 (declare md->pandoc)
-
-(defn doc->meta [{:keys [title]}]
-  {:title {:t "MetaInlines" :c [{:t "Str" :c title}]}})
-
-(defn add-authors [pandoc & authors]
-  (assoc-in pandoc
-            [:meta :author]
-            {:t "MetaList"
-             :c (map (fn [author]
-                       {:t "MetaMap"
-                        :c (into {}
-                                 (map (fn [[k v]] [k {:t "MetaInlines" :c [{:t "Str" :c v}]}]))
-                                 author)}) authors)}))
-#_
-(add-authors {} {:name "X" :affiliation "Penguin Village University"})
-
 (def md->pandoc-transform
   {:doc (fn [{:as doc :keys [content]}]
           {:blocks (into [] (map md->pandoc) content)
            :pandoc-api-version [1 22]
-           :meta (doc->meta doc)})
+           :meta {}})
 
    :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (keep md->pandoc content)]})
    :paragraph (fn [{:keys [content]}] {:t "Para" :c (keep md->pandoc content)})
@@ -106,34 +91,58 @@
   (-> (sh "pandoc" "-f" format "-t" "json" :in input)
       :out (json/read-str :key-fn keyword)))
 
+(defn meta-content [content] {:t "MetaInlines" :c [{:t "Str" :c content}]})
+
+(defn add-authors [pandoc & authors]
+  (assoc-in pandoc
+            [:meta :author]
+            {:t "MetaList"
+             :c (map (fn [author]
+                       {:t "MetaMap"
+                        :c (into {} (map (fn [[k v]] [k (meta-content v)])) author)}) authors)}))
+
+#_(add-authors {} {:name "X" :affiliation "Penguin Village University"})
+
+(defn promote-headings [doc]
+  (loop [z (md.parser/->zip doc)]
+    (if (z/end? z)
+      (z/root z)
+      (recur (z/next (cond-> z
+                       (= :heading (:type (z/node z)))
+                       (z/edit update :heading-level dec)))))))
+
 (defn clerk->pandoc [file]
   (let [{:keys [title footnotes blocks]} (clerk.eval/eval-file file)]
-    (md->pandoc
-     {:type :doc
-      :title title
-      :content (mapcat (fn [{:keys [type doc visibility text-without-meta]}]
-                         (let [{:keys [code result]} visibility]
-                           (case type
-                             :markdown (:content doc)
-                             ;; TODO: extract results (e.g.abstract)
-                             :code (cond-> []
-                                     (= :show code)
-                                     (conj {:type :code
-                                            :language "clojure"
-                                            :content [{:type :text
-                                                       :text text-without-meta}]}))))) blocks)})))
+    (-> {:type :doc
+         :title title
+         :content (mapcat (fn [{:keys [type doc visibility text-without-meta]}]
+                            (let [{:keys [code result]} visibility]
+                              (case type
+                                :markdown (:content doc)
+                                ;; TODO: extract results (e.g.abstract)
+                                :code (cond-> []
+                                        (= :show code)
+                                        (conj {:type :code
+                                               :language "clojure"
+                                               :content [{:type :text
+                                                          :text text-without-meta}]}))))) blocks)}
+        promote-headings
+        (update :content (partial drop 2))
+        md->pandoc
+        (assoc-in [:meta :title] (meta-content title))
+        (add-authors {:name "Martin Kavalar"
+                      :email "martin@nextjournal.com"}
+                     {:name "Philippa Markovics"
+                      :email "philippa@nextjournal.com"}
+                     {:name "Jack Rusher"
+                      :email "jack@nextjournal.com"}))))
 
 (comment
   ;; to latex
   (-> (clerk->pandoc "README.md")
-      (add-authors {:name "Martin Kavalar"
-                    :email "martin@nextjournal.com"}
-                   {:name "Philippa Markovics"
-                    :email "philippa@nextjournal.com"}
-                   {:name "Jack Rusher"
-                    :email "jack@nextjournal.com"})
+      ;;:blocks (->> (take 2))
       (pandoc-> "pdf")
-      ;;(pandoc-> "latex")
+      ;;(pandoc-> "latex") #_ (subs 2000 5000)
       ;;(->> (spit "README.tex"))
       )
 
