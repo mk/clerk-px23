@@ -5,6 +5,7 @@
             [clojure.zip :as z]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.eval :as clerk.eval]
+            [nextjournal.clerk.viewer :as v]
             [nextjournal.markdown :as md]
             [nextjournal.markdown.parser :as md.parser]
             [nextjournal.markdown.transform :as md.transform]))
@@ -111,8 +112,15 @@
                        (= :heading (:type (z/node z)))
                        (z/edit update :heading-level dec)))))))
 
+(defn get-abstract [{:keys [blocks]}]
+  (-> blocks (nth 4)
+      :result v/->value v/->value
+      z/vector-zip
+      (->> (iterate z/next) (take 8))
+      last z/node))
+
 (defn clerk->pandoc [file]
-  (let [{:keys [title footnotes blocks]} (clerk.eval/eval-file file)]
+  (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
     (-> {:type :doc
          :title title
          :content (mapcat (fn [{:keys [type doc visibility text-without-meta]}]
@@ -130,6 +138,7 @@
         (update :content (partial drop 2))
         md->pandoc
         (assoc-in [:meta :title] (meta-content title))
+        (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
         (add-authors {:name "Martin Kavalar"
                       :email "martin@nextjournal.com"}
                      {:name "Philippa Markovics"
@@ -138,6 +147,7 @@
                       :email "jack@nextjournal.com"}))))
 
 (comment
+
   ;; to latex
   (-> (clerk->pandoc "README.md")
       ;;:blocks (->> (take 2))
