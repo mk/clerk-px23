@@ -2,12 +2,16 @@
   {:nextjournal.clerk/visibility {:code :hide :result :hide} }
   (:require [nextjournal.clerk.parser :as parser]
             [clojure.java.shell :refer [sh]]
+            [nextjournal.clerk :as clerk]
+            [nextjournal.clerk.eval :as clerk.eval]
             [nextjournal.markdown :as md]
             [clojure.data.json :as json]
             [nextjournal.markdown.transform :as md.transform]))
 
 ;; # $\LaTeX$ Conversion
-;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions)
+;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions).
+;;
+;; Instead of transforming markdown to latex directly, we're going over Clerk's evaluated document, so we have a chance to get hold of visibility and generated results.
 ;;
 ;; ## Prerequisites
 ;; - pandoc (`brew install pandoc`)
@@ -22,7 +26,7 @@
 ;;
 ;; ## Todos
 ;; - [x]  Title
-;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._)
+;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
 ;; - [ ] Bibliography (Bibtex vs. Biblatex)
 ;; - [ ] Decide which template to use (e.g. `sample-sigconf`)
 ;; - [ ] Adapt Heading (Sections) Hierarchy
@@ -45,8 +49,8 @@
 #_
 (add-authors {} {:name "X" :affiliation "Penguin Village University"})
 
-(def md-type->transform
-  {:doc (fn [{:as doc :keys [title content]}]
+(def md->pandoc-transform
+  {:doc (fn [{:as doc :keys [content]}]
           {:blocks (into [] (map md->pandoc) content)
            :pandoc-api-version [1 22]
            :meta (doc->meta doc)})
@@ -80,7 +84,7 @@
 
 (defn md->pandoc
   [{:as node :keys [type]}]
-  (if-some [xf (get md-type->transform type)]
+  (if-some [xf (get md->pandoc-transform type)]
     (xf node)
     (throw (ex-info (str "Not implemented: '" type "'.") node))))
 
@@ -102,19 +106,35 @@
   (-> (sh "pandoc" "-f" format "-t" "json" :in input)
       :out (json/read-str :key-fn keyword)))
 
+(defn clerk->pandoc [file]
+  (let [{:keys [title footnotes blocks]} (clerk.eval/eval-file file)]
+    (md->pandoc
+     {:type :doc
+      :title title
+      :content (mapcat (fn [{:keys [type doc visibility text-without-meta]}]
+                         (let [{:keys [code result]} visibility]
+                           (case type
+                             :markdown (:content doc)
+                             ;; TODO: extract results (e.g.abstract)
+                             :code (cond-> []
+                                     (= :show code)
+                                     (conj {:type :code
+                                            :language "clojure"
+                                            :content [{:type :text
+                                                       :text text-without-meta}]}))))) blocks)})))
+
 (comment
   ;; to latex
-  (-> (md/parse (slurp "README.md"))
-      md->pandoc
+  (-> (clerk->pandoc "README.md")
       (add-authors {:name "Martin Kavalar"
                     :email "martin@nextjournal.com"}
                    {:name "Philippa Markovics"
                     :email "philippa@nextjournal.com"}
                    {:name "Jack Rusher"
                     :email "jack@nextjournal.com"})
-
       (pandoc-> "pdf")
-      ;;(pandoc-> "latex") (->> (spit "README.tex"))
+      ;;(pandoc-> "latex")
+      ;;(->> (spit "README.tex"))
       )
 
   (sh "open" "README.pdf")
