@@ -6,6 +6,25 @@
             [clojure.data.json :as json]
             [nextjournal.markdown.transform :as md.transform]))
 
+;; # $\LaTeX$ Conversion
+;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions)
+;;
+;; ## Prerequisites
+;; - pandoc
+;; - tectonic (`brew install tectonic`)
+;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template)
+;;
+;;
+;; ## Pandoc Template Tweaks
+;; The following changes are needed for `sample-sigconf.tex` to be used as a Pandoc template
+;; - well, `$body` somewhere
+;; - \tightlist command
+;;
+;; TODO:
+;; - [ ] Bibliography (Bibtex vs. Biblatex)
+;; - [ ] Decide which template to use `sample-sigconf` vs. `sample-sigconf-biblatex`
+;; - [ ] Adapt Heading System
+
 (declare md->pandoc)
 
 (def md-type->transform
@@ -48,10 +67,17 @@
     (throw (ex-info (str "Not implemented: '" type "'.") node))))
 
 (defn pandoc-> [pandoc-data format]
-  (let [{:keys [exit out err]} (sh "pandoc" "--from" "json" "--to" format
-                                   "--standalone" ;; all the LaTeX preambolic stuff
-                                   "--no-highlight" "--listings" ;; code via listings package (https://ctan.org/pkg/listings)
-                                   :in (json/write-str pandoc-data))]
+  (let [{:keys [exit out err]}
+        (apply sh (filter some?
+                          ["pandoc" "--from" "json" "--to" format
+                           "--standalone"                   ;; all the LaTeX preambolic stuff
+                           ;;"--template=template-sigconf-biblatex.tex"
+                           "--template=template-sigconf.tex"
+                           "--pdf-engine=tectonic"
+                           "--no-highlight"
+                           (when (= "pdf" format) "--output=README.pdf")
+                           ;; "--listings" ;; code via listings package (https://ctan.org/pkg/listings)
+                           :in (json/write-str pandoc-data)]))]
     (if (zero? exit) out err)))
 
 (defn pandoc<- [input format]
@@ -64,13 +90,22 @@
   (-> (md/parse (slurp "README.md"))
       md->pandoc
       (pandoc-> "latex")
-      #_ (->> (spit "README.tex")))
+
+      (->> (spit "README.tex")))
 
   ;; to pdf
-  (sh "tectonic" "README.tex")
+  (-> (md/parse (slurp "README.md"))
+      md->pandoc
+      (pandoc-> "pdf"))
+
+  ;; equivalent to
+  (sh "tectonic" "--print" "README.tex")
 
   ;; get Pandoc AST for testing
-  (-> "# Hey
+  (-> "
+title: Some My Title
+---
+# Hey
 
 This is a paragraph[^note]
 
@@ -80,4 +115,7 @@ This is a paragraph[^note]
 ---
 [^note]: Hello Note
 
-" (pandoc<- "markdown+footnotes")))
+" (pandoc<- "markdown+footnotes"))
+
+  (-> (md/parse (slurp "README.md")) :title)
+  )

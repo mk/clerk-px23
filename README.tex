@@ -1,80 +1,307 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-%
-\documentclass[
-]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{lmodern}
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
-\usepackage{listings}
-\newcommand{\passthrough}[1]{#1}
-\lstset{defaultdialect=[5.3]Lua}
-\lstset{defaultdialect=[x86masm]Assembler}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%%
+%% IMPORTANT NOTICE:
+%%
+%% For the copyright see the source file.
+%%
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%%
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%%
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[sigconf]{acmart}
+
+%% Pandoc Template Additions
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
-\hypersetup{
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
 
-\author{}
-\date{}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
 
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmcopyright}
+\copyrightyear{2018}
+\acmYear{2018}
+\acmDOI{XXXXXXX.XXXXXXX}
+
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[Conference acronym 'XX]{Make sure to enter the correct
+  conference title from your rights confirmation emai}{June 03--05,
+  2018}{Woodstock, NY}
+%%
+%%  Uncomment \acmBooktitle if the title of the proceedings is different
+%%  from ``Proceedings of ...''!
+%%
+%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
+%%  June 03--05, 2018, Woodstock, NY}
+\acmPrice{15.00}
+\acmISBN{978-1-4503-XXXX-X/18/06}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% For managing citations, it is recommended to use bibliography
+%% files in BibTeX format.
+%%
+%% You can then either use BibTeX with the ACM-Reference-Format style,
+%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
+%% support for advanced citation of software artefact from the
+%% biblatex-software package, also separately available on CTAN.
+%%
+%% Look at the sample-*-biblatex.tex files for templates showcasing
+%% the biblatex styles.
+%%
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+
+%%
+%% end of the preamble, start of the body of the document source.
 \begin{document}
 
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+\author{Ben Trovato}
+\authornote{Both authors contributed equally to this research.}
+\email{trovato@corporation.com}
+\orcid{1234-5678-9012}
+\author{G.K.M. Tobin}
+\authornotemark[1]
+\email{webmaster@marysville-ohio.com}
+\affiliation{%
+  \institution{Institute for Clarity in Documentation}
+  \streetaddress{P.O. Box 1212}
+  \city{Dublin}
+  \state{Ohio}
+  \country{USA}
+  \postcode{43017-6221}
+}
+
+\author{Lars Th{\o}rv{\"a}ld}
+\affiliation{%
+  \institution{The Th{\o}rv{\"a}ld Group}
+  \streetaddress{1 Th{\o}rv{\"a}ld Circle}
+  \city{Hekla}
+  \country{Iceland}}
+\email{larst@affiliation.org}
+
+\author{Valerie B\'eranger}
+\affiliation{%
+  \institution{Inria Paris-Rocquencourt}
+  \city{Rocquencourt}
+  \country{France}
+}
+
+\author{Aparna Patel}
+\affiliation{%
+ \institution{Rajiv Gandhi University}
+ \streetaddress{Rono-Hills}
+ \city{Doimukh}
+ \state{Arunachal Pradesh}
+ \country{India}}
+
+\author{Huifen Chan}
+\affiliation{%
+  \institution{Tsinghua University}
+  \streetaddress{30 Shuangqing Rd}
+  \city{Haidian Qu}
+  \state{Beijing Shi}
+  \country{China}}
+
+\author{Charles Palmer}
+\affiliation{%
+  \institution{Palmer Research Laboratories}
+  \streetaddress{8600 Datapoint Drive}
+  \city{San Antonio}
+  \state{Texas}
+  \country{USA}
+  \postcode{78229}}
+\email{cpalmer@prl.com}
+
+\author{John Smith}
+\affiliation{%
+  \institution{The Th{\o}rv{\"a}ld Group}
+  \streetaddress{1 Th{\o}rv{\"a}ld Circle}
+  \city{Hekla}
+  \country{Iceland}}
+\email{jsmith@affiliation.org}
+
+\author{Julius P. Kumquat}
+\affiliation{%
+  \institution{The Kumquat Consortium}
+  \city{New York}
+  \country{USA}}
+\email{jpkumquat@consortium.net}
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{Trovato et al.}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+  A clear and well-documented \LaTeX\ document is presented as an
+  article formatted for publication by ACM in a conference proceedings
+  or journal publication. Based on the ``acmart'' document class, this
+  article presents and explains many of the common variations, as well
+  as many of the formatting elements an author may use in the
+  preparation of the documentation of their work.
+\end{abstract}
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%% Please copy and paste the code instead of the example below.
+%%
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>10010520.10010553.10010562</concept_id>
+  <concept_desc>Computer systems organization~Embedded systems</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10010520.10010575.10010755</concept_id>
+  <concept_desc>Computer systems organization~Redundancy</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10010520.10010553.10010554</concept_id>
+  <concept_desc>Computer systems organization~Robotics</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10003033.10003083.10003095</concept_id>
+  <concept_desc>Networks~Network reliability</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computer systems organization~Embedded systems}
+\ccsdesc[300]{Computer systems organization~Redundancy}
+\ccsdesc{Computer systems organization~Robotics}
+\ccsdesc[100]{Networks~Network reliability}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{datasets, neural networks, gaze detection, text tagging}
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+%
+% \begin{teaserfigure}
+%   \includegraphics[width=\textwidth]{sampleteaser}
+%   \caption{Seattle Mariners at Spring Training, 2010.}
+%   \Description{Enjoying the baseball game from the third-base
+%   seats. Ichiro Suzuki preparing to bat.}
+%   \label{fig:teaser}
+% \end{teaserfigure}
+
+
+\received{20 February 2007}
+\received[revised]{12 March 2009}
+\received[accepted]{5 June 2009}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+%% Pandoc Template Entry
 \hypertarget{id}{%
 \section{Clerk: Moldable Live Programming for Clojure}\label{id}}
 
-\begin{lstlisting}
+\begin{verbatim}
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
    :nextjournal.clerk/visibility {:code :hide}}
-  (:require [nextjournal.clerk :as clerk]))
-\end{lstlisting}
+  (:require [nextjournal.clerk :as clerk]
+            [applied-science.edn-datasets :as datasets]))
+\end{verbatim}
 
-\begin{lstlisting}
+\begin{verbatim}
 (nextjournal.clerk/html [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
 "⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsection{Abstract}\label{id}}
 
-\begin{lstlisting}
+\begin{verbatim}
 (clerk/html
  [:div.flex.flex-col.not-prose
   {:class "min-[860px]:flex-row"}
@@ -89,7 +316,7 @@
    [:a.block.mt-2.hover:opacity-70 {:href "https://twitter.com/mkvlr"} "Martin Kavalar"]
    [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/unkai"} "Philippa Markovics"]
    [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsection{Introduction: Literate Programming, Notebooks and Interactive Development}\label{id}}
@@ -128,7 +355,7 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :full}
 (clerk/html
  [:div#clerk-side-by-side-with-emacs.not-prose
@@ -136,11 +363,11 @@ When working with Clerk, a split-view is typically used with a code editor next 
    [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
-\end{lstlisting}
+\end{verbatim}
 
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
-Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \passthrough{\lstinline"show!"} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
+Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \texttt{show!} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
 
 \begin{itemize}
 \tightlist
@@ -155,23 +382,37 @@ Control and configuration of Clerk primarily occurs through evaluation of Clojur
 \hypertarget{id}{%
 \subsubsection{Fast Feedback: Caching \& Incremental Computation}\label{id}}
 
-To keep feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations. This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+To keep feedback loops short, Clerk uses dependency analysis to limit recomputation to forms that haven't previously been evaluated in Clerk.
 
-🚧 TODO too low level/not focused on end-user experience? 🤔
+In practice this means most changes to a Clerk document are reflected instantly (within 100ms) after saving a file or hitting the keybinding to update the open document.
 
-Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+The caching works on the level of top-level forms. A hash is computed for each top-level form. A change to the form or one of its transitive dependencies will lead to a new hash value.
 
-On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial.
+When Clerk is asked to show a notebook, it will only evaluate forms that aren't cached in one of Clerk's two caches:
 
-🚧
+\begin{itemize}
+\tightlist
+\item
+  an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
+\item
+  An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+\end{itemize}
+
+This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+
+The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing \href{https://multiformats.io/multihash/}{multihash format} to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
+
+This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 \begin{quote}
 While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.
 \end{quote}
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it's value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.
+It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\texttt{deref/@}} and updating it's value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\texttt{swap!}}.
 
-When Clerk encounters an expression in which an atom's mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
+When Clerk encounters an expression in which an atom's mutable value is being read using \texttt{deref}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression's static hash with it.
+
+This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
 
 \hypertarget{id}{%
 \subsubsection{Semantic Differences from regular Clojure}\label{id}}
@@ -187,11 +428,11 @@ It is our goal to match the semantics of Clojure as closely as possible but as a
 \item
   Multiple definitions of the same var in a file
 \item
-  Setting dynamic variables using \href{https://clojuredocs.org/clojure.core/set!}{\passthrough{\lstinline"set!"}}
+  Setting dynamic variables using \href{https://clojuredocs.org/clojure.core/set!}{\texttt{set!}}
 \item
-  Dynamically altering vars using \href{https://clojuredocs.org/clojure.core/alter-var-root}{\passthrough{\lstinline!alter-var-root!}}
+  Dynamically altering vars using \href{https://clojuredocs.org/clojure.core/alter-var-root}{\texttt{alter-var-root}}
 \item
-  Temporarily redefining vars using \href{https://clojuredocs.org/clojure.core/with-redefs}{\passthrough{\lstinline!with-redefs!}}
+  Temporarily redefining vars using \href{https://clojuredocs.org/clojure.core/with-redefs}{\texttt{with-redefs}}
 \end{itemize}
 
 We have included a mechanism to override Clerk's error checking in cases where the user knows that one or more of these techniques are in use.
@@ -204,7 +445,7 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 The process of conveying a value to the client is a \emph{presentation}, a
 term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
-When the \passthrough{\lstinline!present!} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
+When the \texttt{present} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
 
 To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
 
@@ -215,70 +456,103 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 \hypertarget{id}{%
 \subsubsection{Built-in Viewers}\label{id}}
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
-\end{lstlisting}
+\end{verbatim}
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure's immutable data structures, HTML (including the \href{https://github.com/weavejester/hiccup}{hiccup variant} that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure's printer. The \href{https://book.clerk.vision}{Book of Clerk} gives a good overview of the available built-ins. Because Clerk's client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using \href{https://plotly.com/javascript/}{Plotly} and \href{https://github.com/vega/vega-embed}{vega} for plotting, \href{https://codemirror.net}{CodeMirror} for rendering code cells, and \href{https://katex.org}{KaTeX} for typesetting math.
 
 Clerk's built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block's result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
 
-\begin{lstlisting}
-^{::clerk/width :wide}
-(clerk/html
- [:div#showing-result-data.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Showing result data"]]])
-\end{lstlisting}
+Here is an interactive example of the well-known \texttt{iris} data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
+
+\begin{verbatim}
+^{::clerk/visibility {:code :show}}
+datasets/iris
+\end{verbatim}
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
+   [:source {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
-\end{lstlisting}
+\end{verbatim}
 
-Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
+Using the built-in \texttt{clerk/table} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
-\begin{lstlisting}
-^{::clerk/width :wide}
-(clerk/html
- [:div#clerk-tables.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk tables"]]])
-\end{lstlisting}
+\begin{verbatim}
+^{::clerk/visibility {:code :show}}
+(clerk/table datasets/iris)
+\end{verbatim}
 
-Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a \passthrough{\lstinline!vega-lite!} plot using the built-in \passthrough{\lstinline!clerk/vl!} viewer:
+Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars.
 
-\begin{lstlisting}
-^{::clerk/width :wide}
-(clerk/html
- [:div#plotting-using-the-vega-grammar.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Plotting using the vega grammar"]]])
-\end{lstlisting}
+In the following figure, the same \texttt{iris} dataset, as shown in the above table example, is used to render an interactive \texttt{vega-lite} plot using the \texttt{clerk/vl} viewer:
 
-While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like \passthrough{\lstinline!clerk/image!}, \passthrough{\lstinline!clerk/katex!}, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species' names, with exemplary images and geo-spatial plots:
+\begin{verbatim}
+^{::clerk/visibility {:code :show}}
+(clerk/vl {:data {:values datasets/iris}
+           :width 500
+           :height 500
+           :title "sepal-length vs. sepal-width"
+           :mark {:type "point"
+                  :tooltip {:field :species}}
+           :encoding {:color {:field :species}
+                      :x {:field :sepal-length
+                          :type :quantitative
+                          :scale {:zero false}}
+                      :y {:field :sepal-width
+                          :type :quantitative
+                          :scale {:zero false}}}
+           :embed/opts {:actions false}})
+\end{verbatim}
 
-\begin{lstlisting}
-^{::clerk/width :wide}
-(clerk/html
- [:div#combining-multiple-built-in-viewers.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Combining multiple, built-in viewers"]]])
-\end{lstlisting}
+It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers by year and quarter and embedding a sparkline graph into the table row for each year.
+
+A typical Clerk workflow for this would be to first take a look at the shape of the data:
+
+\begin{verbatim}
+^{::clerk/visibility {:code :show}
+  ::clerk/opts {:auto-expand-results? true}}
+datasets/air-passengers
+\end{verbatim}
+
+Then, a \texttt{sparkline} function is defined that generates the graph (using \texttt{clerk/vl}) to be embedded into each table row later:
+
+\begin{verbatim}
+^{::clerk/visibility {:code :show}}
+(defn sparkline [values]
+  (clerk/vl {:data {:values (map-indexed (fn [i n] {:x i :y n}) values)}
+             :mark {:type :line :strokeWidth 1.2}
+             :width 140
+             :height 20
+             :config {:background nil :border nil :view {:stroke "transparent"}}
+             :encoding {:x {:field :x :type :ordinal :axis nil :background nil}
+                        :y {:field :y :type :quantitative :axis nil :background nil}}
+             :embed/opts {:actions false}}))
+\end{verbatim}
+
+And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
+
+\begin{verbatim}
+^{::clerk/visibility {:code :show}}
+(clerk/table
+ {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
+  :rows (->> datasets/air-passengers
+             (group-by :year)
+             (map (fn [[year months]]
+                    (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
+                      (concat [year] qs [(sparkline qs)]))))
+             (sort-by first))})
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsubsection{Moldable Viewer API}\label{id}}
@@ -288,28 +562,41 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 \begin{itemize}
 \tightlist
 \item
-  \passthrough{\lstinline!:pred!} is a predicate function that tests whether this viewer should be used for a given data structure
+  \texttt{:pred} is a predicate function that tests whether this viewer should be used for a given data structure
 \item
-  \passthrough{\lstinline!:transform-fn!} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
+  \texttt{:transform-fn} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
 \item
-  \passthrough{\lstinline!:render-fn!} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
+  \texttt{:render-fn} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
 \item
-  \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
+  \texttt{:page-size} is a number that indicates how many items to send in each chunk during elision/pagination
 \end{itemize}
 
-Viewers can also be explicitly selected by wraping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
+Viewers can also be explicitly selected by wraping a value in the \texttt{clerk/with-viewer} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
 
 \hypertarget{id}{%
 \subsubsection{Sync}\label{id}}
 
-To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \passthrough{\lstinline!atom!} on the server is annotated with metadata indicating it is \passthrough{\lstinline!sync!}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
+To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \texttt{atom} on the server is annotated with metadata indicating it is \texttt{sync}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
 
 In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the \protect\hyperlink{regex-dictionary}{Regex Dictionary Example}.
 
 \hypertarget{id}{%
-\subsection{Prose-oriented Documents}\label{id}}
+\subsubsection{Tap Stream Inspector}\label{id}}
+
+Clerk also comes with an inspector for Clojure's tap system.
+
+\begin{quote}
+tap is a shared, globally accessible system for distributing a series of informational or diagnostic values to a set of (presumably effectful) handler functions. It can be used as a better debug prn, or for facilities like logging etc.
+
+-- \href{https://github.com/clojure/clojure/blob/0b42eab4bfca5270e0d2b2e58d83b1e2c8a85473/changes.md\#23-tap}{Clojure 1.10 Changelog}
+\end{quote}
+
+When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk's viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
+
+\hypertarget{id}{%
+\subsubsection{Prose-oriented Documents}\label{id}}
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from \emph{some} computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with ``code-fenced'' source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
@@ -325,18 +612,18 @@ In addition to the sorts of traditional data science use cases that one might ex
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#as400-column-names.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
-\end{lstlisting}
+\end{verbatim}
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical Lisp fashion, we go on and inspect a query interactively. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#inspecting-a-query-using-the-repl.not-prose.overflow-hidden.rounded-lg
@@ -344,11 +631,11 @@ We were able to automatically translate these names using a metaschema extracted
    [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
-\end{lstlisting}
+\end{verbatim}
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer's headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren't lost). We can go further still, showing the original German names when move the mouse over the headings:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#augmented-table-headings.not-prose.overflow-hidden.rounded-lg
@@ -356,28 +643,28 @@ With Clerk, were able to render the output as a graphical table without the limi
    [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Augmented Table Headings"]]])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsubsection{Rich documentation features}\label{id}}
 
-This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+This example illustrates the use of Clerk to create rich documentation for \texttt{clojure2d}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#custom-viewers-for-clojure2ds-colors-library.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Custom Viewers for Clojure2d’s Colors Library"]]])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsubsection{Regex Dictionary}\label{id}}
 
 Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#interactive-regex-dictionary.not-prose.overflow-hidden.rounded-lg
@@ -385,25 +672,25 @@ Built as a showcase for Clerk's sync feature, this example allows entering a reg
    [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Regex Dictionary"]]])
-\end{lstlisting}
+\end{verbatim}
 
 It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#printing-the-value-of-a-synced-clojure-atom.not-prose.overflow-hidden.rounded-lg
   [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Printing the value of a synced Clojure atom"]]])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsubsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
 
 Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk's default styling) via Clerk's CSS customization options.
 
-\begin{lstlisting}
+\begin{verbatim}
 ^{::clerk/width :wide}
 (clerk/html
  [:div#interactive-log-search.not-prose.overflow-hidden.rounded-lg
@@ -411,7 +698,7 @@ Also building on Clerk's sync feature, this interactive log search uses \href{ht
    [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Log Search"]]])
-\end{lstlisting}
+\end{verbatim}
 
 \hypertarget{id}{%
 \subsubsection{Experience}\label{id}}
@@ -441,45 +728,605 @@ I just wanted to express some gratitude for Clerk. It's been a game changer for 
 \end{quote}
 
 \hypertarget{id}{%
-\subsection{🚧 🚧 🚧 WORK IN PROGRESS 🚧 🚧 🚧}\label{id}}
-
-\hypertarget{id}{%
-\subsection{Open Toolkit}\label{id}}
-
-TODO discuss open library toolkit approach
-
-\hypertarget{id}{%
 \subsection{Related \& Future Work}\label{id}}
 
-Related:
+Besides the aforementioned work there's a number of contemporary related systems:
 
 \begin{itemize}
 \tightlist
 \item
-  org-mode
+  \href{https://orgmode.org}{Org mode} is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
 \item
-  Mathematica
+  \href{https://streamlit.io}{Streamlit} is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its \href{https://docs.streamlit.io/library/get-started/main-concepts\#caching}{caching system} memoizes functions that are tagged using Python's decorators.
+\item
+  \href{https://plutojl.org}{Pluto} is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
+\item
+  \href{https://livebook.dev}{Livebook} is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
 \end{itemize}
 
-Future Work
+Our goal with the development of Clerk is to \emph{leave the toolbox open}: we want Clerk's users to be able to customize behavior, often by providing functions.
+
+Clerk's viewer api is a first example of that but we want to take this further by letting users:
 
 \begin{itemize}
 \tightlist
 \item
-  Viewers: lets \passthrough{\lstinline!:pred!} function opt into more context
+  provide functions to control the caching e.g. to support more efficient caching of data frames
 \item
-  Open up caching
+  letting the viewer api's \texttt{:pred} function opt into receiving more context like the path in the tree
 \item
-  Use distributed cache more
+  make caching more granular and support caching function invocations
 \item
-  Make caching more granular, also allow caching functions?
-\item
-  Clerk printer to fix REPL printing problem
+  override \texttt{parse} and \texttt{eval} to support different syntaxes than markdown and different semantics
 \end{itemize}
+
+So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
+
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now.
 
 \hypertarget{id}{%
 \subsection{Conclusion}\label{id}}
 
+🚧
+
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\section{Introduction}
+ACM's consolidated article template, introduced in 2017, provides a
+consistent \LaTeX\ style for use across ACM publications, and
+incorporates accessibility and metadata-extraction functionality
+necessary for future Digital Library endeavors. Numerous ACM and
+SIG-specific \LaTeX\ templates have been examined, and their unique
+features incorporated into this single new template.
+
+If you are new to publishing with ACM, this document is a valuable
+guide to the process of preparing your work for publication. If you
+have published with ACM before, this document provides insight and
+instruction into more recent changes to the article template.
+
+The ``\verb|acmart|'' document class can be used to prepare articles
+for any ACM publication --- conference or journal, and for any stage
+of publication, from review to final ``camera-ready'' copy, to the
+author's own version, with {\itshape very} few changes to the source.
+
+\section{Template Overview}
+As noted in the introduction, the ``\verb|acmart|'' document class can
+be used to prepare many different kinds of documentation --- a
+double-blind initial submission of a full-length technical paper, a
+two-page SIGGRAPH Emerging Technologies abstract, a ``camera-ready''
+journal article, a SIGCHI Extended Abstract, and more --- all by
+selecting the appropriate {\itshape template style} and {\itshape
+  template parameters}.
+
+This document will explain the major features of the document
+class. For further information, the {\itshape \LaTeX\ User's Guide} is
+available from
+\url{https://www.acm.org/publications/proceedings-template}.
+
+\subsection{Template Styles}
+
+The primary parameter given to the ``\verb|acmart|'' document class is
+the {\itshape template style} which corresponds to the kind of publication
+or SIG publishing the work. This parameter is enclosed in square
+brackets and is a part of the {\verb|documentclass|} command:
+\begin{verbatim}
+  \documentclass[STYLE]{acmart}
+\end{verbatim}
+
+Journals use one of three template styles. All but three ACM journals
+use the {\verb|acmsmall|} template style:
+\begin{itemize}
+\item {\texttt{acmsmall}}: The default journal template style.
+\item {\texttt{acmlarge}}: Used by JOCCH and TAP.
+\item {\texttt{acmtog}}: Used by TOG.
+\end{itemize}
+
+The majority of conference proceedings documentation will use the {\verb|acmconf|} template style.
+\begin{itemize}
+\item {\texttt{acmconf}}: The default proceedings template style.
+\item{\texttt{sigchi}}: Used for SIGCHI conference articles.
+\item{\texttt{sigplan}}: Used for SIGPLAN conference articles.
+\end{itemize}
+
+\subsection{Template Parameters}
+
+In addition to specifying the {\itshape template style} to be used in
+formatting your work, there are a number of {\itshape template parameters}
+which modify some part of the applied template style. A complete list
+of these parameters can be found in the {\itshape \LaTeX\ User's Guide.}
+
+Frequently-used parameters, or combinations of parameters, include:
+\begin{itemize}
+\item {\texttt{anonymous,review}}: Suitable for a ``double-blind''
+  conference submission. Anonymizes the work and includes line
+  numbers. Use with the \texttt{\acmSubmissionID} command to print the
+  submission's unique ID on each page of the work.
+\item{\texttt{authorversion}}: Produces a version of the work suitable
+  for posting by the author.
+\item{\texttt{screen}}: Produces colored hyperlinks.
+\end{itemize}
+
+This document uses the following string as the first command in the
+source file:
+\begin{verbatim}
+\documentclass[sigconf]{acmart}
+\end{verbatim}
+
+\section{Modifications}
+
+Modifying the template --- including but not limited to: adjusting
+margins, typeface sizes, line spacing, paragraph and list definitions,
+and the use of the \verb|\vspace| command to manually adjust the
+vertical spacing between elements of your work --- is not allowed.
+
+{\bfseries Your document will be returned to you for revision if
+  modifications are discovered.}
+
+\section{Typefaces}
+
+The ``\verb|acmart|'' document class requires the use of the
+``Libertine'' typeface family. Your \TeX\ installation should include
+this set of packages. Please do not substitute other typefaces. The
+``\verb|lmodern|'' and ``\verb|ltimes|'' packages should not be used,
+as they will override the built-in typeface families.
+
+\section{Title Information}
+
+The title of your work should use capital letters appropriately -
+\url{https://capitalizemytitle.com/} has useful rules for
+capitalization. Use the {\verb|title|} command to define the title of
+your work. If your work has a subtitle, define it with the
+{\verb|subtitle|} command.  Do not insert line breaks in your title.
+
+If your title is lengthy, you must define a short version to be used
+in the page headers, to prevent overlapping text. The \verb|title|
+command has a ``short title'' parameter:
+\begin{verbatim}
+  \title[short title]{full title}
+\end{verbatim}
+
+\section{Authors and Affiliations}
+
+Each author must be defined separately for accurate metadata
+identification.  As an exception, multiple authors may share one
+affiliation. Authors' names should not be abbreviated; use full first
+names wherever possible. Include authors' e-mail addresses whenever
+possible.
+
+Grouping authors' names or e-mail addresses, or providing an ``e-mail
+alias,'' as shown below, is not acceptable:
+\begin{verbatim}
+  \author{Brooke Aster, David Mehldau}
+  \email{dave,judy,steve@university.edu}
+  \email{firstname.lastname@phillips.org}
+\end{verbatim}
+
+The \verb|authornote| and \verb|authornotemark| commands allow a note
+to apply to multiple authors --- for example, if the first two authors
+of an article contributed equally to the work.
+
+If your author list is lengthy, you must define a shortened version of
+the list of authors to be used in the page headers, to prevent
+overlapping text. The following command should be placed just after
+the last \verb|\author{}| definition:
+\begin{verbatim}
+  \renewcommand{\shortauthors}{McCartney, et al.}
+\end{verbatim}
+Omitting this command will force the use of a concatenated list of all
+of the authors' names, which may result in overlapping text in the
+page headers.
+
+The article template's documentation, available at
+\url{https://www.acm.org/publications/proceedings-template}, has a
+complete explanation of these commands and tips for their effective
+use.
+
+Note that authors' addresses are mandatory for journal articles.
+
+\section{Rights Information}
+
+Authors of any work published by ACM will need to complete a rights
+form. Depending on the kind of work, and the rights management choice
+made by the author, this may be copyright transfer, permission,
+license, or an OA (open access) agreement.
+
+Regardless of the rights management choice, the author will receive a
+copy of the completed rights form once it has been submitted. This
+form contains \LaTeX\ commands that must be copied into the source
+document. When the document source is compiled, these commands and
+their parameters add formatted text to several areas of the final
+document:
+\begin{itemize}
+\item the ``ACM Reference Format'' text on the first page.
+\item the ``rights management'' text on the first page.
+\item the conference information in the page header(s).
+\end{itemize}
+
+Rights information is unique to the work; if you are preparing several
+works for an event, make sure to use the correct set of commands with
+each of the works.
+
+The ACM Reference Format text is required for all articles over one
+page in length, and is optional for one-page articles (abstracts).
+
+\section{CCS Concepts and User-Defined Keywords}
+
+Two elements of the ``acmart'' document class provide powerful
+taxonomic tools for you to help readers find your work in an online
+search.
+
+The ACM Computing Classification System ---
+\url{https://www.acm.org/publications/class-2012} --- is a set of
+classifiers and concepts that describe the computing
+discipline. Authors can select entries from this classification
+system, via \url{https://dl.acm.org/ccs/ccs.cfm}, and generate the
+commands to be included in the \LaTeX\ source.
+
+User-defined keywords are a comma-separated list of words and phrases
+of the authors' choosing, providing a more flexible way of describing
+the research being presented.
+
+CCS concepts and user-defined keywords are required for for all
+articles over two pages in length, and are optional for one- and
+two-page articles (or abstracts).
+
+\section{Sectioning Commands}
+
+Your work should use standard \LaTeX\ sectioning commands:
+\verb|section|, \verb|subsection|, \verb|subsubsection|, and
+\verb|paragraph|. They should be numbered; do not remove the numbering
+from the commands.
+
+Simulating a sectioning command by setting the first word or words of
+a paragraph in boldface or italicized text is {\bfseries not allowed.}
+
+\section{Tables}
+
+The ``\verb|acmart|'' document class includes the ``\verb|booktabs|''
+package --- \url{https://ctan.org/pkg/booktabs} --- for preparing
+high-quality tables.
+
+Table captions are placed {\itshape above} the table.
+
+Because tables cannot be split across pages, the best placement for
+them is typically the top of the page nearest their initial cite.  To
+ensure this proper ``floating'' placement of tables, use the
+environment \textbf{table} to enclose the table's contents and the
+table caption.  The contents of the table itself must go in the
+\textbf{tabular} environment, to be aligned properly in rows and
+columns, with the desired horizontal and vertical rules.  Again,
+detailed instructions on \textbf{tabular} material are found in the
+\textit{\LaTeX\ User's Guide}.
+
+Immediately following this sentence is the point at which
+Table~\ref{tab:freq} is included in the input file; compare the
+placement of the table here with the table in the printed output of
+this document.
+
+\begin{table}
+  \caption{Frequency of Special Characters}
+  \label{tab:freq}
+  \begin{tabular}{ccl}
+    \toprule
+    Non-English or Math&Frequency&Comments\\
+    \midrule
+    \O & 1 in 1,000& For Swedish names\\
+    $\pi$ & 1 in 5& Common in math\\
+    $\phi$ & 4 in 5 & Used in business\\
+    $\Psi^2_1$ & 1 in 40,000& Unexplained usage\\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+To set a wider table, which takes up the whole width of the page's
+live area, use the environment \textbf{table*} to enclose the table's
+contents and the table caption.  As with a single-column table, this
+wide table will ``float'' to a location deemed more
+desirable. Immediately following this sentence is the point at which
+Table~\ref{tab:commands} is included in the input file; again, it is
+instructive to compare the placement of the table here with the table
+in the printed output of this document.
+
+\begin{table*}
+  \caption{Some Typical Commands}
+  \label{tab:commands}
+  \begin{tabular}{ccl}
+    \toprule
+    Command &A Number & Comments\\
+    \midrule
+    \texttt{{\char'134}author} & 100& Author \\
+    \texttt{{\char'134}table}& 300 & For tables\\
+    \texttt{{\char'134}table*}& 400& For wider tables\\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+Always use midrule to separate table header rows from data rows, and
+use it only for this purpose. This enables assistive technologies to
+recognise table headers and support their users in navigating tables
+more easily.
+
+\section{Math Equations}
+You may want to display math equations in three distinct styles:
+inline, numbered or non-numbered display.  Each of the three are
+discussed in the next sections.
+
+\subsection{Inline (In-text) Equations}
+A formula that appears in the running text is called an inline or
+in-text formula.  It is produced by the \textbf{math} environment,
+which can be invoked with the usual
+\texttt{{\char'134}begin\,\ldots{\char'134}end} construction or with
+the short form \texttt{\ldots}. You can use any of the symbols
+and structures, from $\alpha$ to $\omega$, available in
+\LaTeX~\cite{Lamport:LaTeX}; this section will simply show a few
+examples of in-text equations in context. Notice how this equation:
+\begin{math}
+  \lim_{n\rightarrow \infty}x=0
+\end{math},
+set here in in-line math style, looks slightly different when
+set in display style.  (See next section).
+
+\subsection{Display Equations}
+A numbered display equation---one set off by vertical space from the
+text and centered horizontally---is produced by the \textbf{equation}
+environment. An unnumbered display equation is produced by the
+\textbf{displaymath} environment.
+
+Again, in either environment, you can use any of the symbols and
+structures available in \LaTeX\@; this section will just give a couple
+of examples of display equations in context.  First, consider the
+equation, shown as an inline equation above:
+\begin{equation}
+  \lim_{n\rightarrow \infty}x=0
+\end{equation}
+Notice how it is formatted somewhat differently in
+the \textbf{displaymath}
+environment.  Now, we'll enter an unnumbered equation:
+\begin{displaymath}
+  \sum_{i=0}^{\infty} x + 1
+\end{displaymath}
+and follow it with another numbered equation:
+\begin{equation}
+  \sum_{i=0}^{\infty}x_i=\int_{0}^{\pi+2} f
+\end{equation}
+just to demonstrate \LaTeX's able handling of numbering.
+
+\section{Figures}
+
+The ``\verb|figure|'' environment should be used for figures. One or
+more images can be placed within a figure. If your figure contains
+third-party material, you must clearly identify it as such, as shown
+in the example below.
+
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=\linewidth]{sample-franklin}
+%   \caption{1907 Franklin Model D roadster. Photograph by Harris \&
+%     Ewing, Inc. [Public domain], via Wikimedia
+%     Commons. (\url{https://goo.gl/VLCRBB}).}
+%   \Description{A woman and a girl in white dresses sit in an open car.}
+% \end{figure}
+
+Your figures should contain a caption which describes the figure to
+the reader.
+
+Figure captions are placed {\itshape below} the figure.
+
+Every figure should also have a figure description unless it is purely
+decorative. These descriptions convey what’s in the image to someone
+who cannot see it. They are also used by search engine crawlers for
+indexing images, and when images cannot be loaded.
+
+A figure description must be unformatted plain text less than 2000
+characters long (including spaces).  {\bfseries Figure descriptions
+  should not repeat the figure caption – their purpose is to capture
+  important information that is not already provided in the caption or
+  the main text of the paper.} For figures that convey important and
+complex new information, a short text description may not be
+adequate. More complex alternative descriptions can be placed in an
+appendix and referenced in a short figure description. For example,
+provide a data table capturing the information in a bar chart, or a
+structured list representing a graph.  For additional information
+regarding how best to write figure descriptions and why doing this is
+so important, please see
+\url{https://www.acm.org/publications/taps/describing-figures/}.
+
+\subsection{The ``Teaser Figure''}
+
+A ``teaser figure'' is an image, or set of images in one figure, that
+are placed after all author and affiliation information, and before
+the body of the article, spanning the page. If you wish to have such a
+figure in your article, place the command immediately before the
+\verb|\maketitle| command:
+\begin{verbatim}
+  \begin{teaserfigure}
+    \includegraphics[width=\textwidth]{sampleteaser}
+    \caption{figure caption}
+    \Description{figure description}
+  \end{teaserfigure}
+\end{verbatim}
+
+\section{Citations and Bibliographies}
+
+The use of \BibTeX\ for the preparation and formatting of one's
+references is strongly recommended. Authors' names should be complete
+--- use full first names (``Donald E. Knuth'') not initials
+(``D. E. Knuth'') --- and the salient identifying features of a
+reference should be included: title, year, volume, number, pages,
+article DOI, etc.
+
+The bibliography is included in your source document with these two
+commands, placed just before the \verb|\end{document}| command:
+\begin{verbatim}
+  \bibliographystyle{ACM-Reference-Format}
+  \bibliography{bibfile}
+\end{verbatim}
+where ``\verb|bibfile|'' is the name, without the ``\verb|.bib|''
+suffix, of the \BibTeX\ file.
+
+Citations and references are numbered by default. A small number of
+ACM publications have citations and references formatted in the
+``author year'' style; for these exceptions, please include this
+command in the {\bfseries preamble} (before the command
+``\verb|\begin{document}|'') of your \LaTeX\ source:
+\begin{verbatim}
+  \citestyle{acmauthoryear}
+\end{verbatim}
+
+
+  Some examples.  A paginated journal article \cite{Abril07}, an
+  enumerated journal article \cite{Cohen07}, a reference to an entire
+  issue \cite{JCohen96}, a monograph (whole book) \cite{Kosiur01}, a
+  monograph/whole book in a series (see 2a in spec. document)
+  \cite{Harel79}, a divisible-book such as an anthology or compilation
+  \cite{Editor00} followed by the same example, however we only output
+  the series if the volume number is given \cite{Editor00a} (so
+  Editor00a's series should NOT be present since it has no vol. no.),
+  a chapter in a divisible book \cite{Spector90}, a chapter in a
+  divisible book in a series \cite{Douglass98}, a multi-volume work as
+  book \cite{Knuth97}, a couple of articles in a proceedings (of a
+  conference, symposium, workshop for example) (paginated proceedings
+  article) \cite{Andler79, Hagerup1993}, a proceedings article with
+  all possible elements \cite{Smith10}, an example of an enumerated
+  proceedings article \cite{VanGundy07}, an informally published work
+  \cite{Harel78}, a couple of preprints \cite{Bornmann2019,
+    AnzarootPBM14}, a doctoral dissertation \cite{Clarkson85}, a
+  master's thesis: \cite{anisi03}, an online document / world wide web
+  resource \cite{Thornburg01, Ablamowicz07, Poker06}, a video game
+  (Case 1) \cite{Obama08} and (Case 2) \cite{Novak03} and \cite{Lee05}
+  and (Case 3) a patent \cite{JoeScientist001}, work accepted for
+  publication \cite{rous08}, 'YYYYb'-test for prolific author
+  \cite{SaeediMEJ10} and \cite{SaeediJETC10}. Other cites might
+  contain 'duplicate' DOI and URLs (some SIAM articles)
+  \cite{Kirschmer:2010:AEI:1958016.1958018}. Boris / Barbara Beeton:
+  multi-volume works as books \cite{MR781536} and \cite{MR781537}. A
+  couple of citations with DOIs:
+  \cite{2004:ITE:1009386.1010128,Kirschmer:2010:AEI:1958016.1958018}. Online
+  citations: \cite{TUGInstmem, Thornburg01, CTANacmart}.
+  Artifacts: \cite{R} and \cite{UMassCitations}.
+
+\section{Acknowledgments}
+
+Identification of funding sources and other support, and thanks to
+individuals and groups that assisted in the research and the
+preparation of the work should be included in an acknowledgment
+section, which is placed just before the reference section in your
+document.
+
+This section has a special environment:
+\begin{verbatim}
+  \begin{acks}
+  ...
+  \end{acks}
+\end{verbatim}
+so that the information contained therein can be more easily collected
+during the article metadata extraction phase, and to ensure
+consistency in the spelling of the section heading.
+
+Authors should not prepare this section as a numbered or unnumbered {\verb|\section|}; please use the ``{\verb|acks|}'' environment.
+
+\section{Appendices}
+
+If your work needs an appendix, add it before the
+``\verb|\end{document}|'' command at the conclusion of your source
+document.
+
+Start the appendix with the ``\verb|appendix|'' command:
+\begin{verbatim}
+  \appendix
+\end{verbatim}
+and note that in the appendix, sections are lettered, not
+numbered. This document has two appendices, demonstrating the section
+and subsection identification method.
+
+\section{Multi-language papers}
+
+Papers may be written in languages other than English or include
+titles, subtitles, keywords and abstracts in different languages (as a
+rule, a paper in a language other than English should include an
+English title and an English abstract).  Use \verb|language=...| for
+every language used in the paper.  The last language indicated is the
+main language of the paper.  For example, a French paper with
+additional titles and abstracts in English and German may start with
+the following command
+\begin{verbatim}
+\documentclass[sigconf, language=english, language=german,
+               language=french]{acmart}
+\end{verbatim}
+
+The title, subtitle, keywords and abstract will be typeset in the main
+language of the paper.  The commands \verb|\translatedXXX|, \verb|XXX|
+begin title, subtitle and keywords, can be used to set these elements
+in the other languages.  The environment \verb|translatedabstract| is
+used to set the translation of the abstract.  These commands and
+environment have a mandatory first argument: the language of the
+second argument.  See \verb|sample-sigconf-i13n.tex| file for examples
+of their usage.
+
+\section{SIGCHI Extended Abstracts}
+
+The ``\verb|sigchi-a|'' template style (available only in \LaTeX\ and
+not in Word) produces a landscape-orientation formatted article, with
+a wide left margin. Three environments are available for use with the
+``\verb|sigchi-a|'' template style, and produce formatted output in
+the margin:
+\begin{description}
+\item[\texttt{sidebar}:]  Place formatted text in the margin.
+\item[\texttt{marginfigure}:] Place a figure in the margin.
+\item[\texttt{margintable}:] Place a table in the margin.
+\end{description}
+
+%%
+%% The acknowledgments section is defined using the "acks" environment
+%% (and NOT an unnumbered section). This ensures the proper
+%% identification of the section in the article metadata, and the
+%% consistent spelling of the heading.
+\begin{acks}
+To Robert, for the bagels and explaining CMYK and color spaces.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\appendix
+
+\section{Research Methods}
+
+\subsection{Part One}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
+malesuada, quam in pulvinar varius, metus nunc fermentum urna, id
+sollicitudin purus odio sit amet enim. Aliquam ullamcorper eu ipsum
+vel mollis. Curabitur quis dictum nisl. Phasellus vel semper risus, et
+lacinia dolor. Integer ultricies commodo sem nec semper.
+
+\subsection{Part Two}
+
+Etiam commodo feugiat nisl pulvinar pellentesque. Etiam auctor sodales
+ligula, non varius nibh pulvinar semper. Suspendisse nec lectus non
+ipsum convallis congue hendrerit vitae sapien. Donec at laoreet
+eros. Vivamus non purus placerat, scelerisque diam eu, cursus
+ante. Etiam aliquam tortor auctor efficitur mattis.
+
+\section{Online Resources}
+
+Nam id fermentum dui. Suspendisse sagittis tortor a nulla mollis, in
+pulvinar ex pretium. Sed interdum orci quis metus euismod, et sagittis
+enim maximus. Vestibulum gravida massa ut felis suscipit
+congue. Quisque mattis elit a risus ultrices commodo venenatis eget
+dui. Etiam sagittis eleifend elementum.
+
+Nam interdum magna at lectus dignissim, ac dignissim lorem
+rhoncus. Maecenas eu arcu ac neque placerat aliquam. Nunc pulvinar
+massa et mattis lacinia.
+
 \end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.
