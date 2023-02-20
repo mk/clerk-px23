@@ -4,7 +4,8 @@
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
    :nextjournal.clerk/visibility {:code :hide}}
-  (:require [nextjournal.clerk :as clerk]))
+  (:require [nextjournal.clerk :as clerk]
+            [applied-science.edn-datasets :as datasets]))
 ```
 
 ```clojure
@@ -102,17 +103,25 @@ Control and configuration of Clerk primarily occurs through evaluation of Clojur
 
 ### Fast Feedback: Caching & Incremental Computation
 
-To keep feedback loops short and avoid excess re-computation, Clerk uses dependency analysis to recompute only the minimum required subset of a file's forms. In addition, it optionally caches the results of long-running computations to disk to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+To keep feedback loops short, Clerk uses dependency analysis to limit recomputation to forms that haven't previously been evaluated in Clerk.
 
-[^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable. It's also possible to share Clerk's immutable, content-addressed cache between users so a given computation is performed only once for a workgroup.
+In practice this means most changes to a Clerk document are reflected instantly (within 100ms) after saving a file or hitting the keybinding to update the open document.
 
-🚧 TODO too low level/not focused on end-user experience? 🤔
+The caching works on the level of top-level forms. A hash is computed for each top-level form. A change to the form or one of its transitive dependencies will lead to a new hash value. 
 
-Clerk begins by parsing and analyzing the code in a given file, then performs macro expansion and recursively traverses each form's dependencies, collecting them in a graph. For each top-level form, a hash is computed from the form and its dependencies. Next, Clerk evaluates each form unless it finds a cached value for that form. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 
-On-disk caches use a content-addressed store where each filename is derived from the hash of the file's contents using a base58-encoded multihash. Additionally, each file contains a pointer from the hash of the form to the result file, which allows us to indirect lookups to, for example, a remote storage service. This combination of immutability and indirection makes distributing sharing of the cache trivial. 
+When Clerk is asked to show a notebook, it will only evaluate forms that aren't cached in one of Clerk's two caches:
 
-🚧
+* an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
+* An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+
+[^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable.
+
+This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
+
+The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing [multihash format](https://multiformats.io/multihash/) to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
+
+This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 > While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
 
@@ -122,7 +131,9 @@ It is idiomatic in Clojure to use boxed containers to manage mutable state[^cloj
 
 [^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
 
-When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
+When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. 
+
+This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
 
 ### Semantic Differences from regular Clojure
 
@@ -171,15 +182,13 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
 
-Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
+Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default. 
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#showing-result-data.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYJUox1pu3Yh3hiYgCn61TpKLmRuFPREw7YWDPtveQ4sc?filename=data-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Showing result data"]]])
+Here is an interactive example of the well-known `iris` data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
+
+```clojure
+^{::clerk/visibility {:code :show}}
+datasets/iris
 ```
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
@@ -189,7 +198,7 @@ Additional affordances are modes to auto-expand nested structures based on shape
 (clerk/html
  [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
   [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmWNN15jP8dujxKR71FCacTdASmcaDWe6yYyXNDkA6ELwd?content-type=video/mp4"}]]
+   [:source {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"}]]
   [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
 ```
@@ -197,34 +206,71 @@ Additional affordances are modes to auto-expand nested structures based on shape
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
 ``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#clerk-tables.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmXYYTUrQj5GuhTkKv7KnKUUX9bwPF6GrrcVfDy2YLfys4?filename=table-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk tables"]]])
+^{::clerk/visibility {:code :show}}
+(clerk/table datasets/iris)
 ```
 
-Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. In the following figure, the same data, as shown in the above table example, is used to render a `vega-lite` plot using the built-in `clerk/vl` viewer:
+Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
+
+In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive `vega-lite` plot using the `clerk/vl` viewer:
 
 ``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#plotting-using-the-vega-grammar.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmYkCRqGcxSGH4EbjSsXrJ5fkHLJkiMDjCM2rs7qH4oAPa?filename=vega-viewer.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Plotting using the vega grammar"]]])
+^{::clerk/visibility {:code :show}}
+(clerk/vl {:data {:values datasets/iris}
+           :width 500
+           :height 500
+           :title "sepal-length vs. sepal-width"
+           :mark {:type "point"
+                  :tooltip {:field :species}}
+           :encoding {:color {:field :species}
+                      :x {:field :sepal-length
+                          :type :quantitative
+                          :scale {:zero false}}
+                      :y {:field :sepal-width
+                          :type :quantitative
+                          :scale {:zero false}}}
+           :embed/opts {:actions false}})
 ```
 
-While these viewers may cover the bulk of Data Science use cases, additional built-in viewers like `clerk/image`, `clerk/katex`, and more can be added to enrich the output of a Clerk notebook. It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table that combines bird species’ names, with exemplary images and geo-spatial plots:
+It is important to note that Clerk’s viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers[^box+jenkins] by year and quarter and embedding a sparkline graph into the table row for each year.
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#combining-multiple-built-in-viewers.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmbkLu55j4wv7QhkvNUchifBvVxzYxHZwf9PBNCkVM8ju9?filename=CleanShot+2023-02-13+at+11.43.14@2x.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Combining multiple, built-in viewers"]]])
+[^box+jenkins]: using a [Clojure port](https://github.com/applied-science/edn-datasets) of R’s built-in dataset of [Box & Jenkins classic airline data](https://search.r-project.org/R/refmans/datasets/html/AirPassengers.html).
+
+A typical Clerk workflow for this would be to first take a look at the shape of the data:
+
+```clojure
+^{::clerk/visibility {:code :show}
+  ::clerk/opts {:auto-expand-results? true}}
+datasets/air-passengers
+```
+
+Then, a `sparkline` function is defined that generates the graph (using `clerk/vl`) to be embedded into each table row later:
+
+```clojure
+^{::clerk/visibility {:code :show}}
+(defn sparkline [values]
+  (clerk/vl {:data {:values (map-indexed (fn [i n] {:x i :y n}) values)}
+             :mark {:type :line :strokeWidth 1.2}
+             :width 140
+             :height 20
+             :config {:background nil :border nil :view {:stroke "transparent"}}
+             :encoding {:x {:field :x :type :ordinal :axis nil :background nil}
+                        :y {:field :y :type :quantitative :axis nil :background nil}}
+             :embed/opts {:actions false}}))
+```
+
+And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
+
+```clojure
+^{::clerk/visibility {:code :show}}
+(clerk/table
+ {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
+  :rows (->> datasets/air-passengers
+             (group-by :year)
+             (map (fn [[year months]]
+                    (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
+                      (concat [year] qs [(sparkline qs)]))))
+             (sort-by first))})
 ```
 
 ### Moldable Viewer API
@@ -246,7 +292,18 @@ To help with creating interactive tools using Clerk, it also supports bidirectio
 
 In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#regex-dictionary).
 
-## Prose-oriented Documents
+### Tap Stream Inspector
+
+Clerk also comes with an inspector for Clojure's tap system.
+
+> tap is a shared, globally accessible system for distributing a series of informational or diagnostic values to a set of (presumably effectful) handler functions. It can be used as a better debug prn, or for facilities like logging etc.
+> 
+> – [Clojure 1.10 Changelog](https://github.com/clojure/clojure/blob/0b42eab4bfca5270e0d2b2e58d83b1e2c8a85473/changes.md#23-tap)
+
+When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk's viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
+
+
+### Prose-oriented Documents
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from _some_ computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with “code-fenced” source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
@@ -371,28 +428,38 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 >
 > – Jeffrey Simon
 
-## 🚧 🚧 🚧 WORK IN PROGRESS 🚧 🚧 🚧
-
-## Open Toolkit
-
-TODO discuss open library toolkit approach
 
 ## Related & Future Work
 
-Related:
-* org-mode
-* Mathematica
+Besides the aforementioned work there's a number of contemporary related systems:
 
-Future Work
-* Viewers: lets `:pred` function opt into more context
-* Open up caching
-* Use distributed cache more
-* Make caching more granular, also allow caching functions?
-* Clerk printer to fix REPL printing problem
+* [Org mode][org-mode] is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
+* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
+* [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
+* [Livebook][livebook] is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
 
-## Conclusion
+Our goal with the development of Clerk is to _leave the toolbox open_: we want Clerk's users to be able to customize behavior, often by providing functions.
+
+Clerk's viewer api is a first example of that but we want to take this further by letting users:
+
+* provide functions to control the caching e.g. to support more efficient caching of data frames
+* letting the viewer api's `:pred` function opt into receiving more context like the path in the tree
+* make caching more granular and support caching function invocations
+* override `parse` and `eval` to support different syntaxes than markdown and different semantics
+
+So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
+
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now.
+
+## Conclusion 
+🚧
 
 -----------------------------------------------
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
 [maria]:https://maria.cloud
+[streamlit]:https://streamlit.io
+[streamlit-cache]:https://docs.streamlit.io/library/get-started/main-concepts#caching
+[pluto]:https://plutojl.org
+[livebook]:https://livebook.dev
+[org-mode]:https://orgmode.org

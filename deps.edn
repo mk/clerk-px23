@@ -1,5 +1,7 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        io.github.nextjournal/clerk {:git/sha "0ecdfa629c5186bb2c4699e4885ea3745cd258b7"}}
+        io.github.nextjournal/clerk {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}
+        applied-science/edn-datasets {:git/url "git@github.com:applied-science/edn-datasets.git"
+                                      :sha "da3aa56886d4027d7ef6b3f91083e1833d3a4f93"}}
  :aliases {:dev {:paths ["dev"]}
            :nextjournal/clerk {:exec-fn nextjournal.clerk/build!
                                :exec-args {:git/url "https://github.com/mk/clerk-px23"
