@@ -28,6 +28,7 @@
 ;;
 ;; ## Todos
 ;; - [x]  Title
+;; - [ ] Use `teaserfigure` for figures spanning the whole width
 ;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
 ;; - [ ] Bibliography (Bibtex vs. ~~Biblatex~~)
 ;; - [ ] Decide which template to use (e.g. `sample-sigconf`)
@@ -92,15 +93,16 @@
   (-> (sh "pandoc" "-f" format "-t" "json" :in input)
       :out (json/read-str :key-fn keyword)))
 
+(defn meta-list [content] {:t "MetaList" :c content})
 (defn meta-content [content] {:t "MetaInlines" :c [{:t "Str" :c content}]})
 
 (defn add-authors [pandoc & authors]
   (assoc-in pandoc
             [:meta :author]
-            {:t "MetaList"
-             :c (map (fn [author]
-                       {:t "MetaMap"
-                        :c (into {} (map (fn [[k v]] [k (meta-content v)])) author)}) authors)}))
+            (meta-list
+             (map (fn [author]
+                    {:t "MetaMap"
+                     :c (into {} (map (fn [[k v]] [k (meta-content v)])) author)}) authors))))
 
 #_(add-authors {} {:name "X" :affiliation "Penguin Village University"})
 
@@ -139,6 +141,7 @@
         md->pandoc
         (assoc-in [:meta :title] (meta-content title))
         (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
+        (assoc-in [:meta :keyword] (meta-list (map meta-content ["Literate Programming" "Moldable Development"])))
         (add-authors {:name "Martin Kavalar"
                       :email "martin@nextjournal.com"}
                      {:name "Philippa Markovics"
@@ -152,7 +155,7 @@
   (-> (clerk->pandoc "README.md")
       ;;:blocks (->> (take 2))
       (pandoc-> "pdf")
-      ;;(pandoc-> "latex") #_ (subs 2000 5000)
+      ;;(pandoc-> "latex") #_ (subs 5000 8000)
       ;;(->> (spit "README.tex"))
       )
 
@@ -179,4 +182,7 @@ This is a paragraph[^note]
 ---
 [^note]: Hello Note
 
-" (pandoc<- "markdown+footnotes") :meta))
+" (pandoc<- "markdown+footnotes") :meta)
+
+  (-> (clerk.eval/eval-file "README.md")
+      :blocks))
