@@ -10,28 +10,33 @@
 ;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions)
 ;;
 ;; ## Prerequisites
-;; - pandoc
+;; - pandoc (`brew install pandoc`)
 ;; - tectonic (`brew install tectonic`)
-;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template)
-;;
+;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template) (relevant .cls files added to repo)
 ;;
 ;; ## Pandoc Template Tweaks
 ;; The following changes are needed for `sample-sigconf.tex` to be used as a Pandoc template
 ;; - well, `$body` somewhere
 ;; - \tightlist command
 ;;
-;; TODO:
+;; ## Todos
+;; - [x]  Title
+;; - [ ] Authors
 ;; - [ ] Bibliography (Bibtex vs. Biblatex)
 ;; - [ ] Decide which template to use `sample-sigconf` vs. `sample-sigconf-biblatex`
-;; - [ ] Adapt Heading System
+;; - [ ] Adapt Heading (Sections) Hierarchy
+;; - [ ] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
 
 (declare md->pandoc)
 
+(defn doc->meta [{:keys [title]}]
+  {:title {:t "MetaInlines" :c [{:t "Str" :c title}]}})
+
 (def md-type->transform
-  {:doc (fn [{:keys [content]}]
+  {:doc (fn [{:as doc :keys [title content]}]
           {:blocks (into [] (map md->pandoc) content)
            :pandoc-api-version [1 22]
-           :meta {}})
+           :meta (doc->meta doc)})
 
    :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (keep md->pandoc content)]})
    :paragraph (fn [{:keys [content]}] {:t "Para" :c (keep md->pandoc content)})
@@ -90,7 +95,6 @@
   (-> (md/parse (slurp "README.md"))
       md->pandoc
       (pandoc-> "latex")
-
       (->> (spit "README.tex")))
 
   ;; to pdf
@@ -103,7 +107,11 @@
 
   ;; get Pandoc AST for testing
   (-> "
-title: Some My Title
+---
+title: 'This is the title: it contains a colon'
+author:
+- Author One
+- Author Two
 ---
 # Hey
 
