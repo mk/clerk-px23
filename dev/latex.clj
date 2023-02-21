@@ -178,22 +178,25 @@
                      {:name "Jack Rusher"
                       :email "jack@nextjournal.com"}))))
 
+(defn manual-fixes [latex]
+  (-> latex
+      ;; Force images to be non-floating
+      (str/replace "\\begin{figure}" "\\begin{figure}[H]")))
+
 (comment
 
   (-> (clerk->pandoc "README.md")
-       (pandoc-> "pdf")
-       #_ (pandoc-> "latex") #_ (subs 5000 8000)
-       #_ (->> (spit "README.tex")))
-
-  (sh "open" "README.pdf")
+      #_(pandoc-> "pdf")
+      (pandoc-> "latex") #_(subs 5000 8000)
+      manual-fixes
+      (->> (spit "README.tex")))
 
   ;; debug tectonic
-  (sh "tectonic" "README.tex")
+  (do
+    (sh "tectonic" "README.tex")
+    (sh "open" "README.pdf"))
 
   ;; get Pandoc AST for testing
-  (-> "
-![An Alt Text](real-image.png 'A title'){width=100%}
-"
+  (-> "![An Alt Text](real-image.png 'A title'){width=100%}"
       (pandoc<- "markdown+footnotes")
-      #_
-      (pandoc-> "latex" :template nil)))
+      #_(pandoc-> "latex" :template nil)))
