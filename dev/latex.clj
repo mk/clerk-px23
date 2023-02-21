@@ -1,5 +1,5 @@
 (ns latex
-  {:nextjournal.clerk/visibility {:code :hide :result :hide} }
+  {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require [clojure.data.json :as json]
             [clojure.java.shell :refer [sh]]
             [clojure.zip :as z]
@@ -75,13 +75,11 @@
     (xf node)
     (throw (ex-info (str "Not implemented: '" type "'.") node))))
 
-(defn pandoc-> [pandoc-data format]
+(defn pandoc-> [pandoc-data format & {:keys [template] :or {template "template-sigconf.tex"}}]
   (let [{:keys [exit out err]}
         (apply sh (filter some?
                           ["pandoc" "--from" "json" "--to" format
-                           "--standalone"                   ;; all the LaTeX preambolic stuff
-                           ;;"--template=template-sigconf-biblatex.tex"
-                           "--template=template-sigconf.tex"
+                           (when template (str "--template=" template))
                            "--pdf-engine=tectonic"
                            "--no-highlight"
                            (when (= "pdf" format) "--output=README.pdf")
@@ -115,7 +113,7 @@
                        (z/edit update :heading-level dec)))))))
 
 (defn get-abstract [{:keys [blocks]}]
-  (-> blocks (nth 4)
+  (-> blocks (nth 5)
       :result v/->value v/->value
       z/vector-zip
       (->> (iterate z/next) (take 8))
@@ -151,7 +149,6 @@
 
 (comment
 
-  ;; to latex
   (-> (clerk->pandoc "README.md")
       ;;:blocks (->> (take 2))
       (pandoc-> "pdf")
