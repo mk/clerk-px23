@@ -458,12 +458,19 @@ Clerk's viewer api is a first example of that but we want to take this further b
 
 So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
 
-We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now.
+We're also actively exploring different ways of brining an exploratory Clerk notebook to production. In exploratory work one often uses global state in Clojure atoms and vars which makes a computation tangible. When serving concurrent requests in a production setting that global state can be the source of inconsistencies.
+
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be a lot for effective than editing text in a code editor, we're excited to explore this direction in the future.
 
 ## Conclusion 
-🚧
 
------------------------------------------------
+We've been pleasently surprised with how useful Clerk has been in our day-to-day work and the adoption within the larger Clojure community. We believe there's two key factors in Clerk's design that enable this: 
+
+* it enhancing regular Clojure namespaces enables incremental adoption. Neither does it need initial buy-in from the whole dev team, nor does a single member need to fully switch to working with Clerk.
+* it working in concert with regular editors means it meets developers where they are and does not require a radical change of workflows.
+
+We'd love to see folks try how these design aspects can be applied to other programming ecosystems and join the pursuit to free programming from the limitations of dead text. 
+
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
 [maria]:https://maria.cloud
