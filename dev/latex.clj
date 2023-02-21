@@ -1,14 +1,18 @@
 (ns latex
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
-  (:require [clojure.data.json :as json]
+  (:require [babashka.fs :as fs]
+            [clojure.data.json :as json]
             [clojure.java.shell :refer [sh]]
+            [clojure.string :as str]
+            [clojure.java.io :as io]
             [clojure.zip :as z]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.eval :as clerk.eval]
             [nextjournal.clerk.viewer :as v]
             [nextjournal.markdown :as md]
             [nextjournal.markdown.parser :as md.parser]
-            [nextjournal.markdown.transform :as md.transform]))
+            [nextjournal.markdown.transform :as md.transform])
+  (:import (javax.imageio ImageIO)))
 
 ;; # $\LaTeX$ Conversion
 ;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions).
@@ -50,6 +54,12 @@
    :block-formula (fn [{:keys [text]}] {:t "Para" :c [{:t "Math" :c [{:t "DisplayMath"} text]}]})
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
+   :image (fn [{:as node :keys [attrs]}]
+            (let [{:keys [src]} attrs]
+              {:t "Image",
+               :c [["" [] [["width" "linewidth"]]]
+                   [{:t "Str" :c (md.transform/->text node)}]
+                   [src  "fig:"]]}))
 
    :softbreak (fn [_] {:t "SoftBreak"})
 
@@ -119,21 +129,42 @@
       (->> (iterate z/next) (take 8))
       last z/node))
 
+(defn store-image-src! [{:keys [id src]}]
+  ;; CDN url responds with 451 (Unavailable for legal reasons)
+  (let [url (java.net.URL. (str/replace src "cdn." ""))
+        path (fs/path "images" (str id ".png"))]
+    (fs/create-dirs "images")
+    (ImageIO/write (ImageIO/read url) "png" (fs/file path))
+    (str path)))
+
+(defn convert-result [result]
+  (let [{:as opts :keys [src id caption]} (v/->value result)]
+    (when src
+      ;; Pandoc doesn't support images at block level
+      {:type :paragraph
+       :content [{:type :image
+                  :attrs {:src (store-image-src! opts) :width "100%"}
+                  :content [{:type :text :text caption}]}]})))
+
+(defn conj-some [xs x] (cond-> xs x (conj x)))
+
 (defn clerk->pandoc [file]
   (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
     (-> {:type :doc
          :title title
-         :content (mapcat (fn [{:keys [type doc visibility text-without-meta]}]
-                            (let [{:keys [code result]} visibility]
+         :content (mapcat (fn [{:keys [type doc visibility text-without-meta result]}]
+                            (let [{code-visibility :code result-visibility :result} visibility]
                               (case type
                                 :markdown (:content doc)
                                 ;; TODO: extract results (e.g.abstract)
                                 :code (cond-> []
-                                        (= :show code)
+                                        (= :show code-visibility)
                                         (conj {:type :code
                                                :language "clojure"
                                                :content [{:type :text
-                                                          :text text-without-meta}]}))))) blocks)}
+                                                          :text text-without-meta}]})
+                                        (= :show result-visibility)
+                                        (conj-some (convert-result result)))))) blocks)}
         promote-headings
         (update :content (partial drop 2))
         md->pandoc
@@ -150,11 +181,9 @@
 (comment
 
   (-> (clerk->pandoc "README.md")
-      ;;:blocks (->> (take 2))
-      (pandoc-> "pdf")
-      ;;(pandoc-> "latex") #_ (subs 5000 8000)
-      ;;(->> (spit "README.tex"))
-      )
+       (pandoc-> "pdf")
+       #_ (pandoc-> "latex") #_ (subs 5000 8000)
+       #_ (->> (spit "README.tex")))
 
   (sh "open" "README.pdf")
 
@@ -163,23 +192,8 @@
 
   ;; get Pandoc AST for testing
   (-> "
----
-title: 'This is the title: it contains a colon'
-author:
-- name: Author One
-- name: Author Two
----
-# Hey
-
-This is a paragraph[^note]
-
-> quote me like `this`
-> and that
-
----
-[^note]: Hello Note
-
-" (pandoc<- "markdown+footnotes") :meta)
-
-  (-> (clerk.eval/eval-file "README.md")
-      :blocks))
+![An Alt Text](real-image.png 'A title'){width=100%}
+"
+      (pandoc<- "markdown+footnotes")
+      #_
+      (pandoc-> "latex" :template nil)))

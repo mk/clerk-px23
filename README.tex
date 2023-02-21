@@ -48,6 +48,9 @@
 \documentclass[sigconf,screen]{acmart}
 \settopmatter{printfolios=true}
 
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,keepaspectratio}
+
 %% Pandoc Template Additions
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -270,10 +273,9 @@ Clerk is an open source Clojure programmer's assistant that builds upon the trad
 %   \label{fig:teaser}
 % \end{teaserfigure}
 
-
-\received{20 February 2007}
-\received[revised]{12 March 2009}
-\received[accepted]{5 June 2009}
+% \received{20 February 2007}
+% \received[revised]{12 March 2009}
+% \received[accepted]{5 June 2009}
 
 %%
 %% This command processes the author and affiliation and title
@@ -408,6 +410,12 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 
 \hypertarget{id}{%
 \subsection{Built-in Viewers}\label{id}}
+
+\begin{figure}
+\centering
+\includegraphics{images/built-in-viewers.png}
+\caption{}
+\end{figure}
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure's immutable data structures, HTML (including the \href{https://github.com/weavejester/hiccup}{hiccup variant} that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure's printer. The \href{https://book.clerk.vision}{Book of Clerk} gives a good overview of the available built-ins. Because Clerk's client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using \href{https://plotly.com/javascript/}{Plotly} and \href{https://github.com/vega/vega-embed}{vega} for plotting, \href{https://codemirror.net}{CodeMirror} for rendering code cells, and \href{https://katex.org}{KaTeX} for typesetting math.
 
@@ -550,12 +558,24 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 This example illustrates the use of Clerk to create rich documentation for \texttt{clojure2d}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
+\begin{figure}
+\centering
+\includegraphics{images/custom-viewers-for-clojure2ds-colors-library.png}
+\caption{Custom Viewers for Clojure2d's Colors Library}
+\end{figure}
+
 \hypertarget{id}{%
 \subsection{Regex Dictionary}\label{id}}
 
 Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
 It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
+
+\begin{figure}
+\centering
+\includegraphics{images/printing-the-value-of-a-synced-clojure-atom.png}
+\caption{Printing the value of a synced Clojure atom}
+\end{figure}
 
 \hypertarget{id}{%
 \subsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
@@ -624,14 +644,24 @@ Clerk's viewer api is a first example of that but we want to take this further b
 
 So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
 
-We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now.
+We're also actively exploring different ways of brining an exploratory Clerk notebook to production. In exploratory work one often uses global state in Clojure atoms and vars which makes a computation tangible. When serving concurrent requests in a production setting that global state can be the source of inconsistencies.
+
+We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be a lot for effective than editing text in a code editor, we're excited to explore this direction in the future.
 
 \hypertarget{id}{%
 \section{Conclusion}\label{id}}
 
-🚧
+We've been pleasently surprised with how useful Clerk has been in our day-to-day work and the adoption within the larger Clojure community. We believe there's two key factors in Clerk's design that enable this:
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\begin{itemize}
+\tightlist
+\item
+  it enhancing regular Clojure namespaces enables incremental adoption. Neither does it need initial buy-in from the whole dev team, nor does a single member need to fully switch to working with Clerk.
+\item
+  it working in concert with regular editors means it meets developers where they are and does not require a radical change of workflows.
+\end{itemize}
+
+We'd love to see folks try how these design aspects can be applied to other programming ecosystems and join the pursuit to free programming from the limitations of dead text.
 
 % \section{Introduction}
 % ACM's consolidated article template, introduced in 2017, provides a
@@ -1008,64 +1038,64 @@ We've been talking about ways to write changes originating from controls in Cler
 %   \end{teaserfigure}
 % \end{verbatim}
 
-\section{Citations and Bibliographies}
-
-The use of \BibTeX\ for the preparation and formatting of one's
-references is strongly recommended. Authors' names should be complete
---- use full first names (``Donald E. Knuth'') not initials
-(``D. E. Knuth'') --- and the salient identifying features of a
-reference should be included: title, year, volume, number, pages,
-article DOI, etc.
-
-The bibliography is included in your source document with these two
-commands, placed just before the \verb|\end{document}| command:
-\begin{verbatim}
-  \bibliographystyle{ACM-Reference-Format}
-  \bibliography{bibfile}
-\end{verbatim}
-where ``\verb|bibfile|'' is the name, without the ``\verb|.bib|''
-suffix, of the \BibTeX\ file.
-
-Citations and references are numbered by default. A small number of
-ACM publications have citations and references formatted in the
-``author year'' style; for these exceptions, please include this
-command in the {\bfseries preamble} (before the command
-``\verb|\begin{document}|'') of your \LaTeX\ source:
-\begin{verbatim}
-  \citestyle{acmauthoryear}
-\end{verbatim}
-
-
-  Some examples.  A paginated journal article \cite{Abril07}, an
-  enumerated journal article \cite{Cohen07}, a reference to an entire
-  issue \cite{JCohen96}, a monograph (whole book) \cite{Kosiur01}, a
-  monograph/whole book in a series (see 2a in spec. document)
-  \cite{Harel79}, a divisible-book such as an anthology or compilation
-  \cite{Editor00} followed by the same example, however we only output
-  the series if the volume number is given \cite{Editor00a} (so
-  Editor00a's series should NOT be present since it has no vol. no.),
-  a chapter in a divisible book \cite{Spector90}, a chapter in a
-  divisible book in a series \cite{Douglass98}, a multi-volume work as
-  book \cite{Knuth97}, a couple of articles in a proceedings (of a
-  conference, symposium, workshop for example) (paginated proceedings
-  article) \cite{Andler79, Hagerup1993}, a proceedings article with
-  all possible elements \cite{Smith10}, an example of an enumerated
-  proceedings article \cite{VanGundy07}, an informally published work
-  \cite{Harel78}, a couple of preprints \cite{Bornmann2019,
-    AnzarootPBM14}, a doctoral dissertation \cite{Clarkson85}, a
-  master's thesis: \cite{anisi03}, an online document / world wide web
-  resource \cite{Thornburg01, Ablamowicz07, Poker06}, a video game
-  (Case 1) \cite{Obama08} and (Case 2) \cite{Novak03} and \cite{Lee05}
-  and (Case 3) a patent \cite{JoeScientist001}, work accepted for
-  publication \cite{rous08}, 'YYYYb'-test for prolific author
-  \cite{SaeediMEJ10} and \cite{SaeediJETC10}. Other cites might
-  contain 'duplicate' DOI and URLs (some SIAM articles)
-  \cite{Kirschmer:2010:AEI:1958016.1958018}. Boris / Barbara Beeton:
-  multi-volume works as books \cite{MR781536} and \cite{MR781537}. A
-  couple of citations with DOIs:
-  \cite{2004:ITE:1009386.1010128,Kirschmer:2010:AEI:1958016.1958018}. Online
-  citations: \cite{TUGInstmem, Thornburg01, CTANacmart}.
-  Artifacts: \cite{R} and \cite{UMassCitations}.
+% \section{Citations and Bibliographies}
+%
+% The use of \BibTeX\ for the preparation and formatting of one's
+% references is strongly recommended. Authors' names should be complete
+% --- use full first names (``Donald E. Knuth'') not initials
+% (``D. E. Knuth'') --- and the salient identifying features of a
+% reference should be included: title, year, volume, number, pages,
+% article DOI, etc.
+%
+% The bibliography is included in your source document with these two
+% commands, placed just before the \verb|\end{document}| command:
+% \begin{verbatim}
+%   \bibliographystyle{ACM-Reference-Format}
+%   \bibliography{bibfile}
+% \end{verbatim}
+% where ``\verb|bibfile|'' is the name, without the ``\verb|.bib|''
+% suffix, of the \BibTeX\ file.
+%
+% Citations and references are numbered by default. A small number of
+% ACM publications have citations and references formatted in the
+% ``author year'' style; for these exceptions, please include this
+% command in the {\bfseries preamble} (before the command
+% ``\verb|\begin{document}|'') of your \LaTeX\ source:
+% \begin{verbatim}
+%   \citestyle{acmauthoryear}
+% \end{verbatim}
+%
+%
+%   Some examples.  A paginated journal article \cite{Abril07}, an
+%   enumerated journal article \cite{Cohen07}, a reference to an entire
+%   issue \cite{JCohen96}, a monograph (whole book) \cite{Kosiur01}, a
+%   monograph/whole book in a series (see 2a in spec. document)
+%   \cite{Harel79}, a divisible-book such as an anthology or compilation
+%   \cite{Editor00} followed by the same example, however we only output
+%   the series if the volume number is given \cite{Editor00a} (so
+%   Editor00a's series should NOT be present since it has no vol. no.),
+%   a chapter in a divisible book \cite{Spector90}, a chapter in a
+%   divisible book in a series \cite{Douglass98}, a multi-volume work as
+%   book \cite{Knuth97}, a couple of articles in a proceedings (of a
+%   conference, symposium, workshop for example) (paginated proceedings
+%   article) \cite{Andler79, Hagerup1993}, a proceedings article with
+%   all possible elements \cite{Smith10}, an example of an enumerated
+%   proceedings article \cite{VanGundy07}, an informally published work
+%   \cite{Harel78}, a couple of preprints \cite{Bornmann2019,
+%     AnzarootPBM14}, a doctoral dissertation \cite{Clarkson85}, a
+%   master's thesis: \cite{anisi03}, an online document / world wide web
+%   resource \cite{Thornburg01, Ablamowicz07, Poker06}, a video game
+%   (Case 1) \cite{Obama08} and (Case 2) \cite{Novak03} and \cite{Lee05}
+%   and (Case 3) a patent \cite{JoeScientist001}, work accepted for
+%   publication \cite{rous08}, 'YYYYb'-test for prolific author
+%   \cite{SaeediMEJ10} and \cite{SaeediJETC10}. Other cites might
+%   contain 'duplicate' DOI and URLs (some SIAM articles)
+%   \cite{Kirschmer:2010:AEI:1958016.1958018}. Boris / Barbara Beeton:
+%   multi-volume works as books \cite{MR781536} and \cite{MR781537}. A
+%   couple of citations with DOIs:
+%   \cite{2004:ITE:1009386.1010128,Kirschmer:2010:AEI:1958016.1958018}. Online
+%   citations: \cite{TUGInstmem, Thornburg01, CTANacmart}.
+%   Artifacts: \cite{R} and \cite{UMassCitations}.
 
 % \section{Acknowledgments}
 %
@@ -1150,8 +1180,8 @@ command in the {\bfseries preamble} (before the command
 %%
 %% The next two lines define the bibliography style to be used, and
 %% the bibliography file.
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{sample-base}
+% \bibliographystyle{ACM-Reference-Format}
+% \bibliography{sample-base}
 
 
 %%
