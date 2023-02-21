@@ -50,6 +50,21 @@
 
 \usepackage{graphicx}
 \setkeys{Gin}{width=\linewidth,keepaspectratio}
+\usepackage{float}
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{language=Lisp,
+  basicstyle=\ttfamily\footnotesize,
+  % backgroundcolor=\color{gray} % AWEFUL!!
+}
+
+% FIXME:
+% Make figure env span 2 columns by default
+% \renewenvironment*{figure}{%
+%   \begin{figure*}[H]
+% }{%
+%   \end{figure*}%
+% }
 
 %% Pandoc Template Additions
 \providecommand{\tightlist}{%
@@ -322,7 +337,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
 
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
-Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \texttt{show!} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
+Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \passthrough{\lstinline"show!"} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
 
 \begin{itemize}
 \tightlist
@@ -363,9 +378,9 @@ This combination of immutability and indirection makes distributing the cache tr
 While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.
 \end{quote}
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\texttt{deref/@}} and updating it's value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\texttt{swap!}}.
+It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it's value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.
 
-When Clerk encounters an expression in which an atom's mutable value is being read using \texttt{deref}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression's static hash with it.
+When Clerk encounters an expression in which an atom's mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression's static hash with it.
 
 This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
 
@@ -383,11 +398,11 @@ It is our goal to match the semantics of Clojure as closely as possible but as a
 \item
   Multiple definitions of the same var in a file
 \item
-  Setting dynamic variables using \href{https://clojuredocs.org/clojure.core/set!}{\texttt{set!}}
+  Setting dynamic variables using \href{https://clojuredocs.org/clojure.core/set!}{\passthrough{\lstinline"set!"}}
 \item
-  Dynamically altering vars using \href{https://clojuredocs.org/clojure.core/alter-var-root}{\texttt{alter-var-root}}
+  Dynamically altering vars using \href{https://clojuredocs.org/clojure.core/alter-var-root}{\passthrough{\lstinline!alter-var-root!}}
 \item
-  Temporarily redefining vars using \href{https://clojuredocs.org/clojure.core/with-redefs}{\texttt{with-redefs}}
+  Temporarily redefining vars using \href{https://clojuredocs.org/clojure.core/with-redefs}{\passthrough{\lstinline!with-redefs!}}
 \end{itemize}
 
 We have included a mechanism to override Clerk's error checking in cases where the user knows that one or more of these techniques are in use.
@@ -400,7 +415,7 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 The process of conveying a value to the client is a \emph{presentation}, a
 term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
-When the \texttt{present} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
+When the \passthrough{\lstinline!present!} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
 
 To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
 
@@ -421,25 +436,25 @@ Clerk comes with a set of built-in viewers for common situations. These include 
 
 Clerk's built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block's result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default.
 
-Here is an interactive example of the well-known \texttt{iris} data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
+Here is an interactive example of the well-known \passthrough{\lstinline!iris!} data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
 
-\begin{verbatim}
+\begin{lstlisting}
 datasets/iris
-\end{verbatim}
+\end{lstlisting}
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
 
-Using the built-in \texttt{clerk/table} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
+Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
-\begin{verbatim}
+\begin{lstlisting}
 (clerk/table datasets/iris)
-\end{verbatim}
+\end{lstlisting}
 
 Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars.
 
-In the following figure, the same \texttt{iris} dataset, as shown in the above table example, is used to render an interactive \texttt{vega-lite} plot using the \texttt{clerk/vl} viewer:
+In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive \passthrough{\lstinline!vega-lite!} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
 
-\begin{verbatim}
+\begin{lstlisting}
 (clerk/vl {:data {:values datasets/iris}
            :width 500
            :height 500
@@ -454,19 +469,19 @@ In the following figure, the same \texttt{iris} dataset, as shown in the above t
                           :type :quantitative
                           :scale {:zero false}}}
            :embed/opts {:actions false}})
-\end{verbatim}
+\end{lstlisting}
 
 It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers by year and quarter and embedding a sparkline graph into the table row for each year.
 
 A typical Clerk workflow for this would be to first take a look at the shape of the data:
 
-\begin{verbatim}
+\begin{lstlisting}
 datasets/air-passengers
-\end{verbatim}
+\end{lstlisting}
 
-Then, a \texttt{sparkline} function is defined that generates the graph (using \texttt{clerk/vl}) to be embedded into each table row later:
+Then, a \passthrough{\lstinline!sparkline!} function is defined that generates the graph (using \passthrough{\lstinline!clerk/vl!}) to be embedded into each table row later:
 
-\begin{verbatim}
+\begin{lstlisting}
 (defn sparkline [values]
   (clerk/vl {:data {:values (map-indexed (fn [i n] {:x i :y n}) values)}
              :mark {:type :line :strokeWidth 1.2}
@@ -476,11 +491,11 @@ Then, a \texttt{sparkline} function is defined that generates the graph (using \
              :encoding {:x {:field :x :type :ordinal :axis nil :background nil}
                         :y {:field :y :type :quantitative :axis nil :background nil}}
              :embed/opts {:actions false}}))
-\end{verbatim}
+\end{lstlisting}
 
 And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
 
-\begin{verbatim}
+\begin{lstlisting}
 (clerk/table
  {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
   :rows (->> datasets/air-passengers
@@ -489,7 +504,7 @@ And finally reducing the data to quarters and years and adding the sparkline gra
                     (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
                       (concat [year] qs [(sparkline qs)]))))
              (sort-by first))})
-\end{verbatim}
+\end{lstlisting}
 
 \hypertarget{id}{%
 \subsection{Moldable Viewer API}\label{id}}
@@ -499,23 +514,23 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 \begin{itemize}
 \tightlist
 \item
-  \texttt{:pred} is a predicate function that tests whether this viewer should be used for a given data structure
+  \passthrough{\lstinline!:pred!} is a predicate function that tests whether this viewer should be used for a given data structure
 \item
-  \texttt{:transform-fn} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
+  \passthrough{\lstinline!:transform-fn!} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
 \item
-  \texttt{:render-fn} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
+  \passthrough{\lstinline!:render-fn!} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
 \item
-  \texttt{:page-size} is a number that indicates how many items to send in each chunk during elision/pagination
+  \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
 \end{itemize}
 
-Viewers can also be explicitly selected by wraping a value in the \texttt{clerk/with-viewer} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
+Viewers can also be explicitly selected by wraping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
 
 \hypertarget{id}{%
 \subsection{Sync}\label{id}}
 
-To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \texttt{atom} on the server is annotated with metadata indicating it is \texttt{sync}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
+To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \passthrough{\lstinline!atom!} on the server is annotated with metadata indicating it is \passthrough{\lstinline!sync!}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
 
 In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the \protect\hyperlink{regex-dictionary}{Regex Dictionary Example}.
 
@@ -556,7 +571,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 \hypertarget{id}{%
 \subsection{Rich documentation features}\label{id}}
 
-This example illustrates the use of Clerk to create rich documentation for \texttt{clojure2d}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
 \begin{figure}
 \centering
@@ -635,11 +650,11 @@ Clerk's viewer api is a first example of that but we want to take this further b
 \item
   provide functions to control the caching e.g. to support more efficient caching of data frames
 \item
-  letting the viewer api's \texttt{:pred} function opt into receiving more context like the path in the tree
+  letting the viewer api's \passthrough{\lstinline!:pred!} function opt into receiving more context like the path in the tree
 \item
   make caching more granular and support caching function invocations
 \item
-  override \texttt{parse} and \texttt{eval} to support different syntaxes than markdown and different semantics
+  override \passthrough{\lstinline!parse!} and \passthrough{\lstinline!eval!} to support different syntaxes than markdown and different semantics
 \end{itemize}
 
 So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).

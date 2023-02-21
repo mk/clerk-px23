@@ -91,9 +91,9 @@
                           ["pandoc" "--from" "json" "--to" format
                            (when template (str "--template=" template))
                            "--pdf-engine=tectonic"
-                           "--no-highlight"
+                           ;;"--no-highlight"
                            (when (= "pdf" format) "--output=README.pdf")
-                           ;; "--listings" ;; code via listings package (https://ctan.org/pkg/listings)
+                            "--listings" ;; code via listings package (https://ctan.org/pkg/listings)
                            :in (json/write-str pandoc-data)]))]
     (if (zero? exit) out err)))
 

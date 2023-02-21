@@ -50,6 +50,21 @@
 
 \usepackage{graphicx}
 \setkeys{Gin}{width=\linewidth,keepaspectratio}
+\usepackage{float}
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{language=Lisp,
+  basicstyle=\ttfamily\footnotesize,
+  % backgroundcolor=\color{gray} % AWEFUL!!
+}
+
+% FIXME:
+% Make figure env span 2 columns by default
+% \renewenvironment*{figure}{%
+%   \begin{figure*}[H]
+% }{%
+%   \end{figure*}%
+% }
 
 %% Pandoc Template Additions
 \providecommand{\tightlist}{%
