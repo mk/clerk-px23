@@ -134,7 +134,8 @@
   (let [url (java.net.URL. (str/replace src "cdn." ""))
         path (fs/path "images" (str id ".png"))]
     (fs/create-dirs "images")
-    (ImageIO/write (ImageIO/read url) "png" (fs/file path))
+    (when-not (fs/exists? path)
+      (ImageIO/write (ImageIO/read url) "png" (fs/file path)))
     (str path)))
 
 (defn convert-result [result]
@@ -185,13 +186,13 @@
 
 (comment
 
+  ;; to latex
   (-> (clerk->pandoc "README.md")
-      #_(pandoc-> "pdf")
       (pandoc-> "latex") #_(subs 5000 8000)
       manual-fixes
       (->> (spit "README.tex")))
 
-  ;; debug tectonic
+  ;; to pdf
   (do
     (sh "tectonic" "README.tex")
     (sh "open" "README.pdf"))
