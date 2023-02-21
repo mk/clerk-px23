@@ -13,6 +13,21 @@
 "⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
 ```
 
+```clojure
+^{::clerk/visibility {:result :hide}}
+(defn figure [opts]
+  (clerk/with-viewer
+    {:transform-fn (clerk/update-val
+                    (fn [{:keys [id src caption]}]
+                      (clerk/html
+                       [:div.not-prose.overflow-hidden.rounded-lg {:id id}
+                        [:img {:src src}]
+                        (when caption
+                          [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+                           [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] caption]])])))}
+    opts opts))
+```
+
 ## Abstract
 
 ```clojure
@@ -174,10 +189,8 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 ### Built-in Viewers
 
 ```clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
+(figure {::clerk/width :wide
+         :src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"})
 ```
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
@@ -193,7 +206,7 @@ datasets/iris
 
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
 
-``` clojure
+```clojure
 ^{::clerk/width :wide}
 (clerk/html
  [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
@@ -358,13 +371,11 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#custom-viewers-for-clojure2ds-colors-library.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Custom Viewers for Clojure2d’s Colors Library"]]])
+```clojure
+(figure {::clerk/width :wide
+         :id "custom-viewers-for-clojure2ds-colors-library"
+         :src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"
+         :caption "Custom Viewers for Clojure2d’s Colors Library"})
 ```
 
 ### Regex Dictionary
@@ -383,13 +394,11 @@ Built as a showcase for Clerk’s sync feature, this example allows entering a r
 
 It is built using a Clojure atom containing the text input’s current value that is synced between the client and server. As you type into the input, the atom’s content will be updated and synced. Consequently, printing the atom’s content in your editor will show the input’s current value:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#printing-the-value-of-a-synced-clojure-atom.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Printing the value of a synced Clojure atom"]]])
+```clojure
+(figure {::clerk/width :wide
+         :id "printing-the-value-of-a-synced-clojure-atom"
+         :caption "Printing the value of a synced Clojure atom"
+         :src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"})
 ```
 
 ### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
