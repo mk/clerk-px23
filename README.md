@@ -61,7 +61,7 @@ In contemporary data science and software engineering practice, we often see int
 
 [^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
 
-Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are loath to lose.
+Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are in no hurry to lose.
 
 > That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.[^sandewall]
 >
@@ -69,11 +69,9 @@ Although notebooks of this kind present an improvement on the programming experi
 
 [^sandewall]: See [Programming in an Interactive Environment: the "Lisp" Experience](https://doi.org/10.1145/356715.356719) by Erik Sandewall
 
-At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], the default Clojure[^clojure] development experience relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
+At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], most modern tooling relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
 
 [^mcclim]: See, for example, the [Common Lisp Interface Manager](https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager).
-
-[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org), [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org)[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
@@ -88,6 +86,16 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 > – Douglas Engelbart
 
 [^engelbart]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
+
+We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/wiki/Java_virtual_machine). Several aspects of the language make it an appealing target for this project: 
+
+[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
+
+* being a Lisp, there is limited syntax with which to contend, and the language comes with good libraries for meta-linguistic programming
+* an emphasis on pure functions and immutable data structures makes static analysis easier
+* when mutable state is needed, there are idiomatic thread-safe boxes that are read and updated in a functional style
+
+While there are some rough edges around a few particularly tricky language features, these advantages have mostly worked out in our favor.
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
@@ -105,7 +113,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
 ```
 
-As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, it they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself[^maria].
+As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation[^maria]. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
 [^maria]: We have borrowed this approach from [maria.cloud][maria], a web-hosted interactive Clojure learning tool created by [Matt Huebert](https://matt.is), [Dave Liepmann](https://www.daveliepmann.com/), and [Jack Rusher](https://jackrusher.com/). Maria grew out of [work presented at PX16](https://px16.matt.is) by Matt Huebert.
 
@@ -148,13 +156,13 @@ It is idiomatic in Clojure to use boxed containers to manage mutable state[^cloj
 
 When Clerk encounters an expression in which an atom's mutable value is being read using `deref`, it will try to compute a hash based on the value _inside_ the atom  at runtime, and extend the expression's static hash with it. 
 
-This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from needing to manually opt out of caching for those expressions.
+This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from the need to manually opt out of caching for those expressions.
 
-### Semantic Differences from regular Clojure
+### Semantic differences from regular Clojure
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
-A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in both the runtime and the source file.
+A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in the runtime to the source code.
 
 It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there are limits to what Clerk's analysis can handle. Here are some of the things we currently do not support:
 
@@ -184,7 +192,7 @@ One benefit of using the browser for Clerk's rendering layer is that it can prod
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
-[^desk]: [Desk](https://github.com/phronmophobic/desk) by Adrian Smith.
+[^desk]: See [Desk](https://github.com/phronmophobic/desk), by Adrian Smith.
 
 ### Built-in Viewers
 
@@ -194,18 +202,18 @@ It's also possible to use Clerk's presentation system in other contexts. We know
          :src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"})
 ```
 
-Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for plotting, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting math.
+Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for graphing, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting mathematics.
 
 Clerk’s built-in viewers try to suit themselves to typical Data Science use cases. By default, Clerk shows a code block’s result as-is with some added affordances like syntax coloring and expandability of large sub-structures that are collapsed by default. 
 
-Here is an interactive example of the well-known `iris` data set that has been added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure.
+Here is an interactive example of the well-known `iris` data set, which we've added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure:
 
 ```clojure
 ^{::clerk/visibility {:code :show}}
 datasets/iris
 ```
 
-Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level:
+Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level, as demonstrated in this video:
 
 ```clojure
 ^{::clerk/width :wide}
@@ -224,7 +232,7 @@ Using the built-in `clerk/table` viewer, the same data structure can also be ren
 (clerk/table datasets/iris)
 ```
 
-Together with tables, plots make up for the most common Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
+Together with tables, plots are the most commonly used viewer for Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
 
 In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive `vega-lite` plot using the `clerk/vl` viewer:
 
@@ -258,7 +266,7 @@ A typical Clerk workflow for this would be to first take a look at the shape of 
 datasets/air-passengers
 ```
 
-Then, a `sparkline` function is defined that generates the graph (using `clerk/vl`) to be embedded into each table row later:
+Then, a `sparkline` function is defined to generate graphs (using `clerk/vl`) that will be embedded into each table row later:
 
 ```clojure
 ^{::clerk/visibility {:code :show}}
@@ -273,7 +281,7 @@ Then, a `sparkline` function is defined that generates the graph (using `clerk/v
              :embed/opts {:actions false}}))
 ```
 
-And finally reducing the data to quarters and years and adding the sparkline graphs in a final mapping step:
+Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
 ```clojure
 ^{::clerk/visibility {:code :show}}
@@ -287,6 +295,8 @@ And finally reducing the data to quarters and years and adding the sparkline gra
              (sort-by first))})
 ```
 
+This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
+
 ### Moldable Viewer API
 
 Clerk’s viewers are an ordered (and thus prioritized) collection of plain Clojure hash maps. Clerk interprets the following optional keys in each viewer map:
@@ -296,7 +306,19 @@ Clerk’s viewers are an ordered (and thus prioritized) collection of plain Cloj
 * `:render-fn` is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
 * `:page-size` is a number that indicates how many items to send in each chunk during elision/pagination
 
-Viewers can also be explicitly selected by wraping a value in the `clerk/with-viewer` function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out of band signaling to a specialized Clojure parser. TODO add example viewer source and metadata declaration here
+Here, for example, is the `code` viewer, which shows a piece of Clojure code with idiomatic syntax highlighting[^self-rendered]:
+
+[^self-rendered]: The source code here is rendered by the viewer that it describes.
+
+``` clojure
+(clerk/code
+'{:name :code 
+  :render-fn 'nextjournal.clerk.render/render-code 
+  :transform-fn (comp mark-presented (update-val (fn [v] (if (string? v) v (str/trim (with-out-str (pprint/pprint v)))))))})
+```
+
+
+Viewers can also be explicitly selected by wraping a value in the `clerk/with-viewer` function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
 
@@ -310,12 +332,11 @@ In addition, a server-side change will trigger a refresh of the currently active
 
 Clerk also comes with an inspector for Clojure's tap system.
 
-> tap is a shared, globally accessible system for distributing a series of informational or diagnostic values to a set of (presumably effectful) handler functions. It can be used as a better debug prn, or for facilities like logging etc.
+> **tap** is a shared, globally accessible system for distributing a series of informational or diagnostic values to a set of (presumably effectful) handler functions. It can be used as a better debug prn, or for facilities like logging etc.
 > 
 > – [Clojure 1.10 Changelog](https://github.com/clojure/clojure/blob/0b42eab4bfca5270e0d2b2e58d83b1e2c8a85473/changes.md#23-tap)
 
 When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk's viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
-
 
 ### Prose-oriented Documents
 
@@ -324,6 +345,8 @@ The first and primary use case for Clerk was adding prose, visualizations, and i
 This format is very similar to other markdown-based notebooks, like [R Markdown](https://rmarkdown.rstudio.com), but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located [on Github](https://github.com/mk/clerk-px23)[^github-format].
 
 [^github-format]: One nice thing about this approach is that other systems, like Github, are able to render a reasonable version of the document, though without evaluation.
+
+During the review process for this paper, one of the reviewers mentioned that they would have preferred a PDF document to a website. We took this is an opportunity to test the flexibility of our system, adding a LaTeX translation layer to produce a separate printable version. It sadly lacks the interactive features of the web presentation, but we are quite pleased with the quality of the document we were able to send to press with relatively little additional work.
 
 ## Examples of Moldable Development with Clerk
 
@@ -344,7 +367,7 @@ This example illustrates an approach we used to make working with a legacy DB2 d
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
 ```
 
-We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those 8-character names to human-readable (German-only) names (which we can then translate to English names). In typical Lisp fashion, we go on and inspect a query interactively. We can use the translated names in the table even print them but one quickly sees the limit of plain-text printing:
+We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -356,7 +379,7 @@ We were able to automatically translate these names using a metaschema extracted
    [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
 ```
 
-With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original 8 character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
+With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
 
 ``` clojure
 ^{::clerk/width :wide}
@@ -370,7 +393,9 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 ### Rich documentation features
 
-This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package[^color-package]. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+
+[^color-package]: The full documentation is [here](https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html).
 
 ```clojure
 (figure {::clerk/width :wide
@@ -418,15 +443,13 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 ### Experience
 
-Our experience as the developers and users of Clerk has been surprisingly positive, but we're heavily biased. We've chosen a few quotes from Clerk's user base to give a sense of how it has been received in the community:
+Our experience as the developers and users of Clerk has been quite positive, but we're heavily biased. We've chosen a few quotes from Clerk's user base to give a sense of how it has been received in the community:
 
 > [Clerk] is making the training of junior Clojure programmers a massive pleasure! [...]
 > 
 > It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
 > 
 > – Robert Stuttaford[^tweets]
-
-[^tweets]: Via a [rapidly degrading social media platform](https://web.archive.org/web/20230119113752/https://twitter.com/RobStuttaford/status/1574328589306281987)
 
 > I'm using Clerk to visualize statistics properties from a simulation in a model checker [...] it's basically a wrapper over TLA+ [...]
 >
@@ -438,39 +461,42 @@ Our experience as the developers and users of Clerk has been surprisingly positi
 >
 > – Jeffrey Simon
 
+## Related
 
-## Related & Future Work
-
-Besides the aforementioned work there's a number of contemporary related systems:
+Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems:
 
 * [Org mode][org-mode] is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
 * [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
 * [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
 * [Livebook][livebook] is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
 
-Our goal with the development of Clerk is to _leave the toolbox open_: we want Clerk's users to be able to customize behavior, often by providing functions.
+This convergent evolution suggests to us that there is more to explore in this direction.
 
-Clerk's viewer api is a first example of that but we want to take this further by letting users:
+## Future Work
+
+Our goal with the development of Clerk is to _leave the toolbox open_: we want Clerk's users to be able to customize the behavior of the running system in a predictable way, often by providing functions to the system at runtime.
+
+Clerk's viewer API is a first example of this approach, but we want to take it further by letting users:
 
 * provide functions to control the caching e.g. to support more efficient caching of data frames
-* letting the viewer api's `:pred` function opt into receiving more context like the path in the tree
+* letting the viewer API's `:pred` function opt into receiving more context like the path in the tree
 * make caching more granular and support caching function invocations
 * override `parse` and `eval` to support different syntaxes than markdown and different semantics
 
-So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in memory or on-disk).
+So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in-memory or on-disk).
 
-We're also actively exploring different ways of brining an exploratory Clerk notebook to production. In exploratory work one often uses global state in Clojure atoms and vars which makes a computation tangible. When serving concurrent requests in a production setting that global state can be the source of inconsistencies.
+We're also actively exploring different ways of bringing an exploratory Clerk notebook to production. In exploratory work one often uses global state in Clojure atoms and vars which makes a computation tangible. When serving concurrent requests in a production setting that global state can be a source of inconsistencies.
 
-We've been talking about ways to write changes originating from controls in Clerk's view back to the source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works on level of source files insufficient. Since this is a significant chunk of work and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be a lot for effective than editing text in a code editor, we're excited to explore this direction in the future.
+We've been discussing ways to write changes originating from controls in Clerk's view back to source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works by overwriting source files insufficient. Because this is a significant chunk of work, and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be more effective than editing text in a code editor, we're excited to explore this direction in the future.
 
 ## Conclusion 
 
-We've been pleasently surprised with how useful Clerk has been in our day-to-day work and the adoption within the larger Clojure community. We believe there's two key factors in Clerk's design that enable this: 
+We've been pleasently surprised with how useful Clerk has been in our day-to-day work, and the adoption it has received within the larger Clojure community suggests we are not the only ones to feel this way. We believe there are two key factors in Clerk's design that enable this: 
 
-* it enhancing regular Clojure namespaces enables incremental adoption. Neither does it need initial buy-in from the whole dev team, nor does a single member need to fully switch to working with Clerk.
-* it working in concert with regular editors means it meets developers where they are and does not require a radical change of workflows.
+* Enhancing regular Clojure namespaces enables incremental adoption. Neither does it need initial buy-in from the whole dev team, nor does a single member need to fully switch to working with Clerk.
+* Working in concert with regular editors means it meets developers where they are and does not require a radical change of workflows.
 
-We'd love to see folks try how these design aspects can be applied to other programming ecosystems and join the pursuit to free programming from the limitations of dead text. 
+We'd love to see folks apply these design choices to other programming ecosystems and join the pursuit to free programming from the limitations of dead text. 
 
 [book-of-clerk]:https://book.clerk.vision
 [nextjournal]:https://nextjournal.com
