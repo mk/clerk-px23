@@ -173,7 +173,9 @@ When the `present` function is called on the server side, it defaults to perform
 
 To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global _budget_ per result to limit the total number of items shown in deeply nested data structures. We’ve found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.[^sidenotes]
+
+[^sidenotes]: We also used this essay as an opportunity to improve Clerk's support for sidenotes like this one.
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
@@ -199,7 +201,7 @@ Here is an interactive example of the well-known `iris` data set, which we've ad
 datasets/iris
 ```
 
-Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level, as demonstrated in this video:
+Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 ``` clojure
 ^{::clerk/width :wide}
