@@ -8,11 +8,6 @@
             [applied-science.edn-datasets :as datasets]))
 ```
 
-```clojure
-(nextjournal.clerk/html [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
-"⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
-```
-
 ## Abstract
 
 ```clojure
@@ -29,7 +24,8 @@
     [:img.hidden.dark:block {:src "https://nextjournal.com/images/nextjournal-logo-white.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]]
    [:a.block.mt-2.hover:opacity-70 {:href "https://twitter.com/mkvlr"} "Martin Kavalar"]
    [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/unkai"} "Philippa Markovics"]
-   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]
+   [:a.block.mt-2.hover:opacity-70 {:href "https://2023.programming-conference.org/home/px-2023/"}"Presented at PX/23"]]])
 ```
 
 ## Introduction: Literate Programming, Notebooks and Interactive Development
