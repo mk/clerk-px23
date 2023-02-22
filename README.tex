@@ -304,34 +304,34 @@ Clerk is an open source Clojure programmer's assistant that builds upon the trad
 \hypertarget{id}{%
 \section{Introduction: Literate Programming, Notebooks and Interactive Development}\label{id}}
 
-Knuth\textquotesingle s \emph{Literate Programming}  emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
+Knuth\textquotesingle s \emph{Literate Programming} \footnote{An extensive archive of related material is maintained \href{http://www.literateprogramming.com}{here}.} emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
 
-At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur\textquotesingle s \emph{Milo}, PARC\textquotesingle s \emph{Tioga} and \emph{Camino Real}, and commercial software like \emph{MathCAD}.
+At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur\textquotesingle s \emph{Milo}, PARC\textquotesingle s \emph{Tioga} and \emph{Camino Real}, and commercial software like \emph{MathCAD}\footnote{See \href{https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf}{A Survey of User Interfaces for Computer Algebra Systems} for a history of these systems up until 1998.}.
 
-In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices).
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)\footnote{See \href{https://doi.org/10.1145/3313831.3376729}{What's Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities} by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.}.
 
 Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are in no hurry to lose.
 
 \begin{quote}
-That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.
+That LISP users tend to prefer structured growth rather than stepwise refinement is not an effect of the programming system, since both methods are supported. I believe, however, that it is a natural consequence of the interactive development method, since programs in early stages of growth can be executed and programs in early stages of refinement cannot.\footnote{See \href{https://doi.org/10.1145/356715.356719}{Programming in an Interactive Environment: the "Lisp" Experience} by Erik Sandewall}
 
 -- Erik Sandewall
 \end{quote}
 
-At the same time, though a number of Lisp environments have included graphical presentations of program objects, most modern tooling relies on text-based representations of evaluation output and doesn\textquotesingle t include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there\textquotesingle s limited room for customization or support for requesting more data.
+At the same time, though a number of Lisp environments have included graphical presentations of program objects\footnote{See, for example, the \href{https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager}{Common Lisp Interface Manager}.}, most modern tooling relies on text-based representations of evaluation output and doesn\textquotesingle t include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there\textquotesingle s limited room for customization or support for requesting more data.
 
-In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit} and \href{https://newspeaklanguage.org}{Newspeak}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we\textquotesingle ll present here.
+In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit}\footnote{See \href{https://doi.org/10.1145/2846680.2846684}{Towards Moldable Development Tools} by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba} and \href{https://newspeaklanguage.org}{Newspeak}\footnote{See \href{https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel}{Ampleforth: A Live Literate Editor} by Gilad Bracha}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we\textquotesingle ll present here.
 
 \hypertarget{id}{%
 \section{Programming with Clerk}\label{id}}
 
 \begin{quote}
-In such a future working relationship between human problem-solver and computer `clerk', the capability of the computer for executing mathematical processes would be used whenever it was needed.
+In such a future working relationship between human problem-solver and computer `clerk', the capability of the computer for executing mathematical processes would be used whenever it was needed.\footnote{See \href{https://www.dougengelbart.org/pubs/augment-3906.html}{Augmenting Human Intellect: A Conceptual Framework} by Douglas Engelbart.}
 
 -- Douglas Engelbart
 \end{quote}
 
-We have built Clerk on top of Clojure, a functional-by-default Lisp dialect primarily hosted on the \href{https://en.wikipedia.org/wiki/Java_virtual_machine}{Java Virtual Machine}. Several aspects of the language make it an appealing target for this project:
+We have built Clerk on top of Clojure\footnote{For a description of the language and its motivations, see \href{https://dl.acm.org/doi/10.1145/3386321}{A history of Clojure}.}, a functional-by-default Lisp dialect primarily hosted on the \href{https://en.wikipedia.org/wiki/Java_virtual_machine}{Java Virtual Machine}. Several aspects of the language make it an appealing target for this project:
 
 \begin{itemize}
 \tightlist
@@ -358,7 +358,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
 \caption{\href{https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4}{Clerk side-by-side with Emacs}}
 \end{figure}
 
-As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
+As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation\footnote{We have borrowed this approach from \href{https://maria.cloud}{maria.cloud}, a web-hosted interactive Clojure learning tool created by \href{https://matt.is}{Matt Huebert}, \href{https://www.daveliepmann.com/}{Dave Liepmann}, and \href{https://jackrusher.com/}{Jack Rusher}. Maria grew out of \href{https://px16.matt.is}{work presented at PX16} by Matt Huebert.}. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
 Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \passthrough{\lstinline"show!"} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
 
@@ -388,7 +388,7 @@ When Clerk is asked to show a notebook, it will only evaluate forms that aren\te
 \item
   an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
 \item
-  An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+  An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations\footnote{In tasks with intensive data preparation steps, this savings can be considerable.}. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 \end{itemize}
 
 This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
@@ -398,10 +398,10 @@ The on-disk caches use a content-addressed store where each result is stored usi
 This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 \begin{quote}
-While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.
+While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.\footnote{\href{https://download.clojure.org/papers/clojure-hopl-iv-final.pdf}{A History of Clojure}, Rich Hickey}
 \end{quote}
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it\textquotesingle s value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.
+It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State}}. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it\textquotesingle s value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.
 
 When Clerk encounters an expression in which an atom\textquotesingle s mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression\textquotesingle s static hash with it.
 
@@ -433,18 +433,18 @@ We have included a mechanism to override Clerk\textquotesingle s error checking 
 \hypertarget{id}{%
 \subsection{Presentation}\label{id}}
 
-Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user\textquotesingle s development environment. The client executes in a web browser running an embedded Clojure interpreter.
+Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user\textquotesingle s development environment. The client executes in a web browser running an embedded Clojure interpreter\footnote{\href{https://github.com/babashka/sci}{Small Clojure Interpreter} by Michiel Borkent}.
 
 The process of conveying a value to the client is a \emph{presentation}, a
-term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
+term taken from Common Lisp systems that support similar features \footnote{This feature originated on the Lisp Machine, and lives on in a reduced form as a feature of the emacs package \href{https://slime.common-lisp.dev/doc/html/Presentations.html}{Slime}.}. The process of presentation makes use of \emph{viewers}, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
 When the \passthrough{\lstinline!present!} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
 
 To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk\textquotesingle s rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.
+One benefit of using the browser for Clerk\textquotesingle s rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.\footnote{We also used this essay as an opportunity to improve Clerk\textquotesingle s support for sidenotes like this one.}
 
-It\textquotesingle s also possible to use Clerk\textquotesingle s presentation system in other contexts. We know of at least one case of a user leveraging Clerk\textquotesingle s presentation system to do in-process rendering without a browser.
+It\textquotesingle s also possible to use Clerk\textquotesingle s presentation system in other contexts. We know of at least one case of a user leveraging Clerk\textquotesingle s presentation system to do in-process rendering without a browser.\footnote{See \href{https://github.com/phronmophobic/desk}{Desk}, by Adrian Smith.}
 
 \hypertarget{id}{%
 \subsection{Built-in Viewers}\label{id}}
@@ -504,7 +504,7 @@ Together with tables, plots are the most commonly used viewer for Data Science u
 
 \includegraphics{images/anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv-result.png}
 
-It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers by year and quarter and embedding a sparkline graph into the table row for each year.
+It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers\footnote{using a \href{https://github.com/applied-science/edn-datasets}{Clojure port} of R's built-in dataset of \href{https://search.r-project.org/R/refmans/datasets/html/AirPassengers.html}{Box \& Jenkins classic airline data}.} by year and quarter and embedding a sparkline graph into the table row for each year.
 
 A typical Clerk workflow for this would be to first take a look at the shape of the data:
 
@@ -572,7 +572,7 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
   \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
 \end{itemize}
 
-Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:
+Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting\footnote{The source code here is rendered by the viewer that it describes.}:
 
 \includegraphics{images/anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC-result.png}
 
@@ -605,14 +605,14 @@ When enabled, Clerk will attach a tap listener function and record and show the 
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from \emph{some} computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with ``code-fenced'' source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
-This format is very similar to other markdown-based notebooks, like \href{https://rmarkdown.rstudio.com}{R Markdown}, but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located \href{https://github.com/mk/clerk-px23}{on Github}.
+This format is very similar to other markdown-based notebooks, like \href{https://rmarkdown.rstudio.com}{R Markdown}, but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located \href{https://github.com/mk/clerk-px23}{on Github}\footnote{One nice thing about this approach is that other systems, like Github, are able to render a reasonable version of the document, though without evaluation.}.
 
 During the review process for this paper, one of the reviewers mentioned that they would have preferred a PDF document to a website. We took this is an opportunity to test the flexibility of our system, adding a LaTeX translation layer to produce a separate printable version. It sadly lacks the interactive features of the web presentation, but we are quite pleased with the quality of the document we were able to send to press with relatively little additional work.
 
 \hypertarget{id}{%
 \section{Examples of Moldable Development with Clerk}\label{id}}
 
-In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant\footnote{We use this term in appreciation of pioneering historical work by Warren Teitelman.} that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
 
 \hypertarget{id}{%
 \subsection{Augmenting table names}\label{id}}
@@ -644,7 +644,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 \hypertarget{id}{%
 \subsection{Rich documentation features}\label{id}}
 
-This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package\footnote{The full documentation is \href{https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html}{here}.}. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
 \begin{figure}
 \centering

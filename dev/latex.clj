@@ -43,17 +43,19 @@
 ;; - [ ] Improve code listings (or ensure they fit into column)
 ;; - [ ] Footnotes
 
+(def ^:dynamic *footnotes* [])
 (declare md->pandoc)
 (def md->pandoc-transform
-  {:doc (fn [{:as doc :keys [content]}]
-          {:blocks (into [] (map md->pandoc) content)
-           :pandoc-api-version [1 23]
-           :meta {}})
+  {:doc (fn [{:as doc :keys [content footnotes]}]
+          (binding [*footnotes* footnotes]
+            {:blocks (into [] (keep md->pandoc) content)
+             :pandoc-api-version [1 23]
+             :meta {}}))
 
-   :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (keep md->pandoc content)]})
-   :paragraph (fn [{:keys [content]}] {:t "Para" :c (keep md->pandoc content)})
-   :plain (fn [{:keys [content]}] {:t "Plain" :c (keep md->pandoc content)})
-   :blockquote (fn [{:keys [content]}] {:t "BlockQuote" :c (keep md->pandoc content)})
+   :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (into [] (keep md->pandoc) content)]})
+   :paragraph (fn [{:keys [content]}] {:t "Para" :c (into [] (keep md->pandoc) content)})
+   :plain (fn [{:keys [content]}] {:t "Plain" :c (into [] (keep md->pandoc) content)})
+   :blockquote (fn [{:keys [content]}] {:t "BlockQuote" :c (into [] (keep md->pandoc) content)})
    :code (fn [{:as node :keys [language]}] {:t "CodeBlock" :c [["" [language "code"] []] (md.transform/->text node)]})
    :block-formula (fn [{:keys [text]}] {:t "Para" :c [{:t "Math" :c [{:t "DisplayMath"} text]}]})
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
@@ -62,36 +64,38 @@
              {:t "Figure"
               :c [["" [] []]
                   [nil [{:t "Plain"
-                         :c (keep md->pandoc content)}]]
+                         :c (into [] (keep md->pandoc) content)}]]
                   [{:t "Plain"
                     :c [{:t "Image"
                          :c [["" [] []]
-                             (keep md->pandoc content)
+                             (into [] (keep md->pandoc) content)
                              [(:src attrs) (md.transform/->text node)]]}]}]]})
    :image (fn [{:as node :keys [content attrs]}]
             (let [{:keys [src]} attrs
                   caption (md.transform/->text node)]
               {:t "Image",
                :c [["" [] [["width" "linewidth"]]]
-                   (keep md->pandoc content)
+                   (into [] (keep md->pandoc) content)
                    ;; a fig: will wrap the resulting \includegraphics in a figure environment
                    [src (str (when (not-empty caption) "fig:"))]]}))
    :softbreak (fn [_] {:t "SoftBreak"})
-   :em (fn [{:keys [content]}] {:t "Emph" :c (keep md->pandoc content)})
-   :strong (fn [{:keys [content]}] {:t "Strong" :c (keep md->pandoc content)})
-   :strikethrough (fn [{:keys [content]}] {:t "Strikeout" :c (keep md->pandoc content)})
-   :link (fn [{:keys [attrs content]}] {:t "Link" :c [["" [] []] (keep md->pandoc content) [(:href attrs) ""]]})
+   :em (fn [{:keys [content]}] {:t "Emph" :c (into [] (keep md->pandoc) content)})
+   :strong (fn [{:keys [content]}] {:t "Strong" :c (into [] (keep md->pandoc) content)})
+   :strikethrough (fn [{:keys [content]}] {:t "Strikeout" :c (into [] (keep md->pandoc) content)})
+   :link (fn [{:keys [attrs content]}] {:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]})
 
    :monospace (fn [node] {:t "Code" :c [["" [] []] (md.transform/->text node)]})
 
-   :list-item (fn [{:keys [content]}] (keep md->pandoc content))
-   :bullet-list (fn [{:keys [content]}] {:t "BulletList" :c (keep md->pandoc content)})
+   :list-item (fn [{:keys [content]}] (into [] (keep md->pandoc) content))
+   :bullet-list (fn [{:keys [content]}] {:t "BulletList" :c (into [] (keep md->pandoc) content)})
 
    :text (fn [{:keys [text]}] {:t "Str" :c text})
 
    ;; TODO: https://pandoc.org/MANUAL.html#footnotes
-   :footnote-ref (fn [_] nil)
-   })
+   :footnote-ref (fn [{:keys [ref]}]
+                   (let [{:as fn :keys [content]} (get *footnotes* ref)]
+                     (when-not fn (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
+                     {:t "Note" :c (into [] (keep md->pandoc) content)}))})
 
 (defn md->pandoc
   [{:as node :keys [type]}]
@@ -192,6 +196,7 @@
   (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
     (-> {:type :doc
          :title title
+         :footnotes footnotes
          :content (mapcat (fn [{:as block :keys [type doc visibility text-without-meta]}]
                             (let [{code-visibility :code result-visibility :result} visibility]
                               (case type
@@ -237,11 +242,9 @@
   (sh pandoc-exec "--version")
 
   ;; get Pandoc AST for testing
-  (-> "![An Alt Text](real-image.png 'A title'){width=100%}"
-      (pandoc<- "markdown+footnotes+implicit_figures")
-      #_ (pandoc-> "latex" :template nil))
+  (-> "A nice text[^note]
 
-  (-> (clerk.eval/eval-file "README.md")
-      :blocks
-      (->> (drop 6))
-      first))
+[^note]: This is _real_ a note."
+      #_ md/parse #_ md->pandoc
+      (pandoc<- "markdown+footnotes+implicit_figures")
+      #_ (pandoc-> "latex" :template nil)))
