@@ -219,13 +219,12 @@ datasets/iris
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 ```clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
+(figure {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmZmxVVtwGDsdVWRD2s3etdNNJ1tuWGJPFSWrfTcPLNTYx?content-type=image/png"
+         :video? true
+         :id "expanding-multiple-sub-structures-at-once"
+         :caption "Expanding multiple sub-structures at once"
+         ::clerk/width :wide})
 ```
 
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
@@ -374,26 +373,24 @@ This example illustrates an approach we used to make working with a legacy DB2 d
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#inspecting-a-query-using-the-repl.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmasZmkvfx6MyJcviDK7pSYQTPkmtFoJ96YzipQBRGCVEB?content-type=image/png"
+         :video? true
+         :id "inspecting-a-query-using-the-repl"
+         :caption "Inspecting A Query Using the REPL"
+         ::clerk/width :wide})
 ```
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#augmented-table-headings.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Augmented Table Headings"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmRvBS2fHDyeVD8hPhFGiBFbwKbJWZDxMoMnYn1fpoMmxW?content-type=image/png"
+         :id "augmented-table-headings"
+         :caption "Augmented Table Headings"
+         :video? true
+         ::clerk/width :wide})
 ```
 
 ### Rich documentation features
@@ -413,14 +410,13 @@ This example illustrates the use of Clerk to create rich documentation for `cloj
 
 Built as a showcase for Clerk’s sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#interactive-regex-dictionary.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Regex Dictionary"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmP1pT3ysiZzw5fUhxmpGHCZregtMYcpu3Sue7Q1eSETCo?content-type=image/png"
+         :id "interactive-regex-dictionary"
+         :caption "Interactive Regex Dictionary"
+         :video? true
+         ::clerk/width :wide})
 ```
 
 It is built using a Clojure atom containing the text input’s current value that is synced between the client and server. As you type into the input, the atom’s content will be updated and synced. Consequently, printing the atom’s content in your editor will show the input’s current value:
@@ -436,14 +432,12 @@ It is built using a Clojure atom containing the text input’s current value tha
 
 Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk's default notebook styling via Clerk’s CSS customization options.
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#interactive-log-search.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Log Search"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmampWSVabdYtYpcN46rPjWGZK1KRebvsHHsx24zeudY8Q?content-type=image/png"
+         :id "interactive-log-search"
+         :caption "Interactive Log Search"
+         ::clerk/width :wide})
 ```
 
 ### Experience
