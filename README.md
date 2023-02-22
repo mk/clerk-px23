@@ -3,6 +3,10 @@
 ```clojure
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
+   :nextjournal.clerk/open-graph
+   {:url "https://px23.clerk.vision"
+    :title "Clerk: Moldable Live Programming for Clojure"
+    :description "Clerk is an open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."}
    :nextjournal.clerk/visibility {:code :hide}}
   (:require [nextjournal.clerk :as clerk]
             [applied-science.edn-datasets :as datasets]))
