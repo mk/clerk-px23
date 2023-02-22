@@ -55,14 +55,14 @@
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
    :image (fn [{:as node :keys [attrs]}]
-            (let [{:keys [src]} attrs]
+            (let [{:keys [src]} attrs
+                  caption (md.transform/->text node)]
               {:t "Image",
                :c [["" [] [["width" "linewidth"]]]
-                   [{:t "Str" :c (md.transform/->text node)}]
-                   [src  "fig:"]]}))
-
+                   [{:t "Str" :c caption}]
+                   ;; a fig: will wrap the resulting \includegraphics in a figure environment
+                   [src (str (when (not-empty caption) "fig:"))]]}))
    :softbreak (fn [_] {:t "SoftBreak"})
-
    :em (fn [{:keys [content]}] {:t "Emph" :c (keep md->pandoc content)})
    :strong (fn [{:keys [content]}] {:t "Strong" :c (keep md->pandoc content)})
    :strikethrough (fn [{:keys [content]}] {:t "Strikeout" :c (keep md->pandoc content)})
@@ -138,14 +138,19 @@
       (ImageIO/write (ImageIO/read url) "png" (fs/file path)))
     (str path)))
 
-(defn convert-result [result]
-  (let [{:as opts :keys [src id caption]} (v/->value result)]
-    (when src
-      ;; Pandoc doesn't support images at block level
+(defn convert-result [{:as block :keys [id result]}]
+  (let [{:as opts :keys [src caption]} (v/->value result)
+        result-screenshot-path (str "images/result-" (name id) ".png")]
+    (cond
+      src
+      {:type :paragraph ;; NOTE: Pandoc doesn't support images at block level
+       :content [{:type :image
+                  :attrs {:src (store-image-src! opts)}
+                  :content [{:type :text :text caption}]}]}
+      (fs/exists? result-screenshot-path)
       {:type :paragraph
        :content [{:type :image
-                  :attrs {:src (store-image-src! opts) :width "100%"}
-                  :content [{:type :text :text caption}]}]})))
+                  :attrs {:src result-screenshot-path}}]})))
 
 (defn conj-some [xs x] (cond-> xs x (conj x)))
 
@@ -153,21 +158,20 @@
   (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
     (-> {:type :doc
          :title title
-         :content (mapcat (fn [{:keys [type doc visibility text-without-meta result]}]
+         :content (mapcat (fn [{:as block :keys [type doc visibility text-without-meta]}]
                             (let [{code-visibility :code result-visibility :result} visibility]
                               (case type
                                 :markdown (:content doc)
-                                ;; TODO: extract results (e.g.abstract)
                                 :code (cond-> []
                                         (= :show code-visibility)
                                         (conj {:type :code
                                                :language "clojure"
-                                               :content [{:type :text
-                                                          :text text-without-meta}]})
+                                               :content [{:type :text :text text-without-meta}]})
                                         (= :show result-visibility)
-                                        (conj-some (convert-result result)))))) blocks)}
+                                        (conj-some (convert-result block))))))
+                          ;; drop custom abstract and helpers
+                          (drop 6 blocks))}
         promote-headings
-        (update :content (partial drop 2))
         md->pandoc
         (assoc-in [:meta :title] (meta-content title))
         (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
@@ -197,7 +201,16 @@
     (sh "tectonic" "README.tex")
     (sh "open" "README.pdf"))
 
+  ;; capture screenshots (needs ../clerk at
+  (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
+      :dir "../clerk/ui_tests")
+
   ;; get Pandoc AST for testing
   (-> "![An Alt Text](real-image.png 'A title'){width=100%}"
       (pandoc<- "markdown+footnotes")
-      #_(pandoc-> "latex" :template nil)))
+      #_(pandoc-> "latex" :template nil))
+
+  (-> (clerk.eval/eval-file "README.md")
+      :blocks
+      (->> (drop 6))
+      first))

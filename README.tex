@@ -349,6 +349,8 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
 
+\includegraphics{images/result-anon-expr-5du3vXfuRiWkftn1YUvbdRb8nEVf8F.png}
+
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
 Clerk's audience is experienced Clojure developers who are familiar with interactive development. They are able to continue programming in their accustomed style, evaluating individual forms and inspecting intermediate results, but with the added ability to \passthrough{\lstinline"show!"} a namespace/file in Clerk. A visual representation of the file is then re-computed either:
@@ -440,11 +442,7 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 \hypertarget{id}{%
 \subsection{Built-in Viewers}\label{id}}
 
-\begin{figure}[H]
-\centering
 \includegraphics{images/built-in-viewers.png}
-\caption{}
-\end{figure}
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure's immutable data structures, HTML (including the \href{https://github.com/weavejester/hiccup}{hiccup variant} that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure's printer. The \href{https://book.clerk.vision}{Book of Clerk} gives a good overview of the available built-ins. Because Clerk's client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using \href{https://plotly.com/javascript/}{Plotly} and \href{https://github.com/vega/vega-embed}{vega} for graphing, \href{https://codemirror.net}{CodeMirror} for rendering code cells, and \href{https://katex.org}{KaTeX} for typesetting mathematics.
 
@@ -456,13 +454,19 @@ Here is an interactive example of the well-known \passthrough{\lstinline!iris!} 
 datasets/iris
 \end{lstlisting}
 
+\includegraphics{images/result-anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT.png}
+
 Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level, as demonstrated in this video:
+
+\includegraphics{images/result-anon-expr-5drhGBZL7eJfRr1ugHxqr6u3fsUQuz.png}
 
 Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
 \begin{lstlisting}
 (clerk/table datasets/iris)
 \end{lstlisting}
+
+\includegraphics{images/result-anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5.png}
 
 Together with tables, plots are the most commonly used viewer for Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars.
 
@@ -485,6 +489,8 @@ In the following figure, the same \passthrough{\lstinline!iris!} dataset, as sho
            :embed/opts {:actions false}})
 \end{lstlisting}
 
+\includegraphics{images/result-anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv.png}
+
 It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers by year and quarter and embedding a sparkline graph into the table row for each year.
 
 A typical Clerk workflow for this would be to first take a look at the shape of the data:
@@ -492,6 +498,8 @@ A typical Clerk workflow for this would be to first take a look at the shape of 
 \begin{lstlisting}
 datasets/air-passengers
 \end{lstlisting}
+
+\includegraphics{images/result-anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j.png}
 
 Then, a \passthrough{\lstinline!sparkline!} function is defined to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
 
@@ -507,6 +515,8 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined to generate grap
              :embed/opts {:actions false}}))
 \end{lstlisting}
 
+\includegraphics{images/result-sparkline.png}
+
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
 \begin{lstlisting}
@@ -519,6 +529,8 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
                       (concat [year] qs [(sparkline qs)]))))
              (sort-by first))})
 \end{lstlisting}
+
+\includegraphics{images/result-anon-expr-5dsz8rmJVZqJQgRXAFtQ22xFSEXAKt.png}
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 
@@ -540,6 +552,8 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 \end{itemize}
 
 Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:
+
+\includegraphics{images/result-anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC.png}
 
 Viewers can also be explicitly selected by wraping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 
@@ -584,9 +598,15 @@ In addition to the sorts of traditional data science use cases that one might ex
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
 
+\includegraphics{images/result-anon-expr-5dsGLp7Mm1EDixYxw4xmuQn4H9BcGE.png}
+
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
 
+\includegraphics{images/result-anon-expr-5dthp9EcmUsX7frFtqmvmb89kLH1WT.png}
+
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer's headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren't lost). We can go further still, showing the original German names when move the mouse over the headings:
+
+\includegraphics{images/result-anon-expr-5dtD2VriNBKFKiVaEUxFQvHjeWuH3C.png}
 
 \hypertarget{id}{%
 \subsection{Rich documentation features}\label{id}}
@@ -604,6 +624,8 @@ This example illustrates the use of Clerk to create rich documentation for \pass
 
 Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
+\includegraphics{images/result-anon-expr-5dtM22Yf1xRBnb3AupxNJkvJ86QR6P.png}
+
 It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
 
 \begin{figure}[H]
@@ -616,6 +638,8 @@ It is built using a Clojure atom containing the text input's current value that 
 \subsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
 
 Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk's default styling) via Clerk's CSS customization options.
+
+\includegraphics{images/result-anon-expr-5dsG7amjeS71pL625va49p93m7hFSo.png}
 
 \hypertarget{id}{%
 \subsection{Experience}\label{id}}
