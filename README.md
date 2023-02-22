@@ -3,14 +3,13 @@
 ```clojure
 (ns nextjournal.clerk.px23
   {:nextjournal.clerk/toc true
+   :nextjournal.clerk/open-graph
+   {:url "https://px23.clerk.vision"
+    :title "Clerk: Moldable Live Programming for Clojure"
+    :description "Clerk is an open source Clojure programmer’s assistant that builds upon the traditions of interactive and literate programming to provide a holistic moldable development environment. Clerk layers static analysis, incremental computation, and rich browser-based graphical presentations on top of a Clojure programmer's familiar toolkit to enhance their workflow."}
    :nextjournal.clerk/visibility {:code :hide}}
   (:require [nextjournal.clerk :as clerk]
             [applied-science.edn-datasets :as datasets]))
-```
-
-```clojure
-(nextjournal.clerk/html [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
-"⚠️ This is an early draft to be submitted to the " [:a {:href "https://2023.programming-conference.org/home/px-2023"} "Programming Experience 23 Workshop"] "."])
 ```
 
 ```clojure
@@ -44,7 +43,8 @@
     [:img.hidden.dark:block {:src "https://nextjournal.com/images/nextjournal-logo-white.svg" :width 100 :class "min-[860px]:-ml-[8px]"}]]
    [:a.block.mt-2.hover:opacity-70 {:href "https://twitter.com/mkvlr"} "Martin Kavalar"]
    [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/unkai"} "Philippa Markovics"]
-   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]]])
+   [:a.block.mt-1.hover:opacity-70 {:href "https://twitter.com/jackrusher"} "Jack Rusher"]
+   [:a.block.mt-2.hover:opacity-70 {:href "https://2023.programming-conference.org/home/px-2023/"}"Presented at PX/23"]]])
 ```
 
 ## Introduction: Literate Programming, Notebooks and Interactive Development
@@ -95,7 +95,7 @@ We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp di
 * an emphasis on pure functions and immutable data structures makes static analysis easier
 * when mutable state is needed, there are idiomatic thread-safe boxes that are read and updated in a functional style
 
-While there are some rough edges around a few particularly tricky language features, these advantages have mostly worked out in our favor.
+While there are some rough edges around a few particularly tricky language features, these aspects have mostly worked out in our favor.
 
 ### Basic Interaction: Bring-Your-Own-Editor
 
@@ -180,7 +180,7 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 [^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
 The process of conveying a value to the client is a _presentation_, a
-term taken from Common Lisp systems that support similar features [^presentations]. The process of presentation makes use of _viewers_, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
+term taken from Common Lisp systems that support similar features [^presentations]. The process of presentation makes use of _viewers_, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
 [^presentations]: This feature originated on the Lisp Machine, and lives on in a reduced form as a feature of the emacs package [Slime](https://slime.common-lisp.dev/doc/html/Presentations.html).
 
@@ -188,7 +188,9 @@ When the `present` function is called on the server side, it defaults to perform
 
 To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global _budget_ per result to limit the total number of items shown in deeply nested data structures. We’ve found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.[^sidenotes]
+
+[^sidenotes]: We also used this essay as an opportunity to improve Clerk's support for sidenotes like this one.
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 
@@ -213,7 +215,7 @@ Here is an interactive example of the well-known `iris` data set, which we've ad
 datasets/iris
 ```
 
-Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level, as demonstrated in this video:
+Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 ```clojure
 ^{::clerk/width :wide}
@@ -232,9 +234,7 @@ Using the built-in `clerk/table` viewer, the same data structure can also be ren
 (clerk/table datasets/iris)
 ```
 
-Together with tables, plots are the most commonly used viewer for Data Science use cases. Clerk comes with built-in support for the popular [vega](https://github.com/vega/vega-embed) and [Plotly](https://plotly.com/javascript/) plotting grammars. 
-
-In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive `vega-lite` plot using the `clerk/vl` viewer:
+Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive [Vega-Lite](https://vega.github.io/vega-lite/) plot using the `clerk/vl` viewer:
 
 ``` clojure
 ^{::clerk/visibility {:code :show}}
@@ -266,7 +266,7 @@ A typical Clerk workflow for this would be to first take a look at the shape of 
 datasets/air-passengers
 ```
 
-Then, a `sparkline` function is defined to generate graphs (using `clerk/vl`) that will be embedded into each table row later:
+Then, a `sparkline` function is defined and tested to generate graphs (using `clerk/vl`) that will be embedded into each table row later:
 
 ```clojure
 ^{::clerk/visibility {:code :show}}
@@ -279,7 +279,11 @@ Then, a `sparkline` function is defined to generate graphs (using `clerk/vl`) th
              :encoding {:x {:field :x :type :ordinal :axis nil :background nil}
                         :y {:field :y :type :quantitative :axis nil :background nil}}
              :embed/opts {:actions false}}))
+
+^{::clerk/visibility {:code :show}}
+(sparkline (shuffle (range 30)))
 ```
+
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
@@ -291,7 +295,9 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
              (group-by :year)
              (map (fn [[year months]]
                     (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
-                      (concat [year] qs [(sparkline qs)]))))
+                      (concat [year] 
+                              qs 
+                              [(sparkline (map :n months))]))))
              (sort-by first))})
 ```
 
@@ -303,7 +309,7 @@ Clerk’s viewers are an ordered (and thus prioritized) collection of plain Cloj
 
 * `:pred` is a predicate function that tests whether this viewer should be used for a given data structure
 * `:transform-fn` is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
-* `:render-fn` is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
+* `:render-fn` is a quoted form that will be sent to the browser, where it will be turned into a function that will be called to display the data
 * `:page-size` is a number that indicates how many items to send in each chunk during elision/pagination
 
 Here, for example, is the `code` viewer, which shows a piece of Clojure code with idiomatic syntax highlighting[^self-rendered]:
@@ -318,7 +324,7 @@ Here, for example, is the `code` viewer, which shows a piece of Clojure code wit
 ```
 
 
-Viewers can also be explicitly selected by wraping a value in the `clerk/with-viewer` function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
+Viewers can also be explicitly selected by wrapping a value in the `clerk/with-viewer` function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
 
@@ -429,7 +435,7 @@ It is built using a Clojure atom containing the text input’s current value tha
 
 ### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
 
-Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk’s default styling) via Clerk’s CSS customization options.
+Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk's default notebook styling via Clerk’s CSS customization options.
 
 ``` clojure
 ^{::clerk/width :wide}

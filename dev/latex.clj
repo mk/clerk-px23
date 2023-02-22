@@ -123,7 +123,7 @@
                        (z/edit update :heading-level dec)))))))
 
 (defn get-abstract [{:keys [blocks]}]
-  (-> blocks (nth 5)
+  (-> blocks (nth 4)
       :result v/->value v/->value
       z/vector-zip
       (->> (iterate z/next) (take 8))
@@ -170,7 +170,7 @@
                                         (= :show result-visibility)
                                         (conj-some (convert-result block))))))
                           ;; drop custom abstract and helpers
-                          (drop 6 blocks))}
+                          (drop 5 blocks))}
         promote-headings
         md->pandoc
         (assoc-in [:meta :title] (meta-content title))

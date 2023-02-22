@@ -340,7 +340,7 @@ We have built Clerk on top of Clojure, a functional-by-default Lisp dialect prim
   when mutable state is needed, there are idiomatic thread-safe boxes that are read and updated in a functional style
 \end{itemize}
 
-While there are some rough edges around a few particularly tricky language features, these advantages have mostly worked out in our favor.
+While there are some rough edges around a few particularly tricky language features, these aspects have mostly worked out in our favor.
 
 \hypertarget{id}{%
 \subsection{Basic Interaction: Bring-Your-Own-Editor}\label{id}}
@@ -429,13 +429,13 @@ We have included a mechanism to override Clerk's error checking in cases where t
 Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user's development environment. The client executes in a web browser running an embedded Clojure interpreter.
 
 The process of conveying a value to the client is a \emph{presentation}, a
-term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
+term taken from Common Lisp systems that support similar features . The process of presentation makes use of \emph{viewers}, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
 When the \passthrough{\lstinline!present!} function is called on the server side, it defaults to performing a depth-first traversal of the data structure it receives, attaching appropriate viewers at each node of the tree. The resulting structure containing both data and viewers is then sent to the client.
 
 To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk, and have used that experience as an opportunity to improve the display of sidenotes.
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.
 
@@ -456,7 +456,7 @@ datasets/iris
 
 \includegraphics{images/result-anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT.png}
 
-Additional affordances are modes to auto-expand nested structures based on shape heuristics and expanding multiple sub-structures of the same level, as demonstrated in this video:
+Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 \includegraphics{images/result-anon-expr-5drhGBZL7eJfRr1ugHxqr6u3fsUQuz.png}
 
@@ -468,9 +468,7 @@ Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data s
 
 \includegraphics{images/result-anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5.png}
 
-Together with tables, plots are the most commonly used viewer for Data Science use cases. Clerk comes with built-in support for the popular \href{https://github.com/vega/vega-embed}{vega} and \href{https://plotly.com/javascript/}{Plotly} plotting grammars.
-
-In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive \passthrough{\lstinline!vega-lite!} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
+Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive \href{https://vega.github.io/vega-lite/}{Vega-Lite} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
 
 \begin{lstlisting}
 (clerk/vl {:data {:values datasets/iris}
@@ -501,7 +499,7 @@ datasets/air-passengers
 
 \includegraphics{images/result-anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j.png}
 
-Then, a \passthrough{\lstinline!sparkline!} function is defined to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
+Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
 
 \begin{lstlisting}
 (defn sparkline [values]
@@ -517,6 +515,10 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined to generate grap
 
 \includegraphics{images/result-sparkline.png}
 
+\begin{lstlisting}
+(sparkline (shuffle (range 30)))
+\end{lstlisting}
+
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
 \begin{lstlisting}
@@ -526,11 +528,11 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
              (group-by :year)
              (map (fn [[year months]]
                     (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
-                      (concat [year] qs [(sparkline qs)]))))
+                      (concat [year] 
+                              qs 
+                              [(sparkline (map :n months))]))))
              (sort-by first))})
 \end{lstlisting}
-
-\includegraphics{images/result-anon-expr-5dsz8rmJVZqJQgRXAFtQ22xFSEXAKt.png}
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 
@@ -546,7 +548,7 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 \item
   \passthrough{\lstinline!:transform-fn!} is an optional function run on the server side to transform data before sending it to the client. It receives a map argument with the original value under a key. Additional keys carry the path, the viewer stack, and the budget (for elision)
 \item
-  \passthrough{\lstinline!:render-fn!} is a quoted form that will be sent to the browser, where it will be compiled into a function that will be called to display the data
+  \passthrough{\lstinline!:render-fn!} is a quoted form that will be sent to the browser, where it will be turned into a function that will be called to display the data
 \item
   \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
 \end{itemize}
@@ -555,7 +557,7 @@ Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a p
 
 \includegraphics{images/result-anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC.png}
 
-Viewers can also be explicitly selected by wraping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
+Viewers can also be explicitly selected by wrapping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer's already existing interactive programming environment as a user interface.
 
@@ -637,7 +639,7 @@ It is built using a Clojure atom containing the text input's current value that 
 \hypertarget{id}{%
 \subsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
 
-Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example has a completely custom user interface styling (nothing left of Clerk's default styling) via Clerk's CSS customization options.
+Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk's default notebook styling via Clerk's CSS customization options.
 
 \includegraphics{images/result-anon-expr-5dsG7amjeS71pL625va49p93m7hFSo.png}
 
