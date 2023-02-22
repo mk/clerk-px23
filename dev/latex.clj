@@ -21,15 +21,15 @@
 ;; Instead of transforming markdown to latex directly, we're going over Clerk's evaluated document, so we have a chance to get hold of visibility and generated results.
 ;;
 ;; ## Prerequisites
-;; - pandoc (`brew install pandoc`)
+;; - pandoc 3.x (`brew install pandoc`)
 ;; - tectonic (`brew install tectonic`)
 ;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template) (relevant .cls files added to repo)
 ;;
 ;; ## Pandoc Template Tweaks
-;; The following changes are needed for `sample-sigconf.tex` to be used as a Pandoc template
+;; The following changes were needed for `sample-sigconf.tex` to be used as a Pandoc template
 ;; - well, `$body` somewhere
 ;; - \tightlist command
-;; - `$title$` and `$authors$` variables
+;; - Insert `$title$`, `$abstract$, `$authors$` variable placeholders
 ;;
 ;; ## Todos
 ;; - [x]  Title
@@ -178,7 +178,7 @@
        :content (let [caption-text [{:type :text :text (str caption)}]]
                   (if poster-frame-src
                     [{:type :link
-                      :attrs {:href poster-frame-src}
+                      :attrs {:href src}
                       :content caption-text}]
                     caption-text))}
       (fs/exists? result-screenshot-path)
