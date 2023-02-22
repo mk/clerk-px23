@@ -458,7 +458,7 @@ Here is an interactive example of the well-known \passthrough{\lstinline!iris!} 
 datasets/iris
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT.png}
+\includegraphics{images/anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT-result.png}
 
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
@@ -474,7 +474,7 @@ Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data s
 (clerk/table datasets/iris)
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5.png}
+\includegraphics{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
 
 Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive \href{https://vega.github.io/vega-lite/}{Vega-Lite} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
 
@@ -495,7 +495,7 @@ Together with tables, plots are the most commonly used viewer for Data Science u
            :embed/opts {:actions false}})
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv.png}
+\includegraphics{images/anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv-result.png}
 
 It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers by year and quarter and embedding a sparkline graph into the table row for each year.
 
@@ -505,7 +505,7 @@ A typical Clerk workflow for this would be to first take a look at the shape of 
 datasets/air-passengers
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j.png}
+\includegraphics{images/anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j-result.png}
 
 Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
 
@@ -521,13 +521,13 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to ge
              :embed/opts {:actions false}}))
 \end{lstlisting}
 
-\includegraphics{images/result-sparkline.png}
+\includegraphics{images/sparkline-result.png}
 
 \begin{lstlisting}
 (sparkline (shuffle (range 30)))
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ.png}
+\includegraphics{images/anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
@@ -544,7 +544,7 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
              (sort-by first))})
 \end{lstlisting}
 
-\includegraphics{images/result-anon-expr-5dsSs4YJ9LYoxsu8USvFMpW5wGuDa3.png}
+\includegraphics{images/anon-expr-5dsSs4YJ9LYoxsu8USvFMpW5wGuDa3-result.png}
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 
@@ -567,7 +567,7 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 
 Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:
 
-\includegraphics{images/result-anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC.png}
+\includegraphics{images/anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC-result.png}
 
 Viewers can also be explicitly selected by wrapping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 

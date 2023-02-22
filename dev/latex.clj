@@ -33,12 +33,15 @@
 ;;
 ;; ## Todos
 ;; - [x]  Title
-;; - [ ] Use `teaserfigure` for figures spanning the whole width
-;; - [ ] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
-;; - [ ] Bibliography (Bibtex vs. ~~Biblatex~~)
-;; - [ ] Decide which template to use (e.g. `sample-sigconf`)
+;; - [ ] ~Use `teaserfigure` for figures spanning the whole width~
+;; - [x] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
+;; - [ ] (?) Bibliography (Bibtex vs. ~~Biblatex~~)
+;; - [x] Decide which template to use (e.g. `sample-sigconf`)
 ;; - [x] Adapt Heading (Sections) Hierarchy
-;; - [ ] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
+;; - [x] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
+;; - [ ] Disable table sticky headers when taking result snapshots
+;; - [ ] Improve code listings (or ensure they fit into column)
+;; - [ ] Footnotes
 
 (declare md->pandoc)
 (def md->pandoc-transform
@@ -142,7 +145,7 @@
 
 (defn convert-result [{:as block :keys [id result]}]
   (let [{:as opts :keys [src poster-frame-src caption]} (v/->value result)
-        result-screenshot-path (str "images/result-" (name id) ".png")]
+        result-screenshot-path (str "images/" (name id) "-result.png")]
     (cond
       src
       {:type :paragraph ;; NOTE: Pandoc doesn't support images at block level
@@ -208,7 +211,7 @@
     (sh "tectonic" "README.tex")
     (sh "open" "README.pdf"))
 
-  ;; capture screenshots (needs ../clerk at
+  ;; capture screenshots
   (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
       :dir "../clerk/ui_tests")
 
