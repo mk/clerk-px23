@@ -349,7 +349,11 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
 
-\includegraphics{images/result-anon-expr-5du3vXfuRiWkftn1YUvbdRb8nEVf8F.png}
+\begin{figure}[H]
+\centering
+\includegraphics{images/clerk-side-by-side-with-emacs.png}
+\caption{\href{https://cdn.nextjournal.com/data/QmUwPGsUfvZhWo7jNCfq92hDhGMu2hNsVRq6sUVrVXdsfq?content-type=image/png}{Clerk side-by-side with Emacs}}
+\end{figure}
 
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
@@ -457,8 +461,6 @@ datasets/iris
 \includegraphics{images/result-anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT.png}
 
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
-
-\includegraphics{images/result-anon-expr-5drhGBZL7eJfRr1ugHxqr6u3fsUQuz.png}
 
 Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 

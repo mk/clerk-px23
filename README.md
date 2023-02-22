@@ -14,13 +14,15 @@
 
 ```clojure
 ^{::clerk/visibility {:result :hide}}
-(defn figure [opts]
+(defn figure [{:as opts ::clerk/keys [width]}]
   (clerk/with-viewer
     {:transform-fn (clerk/update-val
-                    (fn [{:keys [id src caption]}]
+                    (fn [{:keys [id src caption video?]}]
                       (clerk/html
-                       [:div.not-prose.overflow-hidden.rounded-lg {:id id}
-                        [:img {:src src}]
+                       [:div.not-prose.overflow-hidden {:id id :class (when-not (= :full width) "rounded-lg")}
+                        (if video?
+                          [:video {:loop true :controls true} [:source {:src src}]]
+                          [:img {:src src}])
                         (when caption
                           [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
                            [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] caption]])])))}
@@ -103,14 +105,13 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as [seen in _Clerk side-by-side with Emacs_](#clerk-side-by-side-with-emacs).
 
-``` clojure
-^{::clerk/width :full}
-(clerk/html
- [:div#clerk-side-by-side-with-emacs.not-prose
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmUwPGsUfvZhWo7jNCfq92hDhGMu2hNsVRq6sUVrVXdsfq?content-type=image/png"
+         :id "clerk-side-by-side-with-emacs"
+         :caption "Clerk side-by-side with Emacs"
+         ::clerk/width :full
+         :video? true})
 ```
 
 As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation[^maria]. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.

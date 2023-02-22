@@ -12,7 +12,8 @@
             [nextjournal.markdown :as md]
             [nextjournal.markdown.parser :as md.parser]
             [nextjournal.markdown.transform :as md.transform])
-  (:import (javax.imageio ImageIO)))
+  (:import (javax.imageio ImageIO)
+           (java.net URL)))
 
 ;; # $\LaTeX$ Conversion
 ;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions).
@@ -54,12 +55,12 @@
    :block-formula (fn [{:keys [text]}] {:t "Para" :c [{:t "Math" :c [{:t "DisplayMath"} text]}]})
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
-   :image (fn [{:as node :keys [attrs]}]
+   :image (fn [{:as node :keys [content attrs]}]
             (let [{:keys [src]} attrs
                   caption (md.transform/->text node)]
               {:t "Image",
                :c [["" [] [["width" "linewidth"]]]
-                   [{:t "Str" :c caption}]
+                   (keep md->pandoc content)
                    ;; a fig: will wrap the resulting \includegraphics in a figure environment
                    [src (str (when (not-empty caption) "fig:"))]]}))
    :softbreak (fn [_] {:t "SoftBreak"})
@@ -82,7 +83,8 @@
 (defn md->pandoc
   [{:as node :keys [type]}]
   (if-some [xf (get md->pandoc-transform type)]
-    (xf node)
+    (try (xf node)
+         (catch Exception e (throw (ex-info (str "Cannot convert node: " (pr-str node)) node e))))
     (throw (ex-info (str "Not implemented: '" type "'.") node))))
 
 (defn pandoc-> [pandoc-data format & {:keys [template] :or {template "template-sigconf.tex"}}]
@@ -129,9 +131,9 @@
       (->> (iterate z/next) (take 8))
       last z/node))
 
-(defn store-image-src! [{:keys [id src]}]
+(defn store-image-src! [{:keys [id src poster-frame-src]}]
   ;; CDN url responds with 451 (Unavailable for legal reasons)
-  (let [url (java.net.URL. (str/replace src "cdn." ""))
+  (let [url (URL. (str/replace (or poster-frame-src src) "cdn." ""))
         path (fs/path "images" (str id ".png"))]
     (fs/create-dirs "images")
     (when-not (fs/exists? path)
@@ -139,14 +141,19 @@
     (str path)))
 
 (defn convert-result [{:as block :keys [id result]}]
-  (let [{:as opts :keys [src caption]} (v/->value result)
+  (let [{:as opts :keys [src poster-frame-src caption]} (v/->value result)
         result-screenshot-path (str "images/result-" (name id) ".png")]
     (cond
       src
       {:type :paragraph ;; NOTE: Pandoc doesn't support images at block level
        :content [{:type :image
                   :attrs {:src (store-image-src! opts)}
-                  :content [{:type :text :text caption}]}]}
+                  :content (let [caption-text [{:type :text :text (str caption)}]]
+                             (if poster-frame-src
+                               [{:type :link
+                                 :attrs {:href poster-frame-src}
+                                 :content caption-text}]
+                               caption-text))}]}
       (fs/exists? result-screenshot-path)
       {:type :paragraph
        :content [{:type :image
