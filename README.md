@@ -364,13 +364,11 @@ In addition to the sorts of traditional data science use cases that one might ex
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database’s column names are made up of largely human-unreadable 8 character sequences:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#as400-column-names.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
+```clojure
+(figure {:id "as400-column-names"
+         :src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"
+         :caption "AS/400 Column Names"
+         ::clerk/width :wide})
 ```
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
