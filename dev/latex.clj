@@ -217,17 +217,11 @@
                      {:name "Jack Rusher"
                       :email "jack@nextjournal.com"}))))
 
-(defn manual-fixes [latex]
-  (-> latex
-      ;; Force images to be non-floating
-      (str/replace "\\begin{figure}" "\\begin{figure}[H]")))
-
 (comment
 
   ;; to latex
   (-> (clerk->pandoc "README.md")
       (pandoc-> "latex") #_(subs 5000 8000)
-      manual-fixes
       (->> (spit "README.tex")))
 
   ;; to pdf
