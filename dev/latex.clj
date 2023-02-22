@@ -47,7 +47,7 @@
 (def md->pandoc-transform
   {:doc (fn [{:as doc :keys [content]}]
           {:blocks (into [] (map md->pandoc) content)
-           :pandoc-api-version [1 22]
+           :pandoc-api-version [1 23]
            :meta {}})
 
    :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (keep md->pandoc content)]})
@@ -58,6 +58,16 @@
    :block-formula (fn [{:keys [text]}] {:t "Para" :c [{:t "Math" :c [{:t "DisplayMath"} text]}]})
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
+   :figure (fn [{:as node :keys [content attrs]}]
+             {:t "Figure"
+              :c [["" [] []]
+                  [nil [{:t "Plain"
+                         :c (keep md->pandoc content)}]]
+                  [{:t "Plain"
+                    :c [{:t "Image"
+                         :c [["" [] []]
+                             (keep md->pandoc content)
+                             [(:src attrs) (md.transform/->text node)]]}]}]]})
    :image (fn [{:as node :keys [content attrs]}]
             (let [{:keys [src]} attrs
                   caption (md.transform/->text node)]
@@ -90,10 +100,23 @@
          (catch Exception e (throw (ex-info (str "Cannot convert node: " (pr-str node)) node e))))
     (throw (ex-info (str "Not implemented: '" type "'.") node))))
 
+(def pandoc-exec
+  "pandoc"
+  #_"/usr/local/Cellar/pandoc/3.1/bin/pandoc"
+  #_"/opt/old-versions/pandoc")
+
+(defn assert-pandoc-3! []
+  (let [version (:out (sh pandoc-exec "--version"))]
+    (when-not (re-find #"^pandoc 3\.\d" version)
+      (throw (ex-info (str "LaTeX Conversion needs pandoc 3.x, found: " version)
+                      {:version version})))))
+#_(assert-pandoc-3!)
+
 (defn pandoc-> [pandoc-data format & {:keys [template] :or {template "template-sigconf.tex"}}]
+  (assert-pandoc-3!)
   (let [{:keys [exit out err]}
         (apply sh (filter some?
-                          ["pandoc" "--from" "json" "--to" format
+                          [pandoc-exec "--from" "json" "--to" format
                            (when template (str "--template=" template))
                            "--pdf-engine=tectonic"
                            ;;"--no-highlight"
@@ -103,7 +126,8 @@
     (if (zero? exit) out err)))
 
 (defn pandoc<- [input format]
-  (-> (sh "pandoc" "-f" format "-t" "json" :in input)
+  (assert-pandoc-3!)
+  (-> (sh pandoc-exec "-f" format "-t" "json" :in input)
       :out (json/read-str :key-fn keyword)))
 
 (defn meta-list [content] {:t "MetaList" :c content})
@@ -136,6 +160,7 @@
 
 (defn store-image-src! [{:keys [id src poster-frame-src]}]
   ;; CDN url responds with 451 (Unavailable for legal reasons)
+  (assert id)
   (let [url (URL. (str/replace (or poster-frame-src src) "cdn." ""))
         path (fs/path "images" (str id ".png"))]
     (fs/create-dirs "images")
@@ -148,15 +173,14 @@
         result-screenshot-path (str "images/" (name id) "-result.png")]
     (cond
       src
-      {:type :paragraph ;; NOTE: Pandoc doesn't support images at block level
-       :content [{:type :image
-                  :attrs {:src (store-image-src! opts)}
-                  :content (let [caption-text [{:type :text :text (str caption)}]]
-                             (if poster-frame-src
-                               [{:type :link
-                                 :attrs {:href poster-frame-src}
-                                 :content caption-text}]
-                               caption-text))}]}
+      {:type :figure
+       :attrs {:src (store-image-src! opts)}
+       :content (let [caption-text [{:type :text :text (str caption)}]]
+                  (if poster-frame-src
+                    [{:type :link
+                      :attrs {:href poster-frame-src}
+                      :content caption-text}]
+                    caption-text))}
       (fs/exists? result-screenshot-path)
       {:type :paragraph
        :content [{:type :image
@@ -215,10 +239,13 @@
   (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
       :dir "../clerk/ui_tests")
 
+  ;; pandoc version
+  (sh pandoc-exec "--version")
+
   ;; get Pandoc AST for testing
   (-> "![An Alt Text](real-image.png 'A title'){width=100%}"
-      (pandoc<- "markdown+footnotes")
-      #_(pandoc-> "latex" :template nil))
+      (pandoc<- "markdown+footnotes+implicit_figures")
+      #_ (pandoc-> "latex" :template nil))
 
   (-> (clerk.eval/eval-file "README.md")
       :blocks
