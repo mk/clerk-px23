@@ -61,14 +61,6 @@
   % backgroundcolor=\color{gray} % AWFUL!!
 }
 
-% FIXME:
-% Make figure env span 2 columns by default
-% \renewenvironment*{figure}{%
-%   \begin{figure*}[H]
-% }{%
-%   \end{figure*}%
-% }
-
 %% Pandoc Template Additions
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -301,8 +293,8 @@ Clerk is an open source Clojure programmer's assistant that builds upon the trad
 \maketitle
 
 %% Pandoc Template Entry
-\hypertarget{id}{%
-\section{Introduction: Literate Programming, Notebooks and Interactive Development}\label{id}}
+\hypertarget{introduction:-literate-programmingux2c-notebooks-and-interactive-development}{%
+\section{Introduction: Literate Programming, Notebooks and Interactive Development}\label{introduction:-literate-programmingux2c-notebooks-and-interactive-development}}
 
 Knuth\textquotesingle s \emph{Literate Programming} \footnote{An extensive archive of related material is maintained \href{http://www.literateprogramming.com}{here}.} emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
 
@@ -322,8 +314,8 @@ At the same time, though a number of Lisp environments have included graphical p
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit}\footnote{See \href{https://doi.org/10.1145/2846680.2846684}{Towards Moldable Development Tools} by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba} and \href{https://newspeaklanguage.org}{Newspeak}\footnote{See \href{https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel}{Ampleforth: A Live Literate Editor} by Gilad Bracha}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we\textquotesingle ll present here.
 
-\hypertarget{id}{%
-\section{Programming with Clerk}\label{id}}
+\hypertarget{programming-with-clerk}{%
+\section{Programming with Clerk}\label{programming-with-clerk}}
 
 \begin{quote}
 In such a future working relationship between human problem-solver and computer `clerk', the capability of the computer for executing mathematical processes would be used whenever it was needed.\footnote{See \href{https://www.dougengelbart.org/pubs/augment-3906.html}{Augmenting Human Intellect: A Conceptual Framework} by Douglas Engelbart.}
@@ -345,8 +337,8 @@ We have built Clerk on top of Clojure\footnote{For a description of the language
 
 While there are some rough edges around a few particularly tricky language features, these aspects have mostly worked out in our favor.
 
-\hypertarget{id}{%
-\subsection{Basic Interaction: Bring-Your-Own-Editor}\label{id}}
+\hypertarget{basic-interaction:-bring-your-own-editor}{%
+\subsection{Basic Interaction: Bring-Your-Own-Editor}\label{basic-interaction:-bring-your-own-editor}}
 
 Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our \emph{own team} to use an \href{https://nextjournal.com}{online browser-based notebook platform} that we also developed.
 
@@ -372,8 +364,8 @@ Clerk's audience is experienced Clojure developers who are familiar with interac
 
 Control and configuration of Clerk primarily occurs through evaluation of Clojure forms from within the programmer\textquotesingle s environment, rather than using outside control panels and settings. This integration with the programmer\textquotesingle s existing tooling eases adoption and allows advanced customization of the system through code.
 
-\hypertarget{id}{%
-\subsection{Fast Feedback: Caching \& Incremental Computation}\label{id}}
+\hypertarget{fast-feedback:-caching-ux5cux26-incremental-computation}{%
+\subsection{Fast Feedback: Caching \& Incremental Computation}\label{fast-feedback:-caching-ux5cux26-incremental-computation}}
 
 To keep feedback loops short, Clerk uses dependency analysis to limit recomputation to forms that haven\textquotesingle t previously been evaluated in Clerk.
 
@@ -407,8 +399,8 @@ When Clerk encounters an expression in which an atom\textquotesingle s mutable v
 
 This extension makes Clerk\textquotesingle s caching work naturally with idiomatic use of mutable state, and frees programmers from the need to manually opt out of caching for those expressions.
 
-\hypertarget{id}{%
-\subsection{Semantic differences from regular Clojure}\label{id}}
+\hypertarget{semantic-differences-from-regular-clojure}{%
+\subsection{Semantic differences from regular Clojure}\label{semantic-differences-from-regular-clojure}}
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
@@ -430,8 +422,8 @@ It is our goal to match the semantics of Clojure as closely as possible but as a
 
 We have included a mechanism to override Clerk\textquotesingle s error checking in cases where the user knows that one or more of these techniques are in use.
 
-\hypertarget{id}{%
-\subsection{Presentation}\label{id}}
+\hypertarget{presentation}{%
+\subsection{Presentation}\label{presentation}}
 
 Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user\textquotesingle s development environment. The client executes in a web browser running an embedded Clojure interpreter\footnote{\href{https://github.com/babashka/sci}{Small Clojure Interpreter} by Michiel Borkent}.
 
@@ -446,8 +438,8 @@ One benefit of using the browser for Clerk\textquotesingle s rendering layer is 
 
 It\textquotesingle s also possible to use Clerk\textquotesingle s presentation system in other contexts. We know of at least one case of a user leveraging Clerk\textquotesingle s presentation system to do in-process rendering without a browser.\footnote{See \href{https://github.com/phronmophobic/desk}{Desk}, by Adrian Smith.}
 
-\hypertarget{id}{%
-\subsection{Built-in Viewers}\label{id}}
+\hypertarget{built-in-viewers}{%
+\subsection{Built-in Viewers}\label{built-in-viewers}}
 
 \begin{figure}
 \centering
@@ -555,8 +547,8 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 
-\hypertarget{id}{%
-\subsection{Moldable Viewer API}\label{id}}
+\hypertarget{moldable-viewer-api}{%
+\subsection{Moldable Viewer API}\label{moldable-viewer-api}}
 
 Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojure hash maps. Clerk interprets the following optional keys in each viewer map:
 
@@ -580,15 +572,15 @@ Viewers can also be explicitly selected by wrapping a value in the \passthrough{
 
 The process of selecting viewers happens programmatically on the server side, thus using the programmer\textquotesingle s already existing interactive programming environment as a user interface.
 
-\hypertarget{id}{%
-\subsection{Sync}\label{id}}
+\hypertarget{sync}{%
+\subsection{Sync}\label{sync}}
 
 To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \passthrough{\lstinline!atom!} on the server is annotated with metadata indicating it is \passthrough{\lstinline!sync!}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
 
 In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom\textquotesingle s value. This allows us to use Clerk for small local-first apps, as shown in the \protect\hyperlink{regex-dictionary}{Regex Dictionary Example}.
 
-\hypertarget{id}{%
-\subsection{Tap Stream Inspector}\label{id}}
+\hypertarget{tap-stream-inspector}{%
+\subsection{Tap Stream Inspector}\label{tap-stream-inspector}}
 
 Clerk also comes with an inspector for Clojure\textquotesingle s tap system.
 
@@ -600,8 +592,8 @@ Clerk also comes with an inspector for Clojure\textquotesingle s tap system.
 
 When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk\textquotesingle s viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
 
-\hypertarget{id}{%
-\subsection{Prose-oriented Documents}\label{id}}
+\hypertarget{prose-oriented-documents}{%
+\subsection{Prose-oriented Documents}\label{prose-oriented-documents}}
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from \emph{some} computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with ``code-fenced'' source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
@@ -609,13 +601,13 @@ This format is very similar to other markdown-based notebooks, like \href{https:
 
 During the review process for this paper, one of the reviewers mentioned that they would have preferred a PDF document to a website. We took this is an opportunity to test the flexibility of our system, adding a LaTeX translation layer to produce a separate printable version. It sadly lacks the interactive features of the web presentation, but we are quite pleased with the quality of the document we were able to send to press with relatively little additional work.
 
-\hypertarget{id}{%
-\section{Examples of Moldable Development with Clerk}\label{id}}
+\hypertarget{examples-of-moldable-development-with-clerk}{%
+\section{Examples of Moldable Development with Clerk}\label{examples-of-moldable-development-with-clerk}}
 
 In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant\footnote{We use this term in appreciation of pioneering historical work by Warren Teitelman.} that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
 
-\hypertarget{id}{%
-\subsection{Augmenting table names}\label{id}}
+\hypertarget{augmenting-table-names}{%
+\subsection{Augmenting table names}\label{augmenting-table-names}}
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
 
@@ -641,8 +633,8 @@ With Clerk, were able to render the output as a graphical table without the limi
 \caption{\href{https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4}{Augmented Table Headings}}
 \end{figure}
 
-\hypertarget{id}{%
-\subsection{Rich documentation features}\label{id}}
+\hypertarget{rich-documentation-features}{%
+\subsection{Rich documentation features}\label{rich-documentation-features}}
 
 This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package\footnote{The full documentation is \href{https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html}{here}.}. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
@@ -652,8 +644,8 @@ This example illustrates the use of Clerk to create rich documentation for \pass
 \caption{Custom Viewers for Clojure2d's Colors Library}
 \end{figure}
 
-\hypertarget{id}{%
-\subsection{Regex Dictionary}\label{id}}
+\hypertarget{regex-dictionary}{%
+\subsection{Regex Dictionary}\label{regex-dictionary}}
 
 Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
@@ -671,8 +663,8 @@ It is built using a Clojure atom containing the text input's current value that 
 \caption{Printing the value of a synced Clojure atom}
 \end{figure}
 
-\hypertarget{id}{%
-\subsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{id}}
+\hypertarget{lurk:-interactive-lucene-powered-log-search}{%
+\subsection{\texorpdfstring{\href{https://github.com/nextjournal/lurk}{Lurk}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{lurk:-interactive-lucene-powered-log-search}}
 
 Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk\textquotesingle s default notebook styling via Clerk's CSS customization options.
 
@@ -682,8 +674,8 @@ Also building on Clerk's sync feature, this interactive log search uses \href{ht
 \caption{\href{https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4}{Interactive Log Search}}
 \end{figure}
 
-\hypertarget{id}{%
-\subsection{Experience}\label{id}}
+\hypertarget{experience}{%
+\subsection{Experience}\label{experience}}
 
 Our experience as the developers and users of Clerk has been quite positive, but we\textquotesingle re heavily biased. We\textquotesingle ve chosen a few quotes from Clerk\textquotesingle s user base to give a sense of how it has been received in the community:
 
@@ -709,8 +701,8 @@ I just wanted to express some gratitude for Clerk. It's been a game changer for 
 -- Jeffrey Simon
 \end{quote}
 
-\hypertarget{id}{%
-\section{Related}\label{id}}
+\hypertarget{related}{%
+\section{Related}\label{related}}
 
 Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems:
 
@@ -728,8 +720,8 @@ Besides the systems mentioned earlier in the paper, there are a number of other 
 
 This convergent evolution suggests to us that there is more to explore in this direction.
 
-\hypertarget{id}{%
-\section{Future Work}\label{id}}
+\hypertarget{future-work}{%
+\section{Future Work}\label{future-work}}
 
 Our goal with the development of Clerk is to \emph{leave the toolbox open}: we want Clerk\textquotesingle s users to be able to customize the behavior of the running system in a predictable way, often by providing functions to the system at runtime.
 
@@ -753,8 +745,8 @@ We\textquotesingle re also actively exploring different ways of bringing an expl
 
 We\textquotesingle ve been discussing ways to write changes originating from controls in Clerk\textquotesingle s view back to source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works by overwriting source files insufficient. Because this is a significant chunk of work, and will require a different solution for each editor, we\textquotesingle ve avoided it until now. Since there certainly are many tasks for which direct manipulation can be more effective than editing text in a code editor, we\textquotesingle re excited to explore this direction in the future.
 
-\hypertarget{id}{%
-\section{Conclusion}\label{id}}
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
 
 We\textquotesingle ve been pleasently surprised with how useful Clerk has been in our day-to-day work, and the adoption it has received within the larger Clojure community suggests we are not the only ones to feel this way. We believe there are two key factors in Clerk\textquotesingle s design that enable this:
 

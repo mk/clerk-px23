@@ -52,7 +52,12 @@
              :pandoc-api-version [1 23]
              :meta {}}))
 
-   :heading (fn [{:keys [content heading-level]}] {:t "Header" :c [heading-level ["id" [] []] (into [] (keep md->pandoc) content)]})
+   :heading (fn [{:as node :keys [content heading-level]}]
+              {:t "Header"
+               :c [heading-level
+                   [(:id (md.parser/text->id+emoji (md.transform/->text node))) [] []]
+                   (into [] (keep md->pandoc) content)]})
+
    :paragraph (fn [{:keys [content]}] {:t "Para" :c (into [] (keep md->pandoc) content)})
    :plain (fn [{:keys [content]}] {:t "Plain" :c (into [] (keep md->pandoc) content)})
    :blockquote (fn [{:keys [content]}] {:t "BlockQuote" :c (into [] (keep md->pandoc) content)})
@@ -242,9 +247,7 @@
   (sh pandoc-exec "--version")
 
   ;; get Pandoc AST for testing
-  (-> "A nice text[^note]
-
-[^note]: This is _real_ a note."
+  (-> "## A nice title {#nice-title}"
       #_ md/parse #_ md->pandoc
       (pandoc<- "markdown+footnotes+implicit_figures")
       #_ (pandoc-> "latex" :template nil)))
