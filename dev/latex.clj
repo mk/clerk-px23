@@ -138,7 +138,7 @@
                        (let [bib-entry (doi->bib doi)
                              bib-key (bib-entry->key bib-entry)]
                          (swap! *bib-entries* assoc bib-key bib-entry)
-                         {:t "RawInline", :c ["tex" (str "\\cite{" bib-key "}")]})
+                         {:t "RawInline", :c ["tex" (str " \\cite{" bib-key "}")]})
                        {:t "Note" :c (into [] (keep md->pandoc) content)})))})
 
 (defn md->pandoc
@@ -292,7 +292,7 @@
 
   ;; to pdf
   (do
-    (sh "tectonic" "README.tex")
+    (sh "tectonic" "--keep-intermediates" "README.tex")
     (sh "open" "README.pdf"))
 
   ;; capture screenshots
