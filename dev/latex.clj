@@ -242,7 +242,7 @@
                       :content [{:type :plain
                                  :content [{:type :em
                                             :content [{:type :text :text "If you can, we’d prefer you read the interactive website version of this essay at "}
-                                                      {:type :link :attrs {:href "px23.clerk.vision"}
+                                                      {:type :link :attrs {:href "https://px23.clerk.vision"}
                                                        :content [{:type :text :text "px23.clerk.vision"}]}]}]}]})
       z/root))
 
