@@ -91,7 +91,7 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 
 We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/wiki/Java_virtual_machine). Several aspects of the language make it an appealing target for this project: 
 
-[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
+[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://doi.org/10.1145/3386321).
 
 * being a Lisp, there is limited syntax with which to contend, and the language comes with good libraries for meta-linguistic programming
 * an emphasis on pure functions and immutable data structures makes static analysis easier
@@ -149,7 +149,7 @@ This combination of immutability and indirection makes distributing the cache tr
 
 > While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
 
-[^history-of-clojure]: [A History of Clojure](https://download.clojure.org/papers/clojure-hopl-iv-final.pdf), Rich Hickey
+[^history-of-clojure]: [A History of Clojure](https://doi.org/10.1145/3386321), Rich Hickey
 
 It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value with [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
 

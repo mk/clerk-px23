@@ -323,7 +323,7 @@ In such a future working relationship between human problem-solver and computer 
 -- Douglas Engelbart
 \end{quote}
 
-We have built Clerk on top of Clojure\footnote{For a description of the language and its motivations, see \href{https://dl.acm.org/doi/10.1145/3386321}{A history of Clojure}.}, a functional-by-default Lisp dialect primarily hosted on the \href{https://en.wikipedia.org/wiki/Java_virtual_machine}{Java Virtual Machine}. Several aspects of the language make it an appealing target for this project:
+We have built Clerk on top of Clojure \cite{Hickey_2020}, a functional-by-default Lisp dialect primarily hosted on the \href{https://en.wikipedia.org/wiki/Java_virtual_machine}{Java Virtual Machine}. Several aspects of the language make it an appealing target for this project:
 
 \begin{itemize}
 \tightlist
@@ -390,7 +390,7 @@ The on-disk caches use a content-addressed store where each result is stored usi
 This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 \begin{quote}
-While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.\footnote{\href{https://download.clojure.org/papers/clojure-hopl-iv-final.pdf}{A History of Clojure}, Rich Hickey}
+While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data. \cite{Hickey_2020}
 \end{quote}
 
 It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State}}. While there are several of these constructs in the language, in practice \href{https://clojure.org/reference/atoms}{atoms} are the most popular by far. An atom allows reading the current value inside it with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}} and updating it\textquotesingle s value with \href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}.

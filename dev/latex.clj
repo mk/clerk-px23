@@ -36,13 +36,13 @@
 ;; - [x]  Title
 ;; - [ ] ~Use `teaserfigure` for figures spanning the whole width~
 ;; - [x] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
-;; - [ ] (?) Bibliography (Bibtex vs. ~~Biblatex~~)
+;; - [x] Bibliography (Bibtex vs. ~~Biblatex~~) via DOI-links to bib entry conversions (e.g https://www.doi2bib.org/)
 ;; - [x] Decide which template to use (e.g. `sample-sigconf`)
 ;; - [x] Adapt Heading (Sections) Hierarchy
 ;; - [x] Results to Images or Pdf (?) (https://reachtim.com/include-html-in-latex.html)
 ;; - [ ] Disable table sticky headers when taking result snapshots
-;; - [ ] Improve code listings (or ensure they fit into column)
-;; - [ ] Footnotes
+;; - [x] Improve code listings (or ensure they fit into column)
+;; - [x] Footnotes
 
 (def ^:dynamic *footnotes* nil)
 (def ^:dynamic *bib-entries* nil)
