@@ -283,6 +283,12 @@
 
 #_(clerk->latex! {})
 
+;; # Usage:
+;; 1. Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be shown at localhost:7676)
+;; 2. run `(clerk->latex! {})
+;; 3. run `(sh "tectonic" "--keep-intermediates" "README.tex")` to produce a pdf
+;;
+;; See comments below:
 (comment
 
   ;; to latex
