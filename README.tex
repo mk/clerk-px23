@@ -300,7 +300,7 @@ Knuth\textquotesingle s \emph{Literate Programming} \footnote{An extensive archi
 
 At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur\textquotesingle s \emph{Milo}, PARC\textquotesingle s \emph{Tioga} and \emph{Camino Real}, and commercial software like \emph{MathCAD}\footnote{See \href{https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf}{A Survey of User Interfaces for Computer Algebra Systems} for a history of these systems up until 1998.}.
 
-In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)\cite{Chattopadhyay_2020}.
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices) \cite{Chattopadhyay_2020}.
 
 Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are in no hurry to lose.
 
@@ -453,9 +453,11 @@ Clerk's built-in viewers try to suit themselves to typical Data Science use case
 
 Here is an interactive example of the well-known \passthrough{\lstinline!iris!} data set, which we\textquotesingle ve added as a dependency to this notebook. Clicking the disclosure triangles will expand the data structure:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 datasets/iris
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT-result.png}
 
@@ -469,14 +471,17 @@ Additional affordances are automatic expansion of a nested data structure based 
 
 Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (clerk/table datasets/iris)
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
 
 Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive \href{https://vega.github.io/vega-lite/}{Vega-Lite} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (clerk/vl {:data {:values datasets/iris}
            :width 500
@@ -493,6 +498,7 @@ Together with tables, plots are the most commonly used viewer for Data Science u
                           :scale {:zero false}}}
            :embed/opts {:actions false}})
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv-result.png}
 
@@ -500,14 +506,17 @@ It is important to note that Clerk's viewers work in a way that encourages compo
 
 A typical Clerk workflow for this would be to first take a look at the shape of the data:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 datasets/air-passengers
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j-result.png}
 
 Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (defn sparkline [values]
   (clerk/vl {:data {:values (map-indexed (fn [i n] {:x i :y n}) values)}
@@ -519,17 +528,21 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to ge
                         :y {:field :y :type :quantitative :axis nil :background nil}}
              :embed/opts {:actions false}}))
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/sparkline-result.png}
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (sparkline (shuffle (range 30)))
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (clerk/table
  {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
@@ -542,6 +555,7 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
                               [(sparkline (map :n months))]))))
              (sort-by first))})
 \end{lstlisting}
+\end{minipage}
 
 \includegraphics{images/anon-expr-5dsSs4YJ9LYoxsu8USvFMpW5wGuDa3-result.png}
 

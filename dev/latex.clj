@@ -250,9 +250,12 @@
                                            :markdown (:content doc)
                                            :code (cond-> []
                                                    (= :show code-visibility)
-                                                   (conj {:type :code
-                                                          :language "clojure"
-                                                          :content [{:type :text :text text-without-meta}]})
+                                                   (conj {:type :plain
+                                                          :content [{:type :raw-inline
+                                                                     :kind "tex"
+                                                                     :text (str "\\begin{minipage}{\\linewidth}\n\\begin{lstlisting}\n"
+                                                                                text-without-meta
+                                                                                "\n\\end{lstlisting}\n\\end{minipage}")}]})
                                                    (= :show result-visibility)
                                                    (conj-some (convert-result block))))))
                                      ;; drop custom abstract and helpers
