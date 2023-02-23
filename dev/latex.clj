@@ -236,6 +236,16 @@
 
 (defn conj-some [xs x] (cond-> xs x (conj x)))
 
+(defn add-interactivity-notice [doc]
+  (-> doc md.parser/->zip z/down
+      (z/insert-left {:type :blockquote
+                      :content [{:type :plain
+                                 :content [{:type :em
+                                            :content [{:type :text :text "If you can, we’d prefer you read the interactive website version of this essay at "}
+                                                      {:type :link :attrs {:href "px23.clerk.vision"}
+                                                       :content [{:type :text :text "px23.clerk.vision"}]}]}]}]})
+      z/root))
+
 (defn clerk->pandoc [file]
   (reset-bib-entries!)
   (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)
@@ -261,6 +271,7 @@
                                      ;; drop custom abstract and helpers
                                      (drop 5 blocks))}
                    promote-headings
+                   add-interactivity-notice
                    md->pandoc
                    (assoc-in [:meta :title] (meta-content title))
                    (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
