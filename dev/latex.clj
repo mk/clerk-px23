@@ -12,8 +12,9 @@
             [nextjournal.markdown :as md]
             [nextjournal.markdown.parser :as md.parser]
             [nextjournal.markdown.transform :as md.transform])
-  (:import (javax.imageio ImageIO)
-           (java.net URL)))
+  (:import (java.net.http HttpClient HttpClient$Redirect HttpRequest HttpResponse$BodyHandlers)
+           (javax.imageio ImageIO)
+           (java.net URL URI)))
 
 ;; # $\LaTeX$ Conversion
 ;; We're using [Pandoc](pandoc.org) and [Tectonic]() following [submission guidelines](https://2023.programming-conference.org/home/px-2023#submissions).
@@ -65,6 +66,7 @@
    :block-formula (fn [{:keys [text]}] {:t "Para" :c [{:t "Math" :c [{:t "DisplayMath"} text]}]})
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
+   :raw-inline (fn [{:keys [kind text]}] {:t "RawInline", :c [kind text]})
    :figure (fn [{:as node :keys [content attrs]}]
              {:t "Figure"
               :c [["" [] []]
@@ -160,6 +162,43 @@
                        (= :heading (:type (z/node z)))
                        (z/edit update :heading-level dec)))))))
 
+(def doi->bib
+  (memoize (fn [doi]
+             (.body (.send (.. (HttpClient/newBuilder) (followRedirects HttpClient$Redirect/ALWAYS) build)
+                           (.. (HttpRequest/newBuilder)
+                               (header "accept" "application/x-bibtex")
+                               (uri (URI. doi))
+                               build) (HttpResponse$BodyHandlers/ofString))))))
+
+#_(doi->bib "https://doi.org/10.1145/2846680.2846684")
+
+(defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
+(defn reset-bib-entries! [] (spit (fs/file "bibliography.bib")
+                                  (str (first (str/split (slurp "bibliography.bib") #"%Entries"))
+                                       "%Entries\n")))
+#_ (reset-bib-entries!)
+(defn append-bib-entry! [entry] (fs/write-lines "bibliography.bib" ["" entry] {:append true}))
+(defn doi-link->citation! [node store]
+  (let [bib-entry (doi->bib (get-in node [:attrs :href]))
+        bib-key (bib-entry->key bib-entry)]
+    (swap! store assoc bib-key bib-entry)
+    {:type :raw-inline :kind "tex"
+     :text (str "\\cite{" bib-key "}")}))
+
+(defn transform-doi-citations! [content]
+  (let [!bib-entries (atom {})
+        new-content (loop [z (md.parser/->zip {:type :top :content content})]
+                      (let [{:keys [attrs type]} (z/node z)]
+                        (cond
+                          (z/end? z) (:content (z/root z))
+                          (= :link type)
+                          (recur (z/next (if (str/starts-with? (:href attrs) "https://doi.org")
+                                           (z/edit z doi-link->citation! !bib-entries)
+                                           z)))
+                          :else (recur (z/next z)))))]
+    (doseq [[_ entry] @!bib-entries] (append-bib-entry! entry))
+    new-content))
+
 (defn get-abstract [{:keys [blocks]}]
   (-> blocks (nth 4)
       :result v/->value v/->value
@@ -198,10 +237,11 @@
 (defn conj-some [xs x] (cond-> xs x (conj x)))
 
 (defn clerk->pandoc [file]
+  (reset-bib-entries!)
   (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
     (-> {:type :doc
          :title title
-         :footnotes footnotes
+         :footnotes (transform-doi-citations! footnotes)
          :content (mapcat (fn [{:as block :keys [type doc visibility text-without-meta]}]
                             (let [{code-visibility :code result-visibility :result} visibility]
                               (case type
@@ -227,6 +267,14 @@
                      {:name "Jack Rusher"
                       :email "jack@nextjournal.com"}))))
 
+(defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
+  (let [out-file (str (first (fs/split-ext file)) ".tex")]
+    (-> (clerk->pandoc file)
+        (pandoc-> "latex")
+        (->> (spit out-file)))))
+
+#_ (clerk->latex! {})
+
 (comment
 
   ;; to latex
@@ -247,7 +295,7 @@
   (sh pandoc-exec "--version")
 
   ;; get Pandoc AST for testing
-  (-> "## A nice title {#nice-title}"
+  (-> "should cite \\cite{thorsten93} ok"
       #_ md/parse #_ md->pandoc
-      (pandoc<- "markdown+footnotes+implicit_figures")
+      (pandoc<- "markdown+footnotes+implicit_figures+raw_tex")
       #_ (pandoc-> "latex" :template nil)))
