@@ -44,11 +44,43 @@
 ;; - [ ] Improve code listings (or ensure they fit into column)
 ;; - [ ] Footnotes
 
-(def ^:dynamic *footnotes* [])
+(def ^:dynamic *footnotes* nil)
+(def ^:dynamic *bib-entries* nil)
+
 (declare md->pandoc)
+
+(def doi->bib
+  (memoize (fn [doi]
+             (.body (.send (.. (HttpClient/newBuilder) (followRedirects HttpClient$Redirect/ALWAYS) build)
+                           (.. (HttpRequest/newBuilder)
+                               (header "accept" "application/x-bibtex")
+                               (uri (URI. doi))
+                               build) (HttpResponse$BodyHandlers/ofString))))))
+
+#_(doi->bib "https://doi.org/10.1145/2846680.2846684")
+
+(defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
+(defn reset-bib-entries! [] (spit (fs/file "bibliography.bib")
+                                  (str (first (str/split (slurp "bibliography.bib") #"%Entries"))
+                                       "%Entries\n")))
+#_(reset-bib-entries!)
+(defn append-bib-entry! [entry] (fs/write-lines "bibliography.bib" ["" entry] {:append true}))
+
+(defn find-doi [node]
+  (loop [z (md.parser/->zip node)]
+    (let [{:keys [attrs type]} (z/node z)]
+      (cond
+        (z/end? z) nil
+        (= :link type)
+        (if (str/starts-with? (:href attrs) "https://doi.org")
+          (:href attrs)
+          (recur (z/next z)))
+        :else (recur (z/next z))))))
+
 (def md->pandoc-transform
-  {:doc (fn [{:as doc :keys [content footnotes]}]
-          (binding [*footnotes* footnotes]
+  {:doc (fn [{:as doc :keys [content footnotes !bib-entries]}]
+          (binding [*footnotes* footnotes
+                    *bib-entries* !bib-entries]
             {:blocks (into [] (keep md->pandoc) content)
              :pandoc-api-version [1 23]
              :meta {}}))
@@ -100,9 +132,14 @@
 
    ;; TODO: https://pandoc.org/MANUAL.html#footnotes
    :footnote-ref (fn [{:keys [ref]}]
-                   (let [{:as fn :keys [content]} (get *footnotes* ref)]
-                     (when-not fn (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
-                     {:t "Note" :c (into [] (keep md->pandoc) content)}))})
+                   (let [{:as footnote :keys [content]} (get *footnotes* ref)]
+                     (when-not footnote (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
+                     (if-some [doi (find-doi footnote)]
+                       (let [bib-entry (doi->bib doi)
+                             bib-key (bib-entry->key bib-entry)]
+                         (swap! *bib-entries* assoc bib-key bib-entry)
+                         {:t "RawInline", :c ["tex" (str "\\cite{" bib-key "}")]})
+                       {:t "Note" :c (into [] (keep md->pandoc) content)})))})
 
 (defn md->pandoc
   [{:as node :keys [type]}]
@@ -162,43 +199,6 @@
                        (= :heading (:type (z/node z)))
                        (z/edit update :heading-level dec)))))))
 
-(def doi->bib
-  (memoize (fn [doi]
-             (.body (.send (.. (HttpClient/newBuilder) (followRedirects HttpClient$Redirect/ALWAYS) build)
-                           (.. (HttpRequest/newBuilder)
-                               (header "accept" "application/x-bibtex")
-                               (uri (URI. doi))
-                               build) (HttpResponse$BodyHandlers/ofString))))))
-
-#_(doi->bib "https://doi.org/10.1145/2846680.2846684")
-
-(defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
-(defn reset-bib-entries! [] (spit (fs/file "bibliography.bib")
-                                  (str (first (str/split (slurp "bibliography.bib") #"%Entries"))
-                                       "%Entries\n")))
-#_ (reset-bib-entries!)
-(defn append-bib-entry! [entry] (fs/write-lines "bibliography.bib" ["" entry] {:append true}))
-(defn doi-link->citation! [node store]
-  (let [bib-entry (doi->bib (get-in node [:attrs :href]))
-        bib-key (bib-entry->key bib-entry)]
-    (swap! store assoc bib-key bib-entry)
-    {:type :raw-inline :kind "tex"
-     :text (str "\\cite{" bib-key "}")}))
-
-(defn transform-doi-citations! [content]
-  (let [!bib-entries (atom {})
-        new-content (loop [z (md.parser/->zip {:type :top :content content})]
-                      (let [{:keys [attrs type]} (z/node z)]
-                        (cond
-                          (z/end? z) (:content (z/root z))
-                          (= :link type)
-                          (recur (z/next (if (str/starts-with? (:href attrs) "https://doi.org")
-                                           (z/edit z doi-link->citation! !bib-entries)
-                                           z)))
-                          :else (recur (z/next z)))))]
-    (doseq [[_ entry] @!bib-entries] (append-bib-entry! entry))
-    new-content))
-
 (defn get-abstract [{:keys [blocks]}]
   (-> blocks (nth 4)
       :result v/->value v/->value
@@ -238,34 +238,39 @@
 
 (defn clerk->pandoc [file]
   (reset-bib-entries!)
-  (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)]
-    (-> {:type :doc
-         :title title
-         :footnotes (transform-doi-citations! footnotes)
-         :content (mapcat (fn [{:as block :keys [type doc visibility text-without-meta]}]
-                            (let [{code-visibility :code result-visibility :result} visibility]
-                              (case type
-                                :markdown (:content doc)
-                                :code (cond-> []
-                                        (= :show code-visibility)
-                                        (conj {:type :code
-                                               :language "clojure"
-                                               :content [{:type :text :text text-without-meta}]})
-                                        (= :show result-visibility)
-                                        (conj-some (convert-result block))))))
-                          ;; drop custom abstract and helpers
-                          (drop 5 blocks))}
-        promote-headings
-        md->pandoc
-        (assoc-in [:meta :title] (meta-content title))
-        (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
-        (assoc-in [:meta :keyword] (meta-list (map meta-content ["Literate Programming" "Moldable Development"])))
-        (add-authors {:name "Martin Kavalar"
-                      :email "martin@nextjournal.com"}
-                     {:name "Philippa Markovics"
-                      :email "philippa@nextjournal.com"}
-                     {:name "Jack Rusher"
-                      :email "jack@nextjournal.com"}))))
+  (let [{:as clerk-doc :keys [title footnotes blocks]} (clerk.eval/eval-file file)
+        !bib-entries (atom {})
+        result (-> {:type :doc
+                    :title title
+                    :footnotes footnotes
+                    :!bib-entries !bib-entries
+                    :content (mapcat (fn [{:as block :keys [type doc visibility text-without-meta]}]
+                                       (let [{code-visibility :code result-visibility :result} visibility]
+                                         (case type
+                                           :markdown (:content doc)
+                                           :code (cond-> []
+                                                   (= :show code-visibility)
+                                                   (conj {:type :code
+                                                          :language "clojure"
+                                                          :content [{:type :text :text text-without-meta}]})
+                                                   (= :show result-visibility)
+                                                   (conj-some (convert-result block))))))
+                                     ;; drop custom abstract and helpers
+                                     (drop 5 blocks))}
+                   promote-headings
+                   md->pandoc
+                   (assoc-in [:meta :title] (meta-content title))
+                   (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
+                   (assoc-in [:meta :keyword] (meta-list (map meta-content ["Literate Programming" "Moldable Development"])))
+                   (add-authors {:name "Martin Kavalar"
+                                 :email "martin@nextjournal.com"}
+                                {:name "Philippa Markovics"
+                                 :email "philippa@nextjournal.com"}
+                                {:name "Jack Rusher"
+                                 :email "jack@nextjournal.com"}))]
+
+    (doseq [[_ entry] @!bib-entries] (append-bib-entry! entry))
+    result))
 
 (defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
   (let [out-file (str (first (fs/split-ext file)) ".tex")]
@@ -273,7 +278,7 @@
         (pandoc-> "latex")
         (->> (spit out-file)))))
 
-#_ (clerk->latex! {})
+#_(clerk->latex! {})
 
 (comment
 
@@ -296,6 +301,6 @@
 
   ;; get Pandoc AST for testing
   (-> "should cite \\cite{thorsten93} ok"
-      #_ md/parse #_ md->pandoc
+      #_md/parse #_md->pandoc
       (pandoc<- "markdown+footnotes+implicit_figures+raw_tex")
-      #_ (pandoc-> "latex" :template nil)))
+      #_(pandoc-> "latex" :template nil)))
