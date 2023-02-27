@@ -344,6 +344,22 @@ Clerk also comes with an inspector for Clojure's tap system.
 
 When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk's viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
 
+### Programming by Example
+
+The [comment](https://clojuredocs.org/clojure.core/comment) macro in Clojure is typically used to annotate source code with rich examples that exercise the program during development and aid comprehension.
+
+Clerk's example macro expands on that by showing the source code next to the evaluation result.
+
+```clojure
+{::clerk/visibility {:code :show}}
+(clerk/example
+  (+ 40 2)
+  (-> 42 range shuffle)
+  (clerk/code (macroexpand '(clerk/example (inc 41))))
+  (clerk/html [:h1 "👋"]))
+```
+
+
 ### Prose-oriented Documents
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from _some_ computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with “code-fenced” source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
