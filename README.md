@@ -59,7 +59,7 @@ At the same time, other software was developed to target scientific use cases ra
 
 [^mathematical-software]: See [A Survey of User Interfaces for Computer Algebra Systems](https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf) for a history of these systems up until 1998 ([DOI](https://doi.org/10.1006/jsco.1997.0170)).
 
-In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like [Jupyter](https://jupyter.org) and [Observable](https://observablehq.com). In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)[^notebook-pain-points].
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like [Jupyter](https://jupyter.org), [Observable](https://observablehq.com), [Pluto][pluto], and [Livebook][livebook]. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)[^notebook-pain-points].
 
 [^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
 
@@ -77,9 +77,9 @@ At the same time, though a number of Lisp environments have included graphical p
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org), [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org)[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
-[^moldable-tools]: See [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
+[^moldable-tools]: [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
-[^ample-forth]: See [Ampleforth: A Live Literate Editor](https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel) by Gilad Bracha
+[^ample-forth]: [Ampleforth: A Live Literate Editor](https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel) by Gilad Bracha
 
 ## Programming with Clerk
 
@@ -464,7 +464,7 @@ Our experience as the developers and users of Clerk has been quite positive, but
 > 
 > It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
 > 
-> – Robert Stuttaford[^tweets]
+> – Robert Stuttaford
 
 > I'm using Clerk to visualize statistics properties from a simulation in a model checker [...] it's basically a wrapper over TLA+ [...]
 >
@@ -478,14 +478,15 @@ Our experience as the developers and users of Clerk has been quite positive, but
 
 ## Related
 
-Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems:
+Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems. Many of them introduce the viewing layer to the editor itself, as seen in various Smalltalk experiments (Moldable Development[^moldable-tools],  Newspeak[^newspeak],  Babylonian Programming[^babylonian], etc), and in recent work on LiveLits[^filling-typed-holes] and visual syntactic extensions to the Racket programming language[^interactive-visual-syntax].
 
-* [Org mode][org-mode] is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
-* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators.
-* [Pluto][pluto] is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
-* [Livebook][livebook] is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
+In contrast, because we have found it more persuasive to argue for the use of such systems in the context of a user's existing tooling, we've focused on an approach that supplements existing workflows with a sidecar previewer. Other systems that have taken a similar approach include:
 
-This convergent evolution suggests to us that there is more to explore in this direction.
+* [Org mode][org-mode] is a major mode for [Emacs](https://www.gnu.org/software/emacs/) supporting polyglot literate programming based on a plain text format. Org's approach is in many ways similar to our Markdown mode, where explicit code fences are used to introduce programmatic constructs to a document, and a variety of previewers are available for org files, though in a fragmented ecosystem where each kind of application requires a different kind of previewer. We were partially inspired by positive experiences using org-mode in the design of Clerk, though we focused more on our annotated source code format.
+
+* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators. While there are several similarities between Clerk and Steamlits, the two systems have a very different focus. Streamlit is primarily a rapid application development environment, without Clerk's focus on Literate Programming and Moldable Development.
+
+We are pleased to see a number of other systems working with annotated source code, including [Pluto][pluto] and [Livebook][livebook], and consider this convergent evolution toward tools that developers will actually use a positive trend.
 
 ## Future Work
 
@@ -521,3 +522,11 @@ We'd love to see folks apply these design choices to other programming ecosystem
 [pluto]:https://plutojl.org
 [livebook]:https://livebook.dev
 [org-mode]:https://orgmode.org
+
+[^newspeak]: [Enhancing Liveness with Exemplars in the Newspeak IDE](https://newspeaklanguage.org/pubs/newspeak-exemplars.pdf) by Gilad Bracha.
+
+[^babylonian]: [Babylonian-style Programming: Design and Implementation of an Integration of Live Examples into General-purpose Source Code](https://doi.org/10.22152/programming-journal.org/2019/3/9) by David Rauch, Patrick Rein, Stefan Ramson, Jens Lincke, Robert Hirschfeld.
+
+[^interactive-visual-syntax]: [Adding interactive visual syntax to textual code](https://doi.org/10.1145/3428290) by Andersen, Leif and Ballantyne, Michael and Felleisen, Matthias
+
+[^filling-typed-holes]: [Filling Typed Holes with Live GUIs](https://doi.org/10.1145/3453483.3454059) by Cyrus Omar, David Moon, Andrew Blinn, Ian Voysey, Nick Collins, and Ravi Chugh.
