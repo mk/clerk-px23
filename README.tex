@@ -610,6 +610,25 @@ Clerk also comes with an inspector for Clojure\textquotesingle s tap system.
 
 When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk\textquotesingle s viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
 
+\hypertarget{programming-by-example}{%
+\subsection{Programming by Example}\label{programming-by-example}}
+
+The \href{https://clojuredocs.org/clojure.core/comment}{comment} macro in Clojure is typically used to annotate source code with rich examples that exercise the program during development and aid comprehension.
+
+Clerk\textquotesingle s example macro expands on that by showing the source code next to the evaluation result.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+(clerk/example
+  (+ 40 2)
+  (-> 42 range shuffle)
+  (clerk/code (macroexpand '(clerk/example (inc 41))))
+  (clerk/html [:h1 "👋"]))
+\end{lstlisting}
+\end{minipage}
+
+\includegraphics{images/anon-expr-5dtPQwixfSw57U4Tdiwqwrsj2tVHu1-result.png}
+
 \hypertarget{prose-oriented-documents}{%
 \subsection{Prose-oriented Documents}\label{prose-oriented-documents}}
 
