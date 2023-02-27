@@ -275,7 +275,12 @@
                    md->pandoc
                    (assoc-in [:meta :title] (meta-content title))
                    (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
-                   (assoc-in [:meta :keyword] (meta-list (map meta-content ["Literate Programming," "Moldable Development"])))
+                   (assoc-in [:meta :keyword] (meta-list (map meta-content ["literate programming"
+                                                                            "moldable development"
+                                                                            "live programming"
+                                                                            "clojure"
+                                                                            "lisp"
+                                                                            "notebooks"])))
                    (add-authors {:name "Martin Kavalar"
                                  :email "martin@nextjournal.com"}
                                 {:name "Philippa Markovics"
