@@ -351,7 +351,7 @@ The [comment](https://clojuredocs.org/clojure.core/comment) macro in Clojure is 
 Clerk's example macro expands on that by showing the source code next to the evaluation result.
 
 ```clojure
-{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show}}
 (clerk/example
   (+ 40 2)
   (-> 42 range shuffle)
