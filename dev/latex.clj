@@ -26,11 +26,18 @@
 ;; - tectonic (`brew install tectonic`)
 ;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template) (relevant .cls files added to repo)
 ;;
-;; ## Pandoc Template Tweaks
-;; The following changes were needed for `sample-sigconf.tex` to be used as a Pandoc template
-;; - well, `$body` somewhere
-;; - \tightlist command
-;; - Insert `$title$`, `$abstract$, `$authors$` variable placeholders
+;; ## Usage:
+;; 1. Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be currently shown at `localhost:7676`):
+;;
+;;    ```
+;;    (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
+;;         :dir "../clerk/ui_tests")
+;;    ```
+;;
+;; 2. Run `(clerk->latex! {})` to produce `README.tex`.
+;; 3. Run `(sh "tectonic" "--keep-intermediates" "README.tex")` to produce `README.pdf` from latex.
+;;
+;; See comments at the end of this namespace.
 ;;
 ;; ## Todos
 ;; - [x]  Title
@@ -299,12 +306,6 @@
 
 #_(clerk->latex! {})
 
-;; # Usage:
-;; 1. Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be shown at localhost:7676)
-;; 2. run `(clerk->latex! {})
-;; 3. run `(sh "tectonic" "--keep-intermediates" "README.tex")` to produce a pdf
-;;
-;; See comments below:
 (comment
 
   ;; to latex
