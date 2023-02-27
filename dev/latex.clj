@@ -106,35 +106,16 @@
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
    :raw-inline (fn [{:keys [kind text]}] {:t "RawInline", :c [kind text]})
-   :video-link (fn [{:as node :keys [url attrs content]}]
-                 {:t "Figure"
-                  :c [["" [] []]
-                      [nil [{:t "Plain" :c (into [] (keep md->pandoc) content)}]]
-                      [{:t "Plain"
-                        :c [{:t "Link" :c [["" [] []]
-                                           [{:t "Image"
-                                             :c [["" [] []] [] [(:src attrs) (md.transform/->text node)]]}]
-                                           [url ""]]}]}]]})
-
-   ;; TODO: decouple figure from image
-   :figure (fn [{:as node :keys [content attrs]}]
+   :figure (fn [{:as node :keys [content caption]}]
              {:t "Figure"
               :c [["" [] []]
-                  [nil [{:t "Plain"
-                         :c (into [] (keep md->pandoc) content)}]]
+                  [nil [{:t "Plain" :c (into [] (keep md->pandoc) caption)}]]
                   [{:t "Plain"
-                    :c [{:t "Image"
-                         :c [["" [] []]
-                             (into [] (keep md->pandoc) content)
-                             [(:src attrs) (md.transform/->text node)]]}]}]]})
-   :image (fn [{:as node :keys [content attrs]}]
-            (let [{:keys [src]} attrs
-                  caption (md.transform/->text node)]
-              {:t "Image",
-               :c [["" [] [["width" "linewidth"]]]
-                   (into [] (keep md->pandoc) content)
-                   ;; a fig: will wrap the resulting \includegraphics in a figure environment
-                   [src (str (when (not-empty caption) "fig:"))]]}))
+                    :c (into [] (keep md->pandoc) content)}]]})
+   :image (fn [{:keys [attrs]}]
+            (let [{:keys [src]} attrs]
+              {:t "Image"
+               :c [["" [] []] [] [src ""]]}))
    :softbreak (fn [_] {:t "SoftBreak"})
    :em (fn [{:keys [content]}] {:t "Emph" :c (into [] (keep md->pandoc) content)})
    :strong (fn [{:keys [content]}] {:t "Strong" :c (into [] (keep md->pandoc) content)})
@@ -238,15 +219,19 @@
   (let [{:as opts :keys [src poster-frame-src caption]} (v/->value result)
         result-screenshot-path (str "images/" (name id) "-result.png")]
     (cond
-      poster-frame-src
-      {:type :video-link
-       :attrs {:src (store-image-src! opts)}
-       :content [{:type :text :text (str caption)}]
-       :url src}
+      poster-frame-src                                      ;; video figure
+      {:type :figure
+       :caption [{:type :text :text (str caption)}]
+       :content [{:type :link
+                  :attrs {:href src}
+                  :content [{:type :image
+                             :attrs {:src (store-image-src! opts)}}]}]}
+
       src
       {:type :figure
-       :attrs {:src (store-image-src! opts)}
-       :content [{:type :text :text (str caption)}]}
+       :content [{:type :image :attrs {:src (store-image-src! opts)}}]
+       :caption [{:type :text :text (str caption)}]}
+
       (fs/exists? result-screenshot-path)
       {:type :paragraph
        :content [{:type :image
