@@ -350,8 +350,8 @@ When working with Clerk, a split-view is typically used with a code editor next 
 
 \begin{figure}
 \centering
-\includegraphics{images/clerk-side-by-side-with-emacs.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4}{Clerk side-by-side with Emacs}}
+\href{https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4}{\includegraphics{images/clerk-side-by-side-with-emacs.png}}
+\caption{Clerk side-by-side with Emacs}
 \end{figure}
 
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation\footnote{We have borrowed this approach from \href{https://maria.cloud}{maria.cloud}, a web-hosted interactive Clojure learning tool created by \href{https://matt.is}{Matt Huebert}, \href{https://www.daveliepmann.com/}{Dave Liepmann}, and \href{https://jackrusher.com/}{Jack Rusher}. Maria grew out of \href{https://px16.matt.is}{work presented at PX16} by Matt Huebert.}. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
@@ -469,8 +469,8 @@ Additional affordances are automatic expansion of a nested data structure based 
 
 \begin{figure}
 \centering
-\includegraphics{images/expanding-multiple-sub-structures-at-once.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4}{Expanding multiple sub-structures at once}}
+\href{https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4}{\includegraphics{images/expanding-multiple-sub-structures-at-once.png}}
+\caption{Expanding multiple sub-structures at once}
 \end{figure}
 
 Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
@@ -658,16 +658,16 @@ We were able to automatically translate these names using a metaschema extracted
 
 \begin{figure}
 \centering
-\includegraphics{images/inspecting-a-query-using-the-repl.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4}{Inspecting A Query Using the REPL}}
+\href{https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4}{\includegraphics{images/inspecting-a-query-using-the-repl.png}}
+\caption{Inspecting A Query Using the REPL}
 \end{figure}
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer's headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren't lost). We can go further still, showing the original German names when move the mouse over the headings:
 
 \begin{figure}
 \centering
-\includegraphics{images/augmented-table-headings.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4}{Augmented Table Headings}}
+\href{https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4}{\includegraphics{images/augmented-table-headings.png}}
+\caption{Augmented Table Headings}
 \end{figure}
 
 \hypertarget{rich-documentation-features}{%
@@ -688,8 +688,8 @@ Built as a showcase for Clerk's sync feature, this example allows entering a reg
 
 \begin{figure}
 \centering
-\includegraphics{images/interactive-regex-dictionary.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4}{Interactive Regex Dictionary}}
+\href{https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4}{\includegraphics{images/interactive-regex-dictionary.png}}
+\caption{Interactive Regex Dictionary}
 \end{figure}
 
 It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
@@ -707,8 +707,8 @@ Also building on Clerk's sync feature, this interactive log search uses \href{ht
 
 \begin{figure}
 \centering
-\includegraphics{images/interactive-log-search.png}
-\caption{\href{https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4}{Interactive Log Search}}
+\href{https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4}{\includegraphics{images/interactive-log-search.png}}
+\caption{Interactive Log Search}
 \end{figure}
 
 \hypertarget{experience}{%

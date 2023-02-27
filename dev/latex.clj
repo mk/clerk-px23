@@ -106,6 +106,17 @@
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
    :raw-inline (fn [{:keys [kind text]}] {:t "RawInline", :c [kind text]})
+   :video-link (fn [{:as node :keys [url attrs content]}]
+                 {:t "Figure"
+                  :c [["" [] []]
+                      [nil [{:t "Plain" :c (into [] (keep md->pandoc) content)}]]
+                      [{:t "Plain"
+                        :c [{:t "Link" :c [["" [] []]
+                                           [{:t "Image"
+                                             :c [["" [] []] [] [(:src attrs) (md.transform/->text node)]]}]
+                                           [url ""]]}]}]]})
+
+   ;; TODO: decouple figure from image
    :figure (fn [{:as node :keys [content attrs]}]
              {:t "Figure"
               :c [["" [] []]
@@ -227,15 +238,15 @@
   (let [{:as opts :keys [src poster-frame-src caption]} (v/->value result)
         result-screenshot-path (str "images/" (name id) "-result.png")]
     (cond
+      poster-frame-src
+      {:type :video-link
+       :attrs {:src (store-image-src! opts)}
+       :content [{:type :text :text (str caption)}]
+       :url src}
       src
       {:type :figure
        :attrs {:src (store-image-src! opts)}
-       :content (let [caption-text [{:type :text :text (str caption)}]]
-                  (if poster-frame-src
-                    [{:type :link
-                      :attrs {:href src}
-                      :content caption-text}]
-                    caption-text))}
+       :content [{:type :text :text (str caption)}]}
       (fs/exists? result-screenshot-path)
       {:type :paragraph
        :content [{:type :image
