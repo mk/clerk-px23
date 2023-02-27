@@ -304,7 +304,7 @@ Knuth\textquotesingle s \emph{Literate Programming} \footnote{An extensive archi
 
 At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur\textquotesingle s \emph{Milo}, PARC\textquotesingle s \emph{Tioga} and \emph{Camino Real}, and commercial software like \emph{MathCAD} \cite{Kajler_1998}.
 
-In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter} and \href{https://observablehq.com}{Observable}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices) \cite{Chattopadhyay_2020}.
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like \href{https://jupyter.org}{Jupyter}, \href{https://observablehq.com}{Observable}, \href{https://plutojl.org}{Pluto}, and \href{https://livebook.dev}{Livebook}. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth\textquotesingle s Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices) \cite{Chattopadhyay_2020}.
 
 Although notebooks of this kind present an improvement on the programming experience of many languages, they often feel like a step backward to experienced Lisp programmers. In Lisp environments, it is common to be able to place the cursor after a single Lisp form and evaluate it in the context of a running program, providing finer granularity of control compared to the per-cell model of most notebooks. This workflow leads to a development style that these programmers are in no hurry to lose.
 
@@ -316,7 +316,7 @@ That LISP users tend to prefer structured growth rather than stepwise refinement
 
 At the same time, though a number of Lisp environments have included graphical presentations of program objects\footnote{See, for example, the \href{https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager}{Common Lisp Interface Manager}.}, most modern tooling relies on text-based representations of evaluation output and doesn\textquotesingle t include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there\textquotesingle s limited room for customization or support for requesting more data.
 
-In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit} \cite{Chi__2015} and \href{https://newspeaklanguage.org}{Newspeak}\footnote{See \href{https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel}{Ampleforth: A Live Literate Editor} by Gilad Bracha}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we\textquotesingle ll present here.
+In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like \href{https://selflanguage.org}{Self}, \href{https://pharo.org}{Pharo}, \href{https://gtoolkit.com}{Glamorous Toolkit} \cite{Chi__2015} and \href{https://newspeaklanguage.org}{Newspeak}\footnote{\href{https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel}{Ampleforth: A Live Literate Editor} by Gilad Bracha}, which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we\textquotesingle ll present here.
 
 \hypertarget{programming-with-clerk}{%
 \section{Programming with Clerk}\label{programming-with-clerk}}
@@ -721,7 +721,7 @@ Our experience as the developers and users of Clerk has been quite positive, but
 
 It helps us to bypass what would otherwise be a lot of distracting UI programming. Set up your env, make a namespace, hit a keybind, hey presto, your code is running in a browser.
 
---~Robert Stuttaford{[}\^{}tweets{]}
+--~Robert Stuttaford
 \end{quote}
 
 \begin{quote}
@@ -741,21 +741,18 @@ I just wanted to express some gratitude for Clerk. It's been a game changer for 
 \hypertarget{related}{%
 \section{Related}\label{related}}
 
-Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems:
+Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems. Many of them introduce the viewing layer to the editor itself, as seen in various Smalltalk experiments (Moldable Development \cite{Chi__2015},  Newspeak\footnote{\href{https://newspeaklanguage.org/pubs/newspeak-exemplars.pdf}{Enhancing Liveness with Exemplars in the Newspeak IDE} by Gilad Bracha.},  Babylonian Programming \cite{Rauch_2019}, etc), and in recent work on LiveLits \cite{Omar_2021} and visual syntactic extensions to the Racket programming language \cite{Andersen_2020}.
+
+In contrast, because we have found it more persuasive to argue for the use of such systems in the context of a user\textquotesingle s existing tooling, we\textquotesingle ve focused on an approach that supplements existing workflows with a sidecar previewer. Other systems that have taken a similar approach include:
 
 \begin{itemize}
-\tightlist
 \item
-  \href{https://orgmode.org}{Org mode} is a major mode for Emacs supporting polyglot literate programming based on a plain text format.
+  \href{https://orgmode.org}{Org mode} is a major mode for \href{https://www.gnu.org/software/emacs/}{Emacs} supporting polyglot literate programming based on a plain text format. Org\textquotesingle s approach is in many ways similar to our Markdown mode, where explicit code fences are used to introduce programmatic constructs to a document, and a variety of previewers are available for org files, though in a fragmented ecosystem where each kind of application requires a different kind of previewer. We were partially inspired by positive experiences using org-mode in the design of Clerk, though we focused more on our annotated source code format.
 \item
-  \href{https://streamlit.io}{Streamlit} is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its \href{https://docs.streamlit.io/library/get-started/main-concepts\#caching}{caching system} memoizes functions that are tagged using Python\textquotesingle s decorators.
-\item
-  \href{https://plutojl.org}{Pluto} is a Julia library that uses static analysis to   enable incremental computation and two-way bindings. It does come with a web-based editor. Its format are plain Julia files with comment annotations for cell ids and execution order.
-\item
-  \href{https://livebook.dev}{Livebook} is an Elixir notebook with code editing in the browser and explicit per-cell execution. It serializes notebooks to a Markdown format.
+  \href{https://streamlit.io}{Streamlit} is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its \href{https://docs.streamlit.io/library/get-started/main-concepts\#caching}{caching system} memoizes functions that are tagged using Python\textquotesingle s decorators. While there are several similarities between Clerk and Steamlits, the two systems have a very different focus. Streamlit is primarily a rapid application development environment, without Clerk\textquotesingle s focus on Literate Programming and Moldable Development.
 \end{itemize}
 
-This convergent evolution suggests to us that there is more to explore in this direction.
+We are pleased to see a number of other systems working with annotated source code, including \href{https://plutojl.org}{Pluto} and \href{https://livebook.dev}{Livebook}, and consider this convergent evolution toward tools that developers will actually use a positive trend.
 
 \hypertarget{future-work}{%
 \section{Future Work}\label{future-work}}
