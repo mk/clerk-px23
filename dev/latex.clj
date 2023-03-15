@@ -274,7 +274,6 @@
                                      ;; drop custom abstract and helpers
                                      (drop 5 blocks))}
                    promote-headings
-                   add-interactivity-notice
                    md->pandoc
                    (assoc-in [:meta :title] (meta-content title))
                    (assoc-in [:meta :abstract] (meta-content (get-abstract clerk-doc)))
