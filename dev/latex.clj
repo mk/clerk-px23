@@ -106,9 +106,9 @@
    :formula (fn [{:keys [text]}] {:t "Math" :c [{:t "InlineMath"} text]})
    :ruler (fn [_] {:t "HorizontalRule"})
    :raw-inline (fn [{:keys [kind text]}] {:t "RawInline", :c [kind text]})
-   :figure (fn [{:as node :keys [content caption]}]
+   :figure (fn [{:as node :keys [content caption label]}]
              {:t "Figure"
-              :c [["" [] []]
+              :c [[label [] []]
                   [nil [{:t "Plain" :c (into [] (keep md->pandoc) caption)}]]
                   [{:t "Plain"
                     :c (into [] (keep md->pandoc) content)}]]})
@@ -216,11 +216,12 @@
     (str path)))
 
 (defn convert-result [{:as block :keys [id result]}]
-  (let [{:as opts :keys [src poster-frame-src caption]} (v/->value result)
+  (let [{:as opts :keys [src poster-frame-src caption] label :id} (v/->value result)
         result-screenshot-path (str "images/" (name id) "-result.png")]
     (cond
       poster-frame-src                                      ;; video figure
       {:type :figure
+       :label label
        :caption [{:type :text :text (str caption)}]
        :content [{:type :link
                   :attrs {:href src}
@@ -229,6 +230,7 @@
 
       src
       {:type :figure
+       :label label
        :content [{:type :image :attrs {:src (store-image-src! opts)}}]
        :caption [{:type :text :text (str caption)}]}
 

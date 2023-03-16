@@ -345,9 +345,11 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
 
 \begin{figure}
+\hypertarget{clerk-side-by-side-with-emacs}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4}{\includegraphics{images/clerk-side-by-side-with-emacs.png}}
-\caption{Clerk side-by-side with Emacs}
+\caption{Clerk side-by-side with Emacs}\label{clerk-side-by-side-with-emacs}
+}
 \end{figure}
 
 As shown here, our \emph{notebooks} are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation\footnote{We have borrowed this approach from \href{https://maria.cloud}{maria.cloud}, a web-hosted interactive Clojure learning tool created by \href{https://matt.is}{Matt Huebert}, \href{https://www.daveliepmann.com/}{Dave Liepmann}, and \href{https://jackrusher.com/}{Jack Rusher}. Maria grew out of \href{https://px16.matt.is}{work presented at PX16} by Matt Huebert.}. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
@@ -442,9 +444,11 @@ It\textquotesingle s also possible to use Clerk\textquotesingle s presentation s
 \subsection{Built-in Viewers}\label{built-in-viewers}}
 
 \begin{figure}
+\hypertarget{built-in-viewers}{%
 \centering
 \includegraphics{images/built-in-viewers.png}
-\caption{}
+\caption{}\label{built-in-viewers}
+}
 \end{figure}
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure's immutable data structures, HTML (including the \href{https://github.com/weavejester/hiccup}{hiccup variant} that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure's printer. The \href{https://book.clerk.vision}{Book of Clerk} gives a good overview of the available built-ins. Because Clerk's client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we\textquotesingle re using \href{https://plotly.com/javascript/}{Plotly} and \href{https://github.com/vega/vega-embed}{vega} for graphing, \href{https://codemirror.net}{CodeMirror} for rendering code cells, and \href{https://katex.org}{KaTeX} for typesetting mathematics.
@@ -464,9 +468,11 @@ datasets/iris
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 \begin{figure}
+\hypertarget{expanding-multiple-sub-structures-at-once}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4}{\includegraphics{images/expanding-multiple-sub-structures-at-once.png}}
-\caption{Expanding multiple sub-structures at once}
+\caption{Expanding multiple sub-structures at once}\label{expanding-multiple-sub-structures-at-once}
+}
 \end{figure}
 
 Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
@@ -645,25 +651,31 @@ In addition to the sorts of traditional data science use cases that one might ex
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
 
 \begin{figure}
+\hypertarget{as400-column-names}{%
 \centering
 \includegraphics{images/as400-column-names.png}
-\caption{AS/400 Column Names}
+\caption{AS/400 Column Names}\label{as400-column-names}
+}
 \end{figure}
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
 
 \begin{figure}
+\hypertarget{inspecting-a-query-using-the-repl}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4}{\includegraphics{images/inspecting-a-query-using-the-repl.png}}
-\caption{Inspecting A Query Using the REPL}
+\caption{Inspecting A Query Using the REPL}\label{inspecting-a-query-using-the-repl}
+}
 \end{figure}
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer's headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren't lost). We can go further still, showing the original German names when move the mouse over the headings:
 
 \begin{figure}
+\hypertarget{augmented-table-headings}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4}{\includegraphics{images/augmented-table-headings.png}}
-\caption{Augmented Table Headings}
+\caption{Augmented Table Headings}\label{augmented-table-headings}
+}
 \end{figure}
 
 \hypertarget{rich-documentation-features}{%
@@ -672,9 +684,11 @@ With Clerk, were able to render the output as a graphical table without the limi
 This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package\footnote{The full documentation is \href{https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html}{here}.}. They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
 \begin{figure}
+\hypertarget{custom-viewers-for-clojure2ds-colors-library}{%
 \centering
 \includegraphics{images/custom-viewers-for-clojure2ds-colors-library.png}
-\caption{Custom Viewers for Clojure2d's Colors Library}
+\caption{Custom Viewers for Clojure2d's Colors Library}\label{custom-viewers-for-clojure2ds-colors-library}
+}
 \end{figure}
 
 \hypertarget{regex-dictionary}{%
@@ -683,17 +697,21 @@ This example illustrates the use of Clerk to create rich documentation for \pass
 Built as a showcase for Clerk's sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
 \begin{figure}
+\hypertarget{interactive-regex-dictionary}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4}{\includegraphics{images/interactive-regex-dictionary.png}}
-\caption{Interactive Regex Dictionary}
+\caption{Interactive Regex Dictionary}\label{interactive-regex-dictionary}
+}
 \end{figure}
 
 It is built using a Clojure atom containing the text input's current value that is synced between the client and server. As you type into the input, the atom's content will be updated and synced. Consequently, printing the atom's content in your editor will show the input's current value:
 
 \begin{figure}
+\hypertarget{printing-the-value-of-a-synced-clojure-atom}{%
 \centering
 \includegraphics{images/printing-the-value-of-a-synced-clojure-atom.png}
-\caption{Printing the value of a synced Clojure atom}
+\caption{Printing the value of a synced Clojure atom}\label{printing-the-value-of-a-synced-clojure-atom}
+}
 \end{figure}
 
 \hypertarget{lurk:-interactive-lucene-powered-log-search}{%
@@ -702,9 +720,11 @@ It is built using a Clojure atom containing the text input's current value that 
 Also building on Clerk's sync feature, this interactive log search uses \href{https://lucene.apache.org/}{Lucene} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk\textquotesingle s default notebook styling via Clerk's CSS customization options.
 
 \begin{figure}
+\hypertarget{interactive-log-search}{%
 \centering
 \href{https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4}{\includegraphics{images/interactive-log-search.png}}
-\caption{Interactive Log Search}
+\caption{Interactive Log Search}\label{interactive-log-search}
+}
 \end{figure}
 
 \hypertarget{experience}{%
