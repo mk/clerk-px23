@@ -317,11 +317,17 @@
     (doseq [[_ entry] @!bib-entries] (append-bib-entry! entry))
     result))
 
+(defn manual-fixes [tex]
+  (-> tex
+      (str/replace "\"bottom-up\"" "``bottom-up\"")
+      (str/replace "\"notebook\"" "``notebook\"")))
+
 (defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
   (let [out-file (str (first (fs/split-ext file)) ".tex")]
     (-> (clerk->pandoc file)
         (pandoc-> "latex")
-        (->> (spit out-file)))))
+        manual-fixes
+        (cond->> file (spit out-file)))))
 
 #_(clerk->latex! {})
 

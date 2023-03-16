@@ -406,7 +406,7 @@ This extension makes Clerk\textquotesingle s caching work naturally with idiomat
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
-A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in the runtime to the source code.
+A practical concern with this sort of ``bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in the runtime to the source code.
 
 It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there are limits to what Clerk\textquotesingle s analysis can handle. Here are some of the things we currently do not support:
 
@@ -643,7 +643,7 @@ During the review process for this paper, one of the reviewers mentioned that th
 \hypertarget{examples-of-moldable-development-with-clerk}{%
 \section{Examples of Moldable Development with Clerk}\label{examples-of-moldable-development-with-clerk}}
 
-In addition to the sorts of traditional data science use cases that one might expect from something that has "notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant\footnote{We use this term in appreciation of pioneering historical work by Warren Teitelman.} that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
+In addition to the sorts of traditional data science use cases that one might expect from something that has ``notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant\footnote{We use this term in appreciation of pioneering historical work by Warren Teitelman.} that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
 
 \hypertarget{augmenting-table-names}{%
 \subsection{Augmenting table names}\label{augmenting-table-names}}
