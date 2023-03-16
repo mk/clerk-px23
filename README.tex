@@ -342,7 +342,7 @@ While there are some rough edges around a few particularly tricky language featu
 
 Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our \emph{own team} to use an \href{https://nextjournal.com}{online browser-based notebook platform} that we also developed.
 
-When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \protect\hyperlink{clerk-side-by-side-with-emacs}{seen in \emph{Clerk side-by-side with Emacs}}.
+When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk's representation of the same notebook, as \autoref{clerk-side-by-side-with-emacs}.
 
 \begin{figure}
 \hypertarget{clerk-side-by-side-with-emacs}{%
@@ -597,7 +597,7 @@ The process of selecting viewers happens programmatically on the server side, th
 
 To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure \passthrough{\lstinline!atom!} on the server is annotated with metadata indicating it is \passthrough{\lstinline!sync!}, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a \emph{diff} to the other side.
 
-In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom\textquotesingle s value. This allows us to use Clerk for small local-first apps, as shown in the \protect\hyperlink{regex-dictionary}{Regex Dictionary Example}.
+In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom\textquotesingle s value. This allows us to use Clerk for small local-first apps, as shown in the \autoref{interactive-regex-dictionary}.
 
 \hypertarget{tap-stream-inspector}{%
 \subsection{Tap Stream Inspector}\label{tap-stream-inspector}}

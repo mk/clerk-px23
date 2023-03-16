@@ -120,7 +120,11 @@
    :em (fn [{:keys [content]}] {:t "Emph" :c (into [] (keep md->pandoc) content)})
    :strong (fn [{:keys [content]}] {:t "Strong" :c (into [] (keep md->pandoc) content)})
    :strikethrough (fn [{:keys [content]}] {:t "Strikeout" :c (into [] (keep md->pandoc) content)})
-   :link (fn [{:keys [attrs content]}] {:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]})
+   :link (fn [{:keys [attrs content]}]
+           (let [{:keys [href]} attrs]
+             (if (str/starts-with? href "#")
+               {:t "RawInline" :c ["tex" (str "\\autoref{" (subs href 1) "}")]}
+               {:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]})))
 
    :monospace (fn [node] {:t "Code" :c [["" [] []] (md.transform/->text node)]})
 
