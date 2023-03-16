@@ -202,6 +202,7 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 ```clojure
 (figure {::clerk/width :wide
          :id "built-in-viewers"
+         :caption "Built-in Viewers"
          :src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"})
 ```
 

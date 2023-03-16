@@ -41,7 +41,8 @@
 ;;
 ;; * Run
 (comment
-  (sh "tectonic" "--keep-intermediates" "README.tex"))
+  (do (sh "tectonic" "--keep-intermediates" "README.tex")
+      (sh "open" "README.pdf")))
 ;; to produce `README.pdf` from latex.
 ;;
 ;; * Upload to CAS
@@ -236,28 +237,29 @@
     (str path)))
 
 (defn convert-result [{:as block :keys [id result]}]
-  (let [{:as opts :keys [src poster-frame-src caption] label :id} (v/->value result)
+  (let [{:as opts :keys [src poster-frame-src caption] :latex/keys [hide?] label :id} (v/->value result)
         result-screenshot-path (str "images/" (name id) "-result.png")]
-    (cond
-      poster-frame-src                                      ;; video figure
-      {:type :figure
-       :label label
-       :caption [{:type :text :text (str caption)}]
-       :content [{:type :link
-                  :attrs {:href src}
-                  :content [{:type :image
-                             :attrs {:src (store-image-src! opts)}}]}]}
+    (when-not hide?
+      (cond
+        poster-frame-src                                    ;; video figure
+        {:type :figure
+         :label label
+         :caption [{:type :text :text (str caption)}]
+         :content [{:type :link
+                    :attrs {:href src}
+                    :content [{:type :image
+                               :attrs {:src (store-image-src! opts)}}]}]}
 
-      src
-      {:type :figure
-       :label label
-       :content [{:type :image :attrs {:src (store-image-src! opts)}}]
-       :caption [{:type :text :text (str caption)}]}
+        src
+        {:type :figure
+         :label label
+         :content [{:type :image :attrs {:src (store-image-src! opts)}}]
+         :caption [{:type :text :text (str caption)}]}
 
-      (fs/exists? result-screenshot-path)
-      {:type :paragraph
-       :content [{:type :image
-                  :attrs {:src result-screenshot-path}}]})))
+        (fs/exists? result-screenshot-path)
+        {:type :paragraph
+         :content [{:type :image
+                    :attrs {:src result-screenshot-path}}]}))))
 
 (defn conj-some [xs x] (cond-> xs x (conj x)))
 
