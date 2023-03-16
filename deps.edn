@@ -3,7 +3,7 @@
         applied-science/edn-datasets {:git/url "git@github.com:applied-science/edn-datasets.git"
                                       :sha "da3aa56886d4027d7ef6b3f91083e1833d3a4f93"}}
  :aliases {:dev {:paths ["dev"]
-                 :extra-deps {io.github.nextjournal/cas-client {:git/sha "e34901f4a29d54954544313ae1a0bb859fe3931f"}}}
+                 :extra-deps {io.github.nextjournal/cas-client {:git/sha "813e9745ddeb4599ce62f3c02f329b72fe7c33ae"}}}
            :nextjournal/clerk {:exec-fn nextjournal.clerk/build!
                                :exec-args {:git/url "https://github.com/mk/clerk-px23"
                                            :paths ["README.md"]}}}}
