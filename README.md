@@ -12,6 +12,23 @@
             [applied-science.edn-datasets :as datasets]))
 ```
 
+```clojure
+^{::clerk/visibility {:result :hide}}
+(defn figure [{:as opts ::clerk/keys [width]}]
+  (clerk/with-viewer
+    {:transform-fn (clerk/update-val
+                    (fn [{:keys [id src caption video?]}]
+                      (clerk/html
+                       [:div.not-prose.overflow-hidden {:id id :class (when-not (= :full width) "rounded-lg")}
+                        (if video?
+                          [:video {:loop true :controls true} [:source {:src src}]]
+                          [:img {:src src}])
+                        (when caption
+                          [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
+                           [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] caption]])])))}
+    opts opts))
+```
+
 ## Abstract
 
 ```clojure
@@ -40,7 +57,7 @@ Knuth's _Literate Programming_ [^literateprogramming] emphasized the importance 
 
 At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's _Milo_, PARC's _Tioga_ and _Camino Real_, and commercial software like _MathCAD_[^mathematical-software].
 
-[^mathematical-software]: See [A Survey of User Interfaces for Computer Algebra Systems](https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf) for a history of these systems up until 1998.
+[^mathematical-software]: See [A Survey of User Interfaces for Computer Algebra Systems](https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf) for a history of these systems up until 1998 ([DOI](https://doi.org/10.1006/jsco.1997.0170)).
 
 In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like [Jupyter](https://jupyter.org), [Observable](https://observablehq.com), [Pluto][pluto], and [Livebook][livebook]. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)[^notebook-pain-points].
 
@@ -74,7 +91,7 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 
 We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/wiki/Java_virtual_machine). Several aspects of the language make it an appealing target for this project: 
 
-[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://dl.acm.org/doi/10.1145/3386321).
+[^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://doi.org/10.1145/3386321).
 
 * being a Lisp, there is limited syntax with which to contend, and the language comes with good libraries for meta-linguistic programming
 * an emphasis on pure functions and immutable data structures makes static analysis easier
@@ -88,14 +105,13 @@ Clerk combines Lisp-style interactive programming with the benefits of computati
 
 When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as [seen in _Clerk side-by-side with Emacs_](#clerk-side-by-side-with-emacs).
 
-``` clojure
-^{::clerk/width :full}
-(clerk/html
- [:div#clerk-side-by-side-with-emacs.not-prose
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Clerk side-by-side with Emacs"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmUwPGsUfvZhWo7jNCfq92hDhGMu2hNsVRq6sUVrVXdsfq?content-type=image/png"
+         :id "clerk-side-by-side-with-emacs"
+         :caption "Clerk side-by-side with Emacs"
+         ::clerk/width :full
+         :video? true})
 ```
 
 As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation[^maria]. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
@@ -133,7 +149,7 @@ This combination of immutability and indirection makes distributing the cache tr
 
 > While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
 
-[^history-of-clojure]: [A History of Clojure](https://download.clojure.org/papers/clojure-hopl-iv-final.pdf), Rich Hickey
+[^history-of-clojure]: [A History of Clojure](https://doi.org/10.1145/3386321), Rich Hickey
 
 It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value with [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
 
@@ -184,10 +200,10 @@ It's also possible to use Clerk's presentation system in other contexts. We know
 ### Built-in Viewers
 
 ```clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"}]])
+(figure {::clerk/width :wide
+         :id "built-in-viewers"
+         :caption "Built-in Viewers"
+         :src "https://cdn.nextjournal.com/data/QmQLcS1D9ZLNQB8bz1TivBEL9AWttZdoPMHT9xDASYYm7F?filename=Built-in+Viewers.png&content-type=image/png"})
 ```
 
 Clerk comes with a set of built-in viewers for common situations. These include support for Clojure’s immutable data structures, HTML (including the [hiccup variant](https://github.com/weavejester/hiccup) that is often used in Clojure to represent HTML and SVG), data visualization, tables, LaTeX, source code, images, and grids, as well as a fallback viewer based on Clojure’s printer. The [Book of Clerk][book-of-clerk] gives a good overview of the available built-ins. Because Clerk’s client is running in the browser, we are able to benefit from the vast JS library ecosystem. For example we're using [Plotly](https://plotly.com/javascript/) and [vega](https://github.com/vega/vega-embed) for graphing, [CodeMirror](https://codemirror.net) for rendering code cells, and [KaTeX](https://katex.org) for typesetting mathematics.
@@ -203,14 +219,13 @@ datasets/iris
 
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#expanding-multiple-sub-structures-at-once.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure: "] "Expanding multiple sub-structures at once"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmZmxVVtwGDsdVWRD2s3etdNNJ1tuWGJPFSWrfTcPLNTYx?content-type=image/png"
+         :video? true
+         :id "expanding-multiple-sub-structures-at-once"
+         :caption "Expanding multiple sub-structures at once"
+         ::clerk/width :wide})
 ```
 
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
@@ -318,7 +333,7 @@ The process of selecting viewers happens programmatically on the server side, th
 
 To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure `atom` on the server is annotated with metadata indicating it is `sync`, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a _diff_ to the other side.
 
-In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#regex-dictionary).
+In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#interactive-regex-dictionary).
 
 ### Tap Stream Inspector
 
@@ -366,37 +381,33 @@ In addition to the sorts of traditional data science use cases that one might ex
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database’s column names are made up of largely human-unreadable 8 character sequences:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#as400-column-names.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "AS/400 Column Names"]]])
+```clojure
+(figure {:id "as400-column-names"
+         :src "https://cdn.nextjournal.com/data/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t?filename=AS400-Cut.png&content-type=image/png"
+         :caption "AS/400 Column Names"
+         ::clerk/width :wide})
 ```
 
 We were able to automatically translate these names using a metaschema extracted from the database. This allowed us to create a viewer that maps those eight-character names to human-readable (German-only) names (which we can then translate to English). In typical Lisp fashion, we go on to inspect a query interactively. We can use the translated names in the table, and even print them, but one quickly sees the limit of plain-text printing:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#inspecting-a-query-using-the-repl.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Inspecting A Query Using the REPL"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmasZmkvfx6MyJcviDK7pSYQTPkmtFoJ96YzipQBRGCVEB?content-type=image/png"
+         :video? true
+         :id "inspecting-a-query-using-the-repl"
+         :caption "Inspecting A Query Using the REPL"
+         ::clerk/width :wide})
 ```
 
 With Clerk, were able to render the output as a graphical table without the limitations of plain text. Further, we can use the Viewer API to extend the table viewer’s headings to show the translated metaschema names (plus showing the original eight character names in a de-emphasized way so that they aren’t lost). We can go further still, showing the original German names when move the mouse over the headings:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#augmented-table-headings.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Augmented Table Headings"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmRvBS2fHDyeVD8hPhFGiBFbwKbJWZDxMoMnYn1fpoMmxW?content-type=image/png"
+         :id "augmented-table-headings"
+         :caption "Augmented Table Headings"
+         :video? true
+         ::clerk/width :wide})
 ```
 
 ### Rich documentation features
@@ -405,52 +416,45 @@ This example illustrates the use of Clerk to create rich documentation for `cloj
 
 [^color-package]: The full documentation is [here](https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html).
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#custom-viewers-for-clojure2ds-colors-library.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Custom Viewers for Clojure2d’s Colors Library"]]])
+```clojure
+(figure {::clerk/width :wide
+         :id "custom-viewers-for-clojure2ds-colors-library"
+         :src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"
+         :caption "Custom Viewers for Clojure2d’s Colors Library"})
 ```
 
 ### Regex Dictionary
 
 Built as a showcase for Clerk’s sync feature, this example allows entering a regex into a text input and get dictionary matches as result while you type:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#interactive-regex-dictionary.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Regex Dictionary"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmP1pT3ysiZzw5fUhxmpGHCZregtMYcpu3Sue7Q1eSETCo?content-type=image/png"
+         :id "interactive-regex-dictionary"
+         :caption "Interactive Regex Dictionary"
+         :video? true
+         ::clerk/width :wide})
 ```
 
 It is built using a Clojure atom containing the text input’s current value that is synced between the client and server. As you type into the input, the atom’s content will be updated and synced. Consequently, printing the atom’s content in your editor will show the input’s current value:
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#printing-the-value-of-a-synced-clojure-atom.not-prose.overflow-hidden.rounded-lg
-  [:img {:src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"}]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Printing the value of a synced Clojure atom"]]])
+```clojure
+(figure {::clerk/width :wide
+         :id "printing-the-value-of-a-synced-clojure-atom"
+         :caption "Printing the value of a synced Clojure atom"
+         :src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"})
 ```
 
 ### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
 
 Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk's default notebook styling via Clerk’s CSS customization options.
 
-``` clojure
-^{::clerk/width :wide}
-(clerk/html
- [:div#interactive-log-search.not-prose.overflow-hidden.rounded-lg
-  [:video {:loop true :controls true}
-   [:source {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"}]]
-  [:div.bg-slate-100.dark:bg-slate-800.dark:text-white.text-xs.font-sans.py-4
-   [:div.mx-auto.max-w-prose.px-8 [:strong.mr-1 "Figure:"] "Interactive Log Search"]]])
+```clojure
+(figure {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmampWSVabdYtYpcN46rPjWGZK1KRebvsHHsx24zeudY8Q?content-type=image/png"
+         :id "interactive-log-search"
+         :caption "Interactive Log Search"
+         ::clerk/width :wide})
 ```
 
 ### Experience
