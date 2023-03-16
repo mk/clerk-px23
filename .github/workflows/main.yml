@@ -1,0 +1,16 @@
+name: CI
+on: push
+jobs:
+  link-to-pdf:
+    name: 'Link to pdf article'
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅ Add success status to report with link to ssr snapshot
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: 'CI / Link to pdf article'
+          description: 'Ready'
+          state: 'success'
+          sha: ${{github.event.pull_request.head.sha || github.sha}}
+          target_url: https://storage.clerk.garden/nextjournal/clerk-px23@${{ github.sha }}/README.pdf

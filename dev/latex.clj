@@ -6,6 +6,7 @@
             [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.zip :as z]
+            [nextjournal.cas-client :as cas-client]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.eval :as clerk.eval]
             [nextjournal.clerk.viewer :as v]
@@ -27,21 +28,36 @@
 ;; - [ACM LaTeX Package](https://www.acm.org/publications/proceedings-template) (relevant .cls files added to repo)
 ;;
 ;; ## Usage:
-;; 1. Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be currently shown at `localhost:7676`):
+{::clerk/visibility {:code :show}}
+;; * Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be currently shown at `localhost:7676`):
+(comment
+  (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
+      :dir "../clerk/ui_tests"))
+
+;; * Run
+(comment
+  (clerk->latex! {}))
+;; to produce `README.tex`.
 ;;
-;;    ```
-;;    (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
-;;         :dir "../clerk/ui_tests")
-;;    ```
+;; * Run
+(comment
+  (sh "tectonic" "--keep-intermediates" "README.tex"))
+;; to produce `README.pdf` from latex.
 ;;
-;; 2. Run `(clerk->latex! {})` to produce `README.tex`.
-;; 3. Run `(sh "tectonic" "--keep-intermediates" "README.tex")` to produce `README.pdf` from latex.
-;;
-;; See comments at the end of this namespace.
-;;
+;; * Upload to CAS
+(comment
+  (-> (cas-client/put {:path "README.pdf"
+                       :namespace "nextjournal"
+                       :tag (str "clerk-px23@" (str/trim (:out (sh "git" "rev-parse" "HEAD"))))
+                       :auth-token (System/getenv "CAS_AUTH_TOKEN")})
+      (get "tag")
+      (str "/README.pdf")))
+
+{::clerk/visibility {:code :hide}}
+
 ;; ## Todos
 ;; - [x]  Title
-;; - [ ] ~Use `teaserfigure` for figures spanning the whole width~
+;; - [ ] ~~Use `teaserfigure` for figures spanning the whole width~~
 ;; - [x] Authors (_Note that authors' addresses are mandatory for journal articles._, aggregate affiliation (?)
 ;; - [x] Bibliography (Bibtex vs. ~~Biblatex~~) via DOI-links to bib entry conversions (e.g https://www.doi2bib.org/)
 ;; - [x] Decide which template to use (e.g. `sample-sigconf`)
