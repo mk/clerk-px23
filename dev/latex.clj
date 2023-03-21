@@ -234,9 +234,11 @@
 
 (defn store-image-src! [{:keys [id src poster-frame-src]}]
   ;; CDN url responds with 451 (Unavailable for legal reasons)
-  (assert id)
+  (assert id) (assert (or poster-frame-src src))
   (let [url (URL. (str/replace (or poster-frame-src src) "cdn." ""))
-        path (fs/path "images" (str id ".png"))]
+        path (fs/path "images"
+                      (str (or (second (re-find #"/data/(\w+)" (or poster-frame-src src))) id)
+                           ".png"))]
     (fs/create-dirs "images")
     (when-not (fs/exists? path)
       (ImageIO/write (ImageIO/read url) "png" (fs/file path)))
@@ -253,10 +255,8 @@
         {:type :figure
          :label label
          :caption [{:type :text :text (str caption)}]
-         :content [{:type :link
-                    :attrs {:href src}
-                    :content [{:type :image
-                               :attrs {:src (store-image-src! opts)}}]}]}
+         :content [{:type :image
+                    :attrs {:src (store-image-src! opts)}}]}
 
         src
         {:type :figure
