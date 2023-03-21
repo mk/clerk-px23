@@ -70,6 +70,7 @@
 
 (def ^:dynamic *footnotes* nil)
 (def ^:dynamic *bib-entries* nil)
+(def ^:dynamic *in-footnote?* false)
 
 (declare md->pandoc)
 
@@ -141,7 +142,11 @@
            (let [{:keys [href]} attrs]
              (if (str/starts-with? href "#")
                {:t "RawInline" :c ["tex" (str "\\autoref{" (subs href 1) "}")]}
-               {:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]})))
+               {:t "Span" :c [["" [] []]
+                              [{:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]}
+                               (if *in-footnote?*
+                                 {:t "Str" :c (str " (" href ")")}
+                                 {:t "Note" :c [{:t "Plain" :c [{:t "Str" :c href}]}]})]]})))
 
    :monospace (fn [node] {:t "Code" :c [["" [] []] (md.transform/->text node)]})
 
@@ -159,7 +164,8 @@
                              bib-key (bib-entry->key bib-entry)]
                          (swap! *bib-entries* assoc bib-key bib-entry)
                          {:t "RawInline", :c ["tex" (str " \\cite{" bib-key "}")]})
-                       {:t "Note" :c (into [] (keep md->pandoc) content)})))})
+                       {:t "Note" :c (binding [*in-footnote?* true]
+                                       (into [] (keep md->pandoc) content))})))})
 
 (defn md->pandoc
   [{:as node :keys [type]}]
@@ -336,7 +342,7 @@
   ;; to latex
   (-> (clerk->pandoc "README.md")
       (pandoc-> "latex") #_(subs 5000 8000)
-      (->> (spit "README.tex")))
+      #_ (->> (spit "README.tex")))
 
   ;; to pdf
   (do
