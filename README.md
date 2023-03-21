@@ -412,6 +412,7 @@ This example illustrates the use of Clerk to create rich documentation for `cloj
 ```clojure
 (figure {::clerk/width :wide
          :id "custom-viewers-for-clojure2ds-colors-library"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmQZ5kZwRYEEXUfNfWPsaidpoN88ugdSXYqEUVT5q1FyAE?filename=colors.png&content-type=image/png"
          :src "https://cdn.nextjournal.com/data/QmQgTLi8qfzrBRTkaAGfWQ4RceM4v3fp4Wna7knivMgusb?filename=clojure2d-color.png&content-type=image/png"
          :caption "Custom Viewers for Clojure2d’s Colors Library"})
 ```
@@ -435,6 +436,7 @@ It is built using a Clojure atom containing the text input’s current value tha
 (figure {::clerk/width :wide
          :id "printing-the-value-of-a-synced-clojure-atom"
          :caption "Printing the value of a synced Clojure atom"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmRvfwCT5wJCbU8ALLghhD7v9chKob8MXcUV3vAf6XTbm8?filename=regex-dict-output.png&content-type=image/png"
          :src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"})
 ```
 
