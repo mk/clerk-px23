@@ -152,7 +152,7 @@ This combination of immutability and indirection makes distributing the cache tr
 
 [^history-of-clojure]: [A History of Clojure](https://doi.org/10.1145/3386321), Rich Hickey
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/deref) and updating it's value with [`swap!`](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/swap!).
+It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojuredocs.org/clojure.core/deref) and updating it's value with [`swap!`](https://clojuredocs.org/clojure.core/swap!).
 
 [^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
 
