@@ -393,6 +393,8 @@ This combination of immutability and indirection makes distributing the cache tr
 
 \begin{quote}
 While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data. \cite{Hickey_2020}
+
+-- Rich Hickey
 \end{quote}
 
 It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State} (https://clojure.org/about/state)}}. While there are several of these constructs in the language, in practice {\href{https://clojure.org/reference/atoms}{atoms}\footnote{https://clojure.org/reference/atoms}} are the most popular by far. An atom allows reading the current value inside it with {\href{https://clojuredocs.org/clojure.core/deref}{\passthrough{\lstinline!deref/@!}}} and updating it\textquotesingle s value with {\href{https://clojuredocs.org/clojure.core/swap!}{\passthrough{\lstinline"swap!"}}}.
