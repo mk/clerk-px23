@@ -146,9 +146,7 @@
                {:t "Span" :c [["" [] []]
                               (cond-> [{:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]}]
                                 (not (str/includes? href "clojuredocs.org"))
-                                (conj (if *in-footnote?*
-                                        {:t "Str" :c (str " (" href ")")}
-                                        {:t "Note" :c [{:t "Plain" :c [{:t "Str" :c href}]}]})))]})))
+                                (conj {:t "Str" :c (str " (" href ")")}))]})))
    :monospace (fn [node] {:t "Code" :c [["" [] []] (md.transform/->text node)]})
 
    :list-item (fn [{:keys [content]}] (into [] (keep md->pandoc) content))
