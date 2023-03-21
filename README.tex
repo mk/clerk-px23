@@ -436,7 +436,7 @@ When the \passthrough{\lstinline!present!} function is called on the server side
 
 To avoid overloading the browser or producing uselessly large output, Clerk's built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there's a second global \emph{budget} per result to limit the total number of items shown in deeply nested data structures. We've found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk\textquotesingle s rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.\footnote{We also used this essay as an opportunity to improve Clerk\textquotesingle s support for sidenotes like this one.}
+One benefit of using the browser for Clerk\textquotesingle s rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.
 
 It\textquotesingle s also possible to use Clerk\textquotesingle s presentation system in other contexts. We know of at least one case of a user leveraging Clerk\textquotesingle s presentation system to do in-process rendering without a browser.\footnote{See {\href{https://github.com/phronmophobic/desk}{Desk} (https://github.com/phronmophobic/desk)}, by Adrian Smith.}
 

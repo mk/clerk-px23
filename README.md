@@ -84,11 +84,11 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 [^Ungar87]: [Self: The power of simplicity](https://doi.org/10.1145/38807.38828)
 ## Programming with Clerk
 
-> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.[^cit:Engelbart_1962]
+> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.[^latex-cit:Engelbart_1962]
 >
 > – Douglas Engelbart
 
-[^cit:Engelbart_1962]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
+[^latex-cit:Engelbart_1962]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
 
 We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/w/index.php?title=Java_virtual_machine&oldid=1144897244). Several aspects of the language make it an appealing target for this project:
 
@@ -190,9 +190,9 @@ When the `present` function is called on the server side, it defaults to perform
 
 To avoid overloading the browser or producing uselessly large output, Clerk’s built-in collection viewer carries an attribute to control the number of items initially displayed, allowing more data to be requested by the user on demand. Besides this simple limit, there’s a second global _budget_ per result to limit the total number of items shown in deeply nested data structures. We’ve found this simple system to work fairly well in practice.
 
-One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.[^sidenotes]
+One benefit of using the browser for Clerk's rendering layer is that it can produce static HTML pages for publication to the web. We could not resist the temptation to produce this document with Clerk.[^latex-skip:sidenotes]
 
-[^sidenotes]: We also used this essay as an opportunity to improve Clerk's support for sidenotes like this one.
+[^latex-skip:sidenotes]: We also used this essay as an opportunity to improve Clerk's support for sidenotes like this one.
 
 It's also possible to use Clerk's presentation system in other contexts. We know of at least one case of a user leveraging Clerk's presentation system to do in-process rendering without a browser.[^desk]
 

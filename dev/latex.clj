@@ -161,19 +161,20 @@
                    (let [{:as footnote :keys [content]} (get *footnotes* ref)
                          _ (when-not footnote (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
                          doi (find-doi footnote)]
-                     (cond
-                       (str/starts-with? label "cit:")
-                       {:t "RawInline", :c ["tex" (str " \\cite{" (subs label 4) "}")]}
+                     (when-not (str/starts-with? label "latex-skip:")
+                       (cond
+                         (str/starts-with? label "latex-cit:")
+                         {:t "RawInline", :c ["tex" (str " \\cite{" (subs label 10) "}")]}
 
-                       doi
-                       (let [bib-entry (doi->bib doi)
-                             bib-key (bib-entry->key bib-entry)]
-                         (swap! *bib-entries* assoc bib-key bib-entry)
-                         {:t "RawInline", :c ["tex" (str " \\cite{" bib-key "}")]})
+                         doi
+                         (let [bib-entry (doi->bib doi)
+                               bib-key (bib-entry->key bib-entry)]
+                           (swap! *bib-entries* assoc bib-key bib-entry)
+                           {:t "RawInline", :c ["tex" (str " \\cite{" bib-key "}")]})
 
-                       :else
-                       {:t "Note" :c (binding [*in-footnote?* true]
-                                       (into [] (keep md->pandoc) content))})))})
+                         :else
+                         {:t "Note" :c (binding [*in-footnote?* true]
+                                         (into [] (keep md->pandoc) content))}))))})
 
 (defn md->pandoc
   [{:as node :keys [type]}]
