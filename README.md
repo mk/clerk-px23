@@ -51,8 +51,9 @@
 
 ## Introduction: Literate Programming, Notebooks and Interactive Development
 
-Knuth's _Literate Programming_ [^literateprogramming] emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
+Knuth's _Literate Programming_[^literateprogramming][^knuth84] emphasized the importance of focusing on human beings as consumers of computer programs. His original implementation involved authoring files that combine source code and documentation, which were then divided into two derived artifacts: source code for the computer and a typeset document in natural language to explain the program.
 
+[^knuth84]: [Literate Programming](https://doi.org/10.1093/comjnl/27.2.97)
 [^literateprogramming]: An extensive archive of related material is maintained [here](http://www.literateprogramming.com).
 
 At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's _Milo_, PARC's _Tioga_ and _Camino Real_, and commercial software like _MathCAD_[^mathematical-software].

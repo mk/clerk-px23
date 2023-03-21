@@ -29,7 +29,7 @@
 ;;
 ;; ## Usage:
 {::clerk/visibility {:code :show}}
-;; * Take screenshots of results (only when results change, snapshots are tracked in git under `/images`. Notebook needs to be currently shown at `localhost:7676`):
+;; * Take screenshots of results (only when results change, snapshots are stored in the `/images` folder and ignored by git. Notebook needs to be currently shown at `localhost:7676`):
 (comment
   (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
       :dir "../clerk/ui_tests"))
@@ -45,7 +45,7 @@
       (sh "open" "README.pdf")))
 ;; to produce `README.pdf` from latex.
 ;;
-;; * Upload to CAS
+;; * Upload to CAS (you'll need a github personal token with `org:read` permissions).
 (comment
   (-> (cas-client/put {:path "README.pdf"
                        :namespace "nextjournal"
@@ -83,6 +83,7 @@
                                build) (HttpResponse$BodyHandlers/ofString))))))
 
 #_(doi->bib "https://doi.org/10.1145/2846680.2846684")
+#_(doi->bib "https://doi.org/10.1093/comjnl/27.2.97")
 
 (defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
 (defn reset-bib-entries! [] (spit (fs/file "bibliography.bib")
