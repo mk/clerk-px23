@@ -258,14 +258,7 @@
         {::clerk/keys [latex-graphics-opts]} (meta form)]
     (when-not hide?
       (cond
-        poster-frame-src                                    ;; video figure
-        {:type :figure
-         :label label
-         :caption [{:type :text :text (str caption)}]
-         :content [{:type :image
-                    :attrs {:src (store-image-src! opts)}}]}
-
-        src
+        (or poster-frame-src src)
         {:type :figure
          :label label
          :content [{:type :image :attrs {:src (store-image-src! opts)}}]
