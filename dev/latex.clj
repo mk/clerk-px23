@@ -144,11 +144,11 @@
              (if (str/starts-with? href "#")
                {:t "RawInline" :c ["tex" (str "\\autoref{" (subs href 1) "}")]}
                {:t "Span" :c [["" [] []]
-                              [{:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]}
-                               (if *in-footnote?*
-                                 {:t "Str" :c (str " (" href ")")}
-                                 {:t "Note" :c [{:t "Plain" :c [{:t "Str" :c href}]}]})]]})))
-
+                              (cond-> [{:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]}]
+                                (not (str/includes? href "clojuredocs.org"))
+                                (conj (if *in-footnote?*
+                                        {:t "Str" :c (str " (" href ")")}
+                                        {:t "Note" :c [{:t "Plain" :c [{:t "Str" :c href}]}]})))]})))
    :monospace (fn [node] {:t "Code" :c [["" [] []] (md.transform/->text node)]})
 
    :list-item (fn [{:keys [content]}] (into [] (keep md->pandoc) content))
