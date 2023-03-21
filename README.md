@@ -107,7 +107,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmUwPGsUfvZhWo7jNCfq92hDhGMu2hNsVRq6sUVrVXdsfq?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmSVeZpH3a5ag52AvodLDgBMA3AwnRrfawg5h2SQHk1rY3?filename=side-by-side.png&content-type=image/png"
          :id "clerk-side-by-side-with-emacs"
          :caption "Clerk side-by-side with Emacs"
          ::clerk/width :full
@@ -214,7 +214,7 @@ Additional affordances are automatic expansion of a nested data structure based 
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmciJrXQguekgeX6LsXUmvNthadkN2Eu4RMpMXzbKN6JDg?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmZmxVVtwGDsdVWRD2s3etdNNJ1tuWGJPFSWrfTcPLNTYx?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmcABdFREVjdAcruW3Qb45PLAwD7E337BWgU2gvU2gXw1B?filename=multi-expand.png&content-type=image/png"
          :video? true
          :id "expanding-multiple-sub-structures-at-once"
          :caption "Expanding multiple sub-structures at once"
@@ -385,7 +385,7 @@ We were able to automatically translate these names using a metaschema extracted
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmasZmkvfx6MyJcviDK7pSYQTPkmtFoJ96YzipQBRGCVEB?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmcqwupbADWEDjHYNnEJFNuWSB4TQdx39qwJrxeMwwEpNJ?filename=repl-inspect-query.png&content-type=image/png"
          :video? true
          :id "inspecting-a-query-using-the-repl"
          :caption "Inspecting A Query Using the REPL"
@@ -396,7 +396,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmVZsXxsX2wcYYc758yHkZjijW2HdZhaGcfQaHpAkZeqWk?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmRvBS2fHDyeVD8hPhFGiBFbwKbJWZDxMoMnYn1fpoMmxW?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmVdGBFtcK7AAksAzmCH4t18f1RvCbepLZPixaq4ncz4cq?filename=augmented-table-headers.png&content-type=image/png"
          :id "augmented-table-headings"
          :caption "Augmented Table Headings"
          :video? true
@@ -422,7 +422,7 @@ Built as a showcase for Clerk’s sync feature, this example allows entering a r
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmTwZWw4FQT6snxT8RkKt5P7Vxdt2BjM6ofbjKYEcvAZiq?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmP1pT3ysiZzw5fUhxmpGHCZregtMYcpu3Sue7Q1eSETCo?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmWo1npCDCK5F1t7Aofc65pbbeMfoQNMVje4F6UMTBK4CK?filename=regex-dict.png&content-type=image/png"
          :id "interactive-regex-dictionary"
          :caption "Interactive Regex Dictionary"
          :video? true
@@ -444,7 +444,7 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmRtGb5aByKD6i5SsxfS1JCJPKpC1kW5wbGvmT1h6awyB9?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmampWSVabdYtYpcN46rPjWGZK1KRebvsHHsx24zeudY8Q?content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmcebVp6BGydcUUJhkjMurj5bBAdnDwbeiMjrmD6avKji4?filename=lurk.png&content-type=image/png"
          :id "interactive-log-search"
          :caption "Interactive Log Search"
          ::clerk/width :wide})
