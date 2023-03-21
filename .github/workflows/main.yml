@@ -2,14 +2,19 @@ name: CI
 on: push
 jobs:
   link-to-pdf:
-    name: 'Link to pdf article'
+    name: 'Ping Link to Article'
     runs-on: ubuntu-latest
     steps:
+      - name: 🏓 Check pdf URL available
+        id: ping
+        run: curl -If https://storage.clerk.garden/nextjournal/clerk-px23@${{ github.sha }}/README.pdf
+        continue-on-error: true
       - name: ✅ Add success status to report with link to ssr snapshot
+        if: steps.ping.outcome == 'success'
         uses: Sibz/github-status-action@v1
         with:
           authToken: ${{secrets.GITHUB_TOKEN}}
-          context: 'CI / Link to pdf article'
+          context: 'CI / Link to pdf Article'
           description: 'Ready'
           state: 'success'
           sha: ${{github.event.pull_request.head.sha || github.sha}}
