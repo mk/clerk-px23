@@ -407,7 +407,8 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package[^color-package]. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
-[^color-package]: The full documentation is [here](https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html).
+[^color-package]: The full documentation is
+[here](https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html).
 
 ```clojure
 (figure {::clerk/width :wide

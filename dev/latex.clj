@@ -135,7 +135,7 @@
             (let [{:keys [src]} attrs]
               {:t "Image"
                :c [["" [] []] [] [src ""]]}))
-   :softbreak (fn [_] {:t "SoftBreak"})
+   :softbreak (fn [_] (if *in-footnote?* {:t "LineBreak"} {:t "SoftBreak"}))
    :em (fn [{:keys [content]}] {:t "Emph" :c (into [] (keep md->pandoc) content)})
    :strong (fn [{:keys [content]}] {:t "Strong" :c (into [] (keep md->pandoc) content)})
    :strikethrough (fn [{:keys [content]}] {:t "Strikeout" :c (into [] (keep md->pandoc) content)})
