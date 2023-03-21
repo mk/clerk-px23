@@ -82,7 +82,7 @@
                                (uri (URI. doi))
                                build) (HttpResponse$BodyHandlers/ofString))))))
 
-#_(doi->bib "https://doi.org/10.1145/2846680.2846684")
+#_(doi->bib "https://doi.org/10.5040/9781501311680.ch-029")
 #_(doi->bib "https://doi.org/10.1145/38807.38828")
 
 (defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
@@ -157,14 +157,21 @@
    :text (fn [{:keys [text]}] {:t "Str" :c text})
 
    ;; TODO: https://pandoc.org/MANUAL.html#footnotes
-   :footnote-ref (fn [{:keys [ref]}]
-                   (let [{:as footnote :keys [content]} (get *footnotes* ref)]
-                     (when-not footnote (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
-                     (if-some [doi (find-doi footnote)]
+   :footnote-ref (fn [{:keys [ref label]}]
+                   (let [{:as footnote :keys [content]} (get *footnotes* ref)
+                         _ (when-not footnote (throw (ex-info (str "Can't find footnote #" ref) {:ref ref :footnotes *footnotes*})))
+                         doi (find-doi footnote)]
+                     (cond
+                       (str/starts-with? label "cit:")
+                       {:t "RawInline", :c ["tex" (str " \\cite{" (subs label 4) "}")]}
+
+                       doi
                        (let [bib-entry (doi->bib doi)
                              bib-key (bib-entry->key bib-entry)]
                          (swap! *bib-entries* assoc bib-key bib-entry)
                          {:t "RawInline", :c ["tex" (str " \\cite{" bib-key "}")]})
+
+                       :else
                        {:t "Note" :c (binding [*in-footnote?* true]
                                        (into [] (keep md->pandoc) content))})))})
 

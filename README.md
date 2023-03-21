@@ -84,11 +84,11 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 [^Ungar87]: [Self: The power of simplicity](https://doi.org/10.1145/38807.38828)
 ## Programming with Clerk
 
-> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.[^engelbart]
+> In such a future working relationship between human problem-solver and computer ‘clerk’, the capability of the computer for executing mathematical processes would be used whenever it was needed.[^cit:Engelbart_1962]
 >
 > – Douglas Engelbart
 
-[^engelbart]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
+[^cit:Engelbart_1962]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
 
 We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/w/index.php?title=Java_virtual_machine&oldid=1144897244). Several aspects of the language make it an appealing target for this project:
 
