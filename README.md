@@ -73,7 +73,7 @@ Although notebooks of this kind present an improvement on the programming experi
 
 At the same time, though a number of Lisp environments have included graphical presentations of program objects[^mcclim], most modern tooling relies on text-based representations of evaluation output and doesn't include the ability to embed widgets for direct manipulation of program state. Additionally, problems often arise when printing structurally large results, which can cause editor performance to degrade or lead to the truncation of output, and there's limited room for customization or support for requesting more data.
 
-[^mcclim]: See, for example, the [Common Lisp Interface Manager](https://web.archive.org/web/20230315133845/https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager).
+[^mcclim]: See, for example, the [Common Lisp Interface Manager](https://en.wikipedia.org/w/index.php?title=Common_Lisp_Interface_Manager&oldid=1121151005).
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org), [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org) or Ampleforth[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
@@ -89,7 +89,7 @@ In comparison, interactive programming in Smalltalk-based systems has included G
 
 [^engelbart]: See [Augmenting Human Intellect: A Conceptual Framework](https://www.dougengelbart.org/pubs/augment-3906.html) by Douglas Engelbart.
 
-We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://web.archive.org/web/20230314065531/https://en.wikipedia.org/wiki/Java_virtual_machine). Several aspects of the language make it an appealing target for this project:
+We have built Clerk on top of Clojure[^clojure], a functional-by-default Lisp dialect primarily hosted on the [Java Virtual Machine](https://en.wikipedia.org/w/index.php?title=Java_virtual_machine&oldid=1144897244). Several aspects of the language make it an appealing target for this project:
 
 [^clojure]: For a description of the language and its motivations, see [A history of Clojure](https://doi.org/10.1145/3386321).
 
