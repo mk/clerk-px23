@@ -395,7 +395,7 @@ This combination of immutability and indirection makes distributing the cache tr
 While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn't want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data. \cite{Hickey_2020}
 \end{quote}
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State} (https://clojure.org/about/state)}}. While there are several of these constructs in the language, in practice {\href{https://clojure.org/reference/atoms}{atoms}\footnote{https://clojure.org/reference/atoms}} are the most popular by far. An atom allows reading the current value inside it with {\href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}{\passthrough{\lstinline!deref/@!}}\footnote{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/deref}} and updating it\textquotesingle s value with {\href{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}{\passthrough{\lstinline"swap!"}}\footnote{https://clojure.github.io/clojure/clojure.core-api.html\#clojure.core/swap!}}.
+It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State} (https://clojure.org/about/state)}}. While there are several of these constructs in the language, in practice {\href{https://clojure.org/reference/atoms}{atoms}\footnote{https://clojure.org/reference/atoms}} are the most popular by far. An atom allows reading the current value inside it with {\href{https://clojuredocs.org/clojure.core/deref}{\passthrough{\lstinline!deref/@!}}\footnote{https://clojuredocs.org/clojure.core/deref}} and updating it\textquotesingle s value with {\href{https://clojuredocs.org/clojure.core/swap!}{\passthrough{\lstinline"swap!"}}\footnote{https://clojuredocs.org/clojure.core/swap!}}.
 
 When Clerk encounters an expression in which an atom\textquotesingle s mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression\textquotesingle s static hash with it.
 
@@ -536,7 +536,7 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to ge
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
+\includegraphics[width=0.15\textwidth]{images/anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 

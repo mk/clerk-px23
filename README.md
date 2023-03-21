@@ -275,10 +275,9 @@ Then, a `sparkline` function is defined and tested to generate graphs (using `cl
                         :y {:field :y :type :quantitative :axis nil :background nil}}
              :embed/opts {:actions false}}))
 
-^{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show} ::clerk/latex-graphics-opts "width=0.15\\textwidth"}
 (sparkline (shuffle (range 30)))
 ```
-
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 

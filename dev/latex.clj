@@ -248,8 +248,7 @@
 (defn convert-result [{:as block :keys [id result form]}]
   (let [{:as opts :keys [src poster-frame-src caption] :latex/keys [hide?] label :id} (v/->value result)
         result-screenshot-path (str "images/" (name id) "-result.png")
-        m (meta form)]
-    #_ (prn :Meta m)
+        {::clerk/keys [latex-graphics-opts]} (meta form)]
     (when-not hide?
       (cond
         poster-frame-src                                    ;; video figure
@@ -267,8 +266,11 @@
 
         (fs/exists? result-screenshot-path)
         {:type :paragraph
-         :content [{:type :image
-                    :attrs {:src result-screenshot-path}}]}))))
+         :content [(if latex-graphics-opts
+                     {:type :raw-inline :kind "tex"
+                      :text (str "\\includegraphics[" latex-graphics-opts "]{" result-screenshot-path "}")}
+                     {:type :image
+                      :attrs {:src result-screenshot-path}})]}))))
 
 (defn conj-some [xs x] (cond-> xs x (conj x)))
 
@@ -360,7 +362,7 @@
   (sh pandoc-exec "--version")
 
   ;; get Pandoc AST for testing
-  (-> "![alt content](http://path.to/image \"Some title\"){width=400px height=400px width=5cm height=5cm}"
+  (-> "![alt content](http://path.to/image \"Some title\"){width=50% height=400px width=5cm height=5cm}"
       #_md/parse #_md->pandoc
       (pandoc<- "markdown+footnotes+implicit_figures+raw_tex")
-      #_(pandoc-> "latex" :template nil)))
+      (pandoc-> "latex" :template nil)))
