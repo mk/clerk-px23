@@ -83,7 +83,7 @@
                                build) (HttpResponse$BodyHandlers/ofString))))))
 
 #_(doi->bib "https://doi.org/10.1145/2846680.2846684")
-#_(doi->bib "https://doi.org/10.1093/comjnl/27.2.97")
+#_(doi->bib "https://doi.org/10.1145/38807.38828")
 
 (defn bib-entry->key [bib] (second (re-find #"\{([^,]+)," bib)))
 (defn reset-bib-entries! [] (spit (fs/file "bibliography.bib")
