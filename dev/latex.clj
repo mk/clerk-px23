@@ -242,9 +242,11 @@
       (ImageIO/write (ImageIO/read url) "png" (fs/file path)))
     (str path)))
 
-(defn convert-result [{:as block :keys [id result]}]
+(defn convert-result [{:as block :keys [id result form]}]
   (let [{:as opts :keys [src poster-frame-src caption] :latex/keys [hide?] label :id} (v/->value result)
-        result-screenshot-path (str "images/" (name id) "-result.png")]
+        result-screenshot-path (str "images/" (name id) "-result.png")
+        m (meta form)]
+    #_ (prn :Meta m)
     (when-not hide?
       (cond
         poster-frame-src                                    ;; video figure
@@ -357,7 +359,7 @@
   (sh pandoc-exec "--version")
 
   ;; get Pandoc AST for testing
-  (-> "should cite \\cite{thorsten93} ok"
+  (-> "![alt content](http://path.to/image \"Some title\"){width=400px height=400px width=5cm height=5cm}"
       #_md/parse #_md->pandoc
       (pandoc<- "markdown+footnotes+implicit_figures+raw_tex")
       #_(pandoc-> "latex" :template nil)))
