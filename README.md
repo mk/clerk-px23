@@ -459,7 +459,11 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 ### Experience
 
-Our experience as the developers and users of Clerk has been quite positive, but we're heavily biased. We've chosen a few quotes from Clerk's user base to give a sense of how it has been received in the community:
+Our experience as the developers and users of Clerk has been surprisingly positive: Clerk has seen solid adoption within our organization with many of us also using it for side-projects.
+
+We believe this is in large parts to the purely additive design of Clerk: when one chooses to view a namespace through Clerk it evokes feelings of added power, without the loss of control that comes from needing to leave the comforting and familiar editing environment (Emacs, Vim, VS Code) behind. In hindsight, we underestimated what a big ask that is.
+
+We've chosen a few quotes from Clerk's user base to give a sense of how the Clojure community has experienced Clerk.
 
 > [Clerk] is making the training of junior Clojure programmers a massive pleasure! [...]
 > 
@@ -476,6 +480,12 @@ Our experience as the developers and users of Clerk has been quite positive, but
 > I just wanted to express some gratitude for Clerk. It’s been a game changer for me in terms of understanding problems and communicating that understanding to other people. 
 >
 > – Jeffrey Simon
+
+Another often elusive aspect in the academic discourse on programming is aesthetics. We believe the ability to generate decently designed output, without extra effort, contributes to  people having a positive experience when using the tool. As exemplified by the following quote.
+
+> I think Clerk is just so freaking beautiful. “The Book of Clerk” is so pleasing to look at, I actually find myself admiring it over and over. Kudos to everyone involved [...]
+>
+> – Gene Kim
 
 ## Related
 
