@@ -143,7 +143,7 @@ When Clerk is asked to show a notebook, it will only evaluate forms that aren't 
 
 This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
 
-The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing [multihash format](https://multiformats.io/multihash/) to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
+The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing [multihash format](https://multiformats.io/multihash/) which combines an identifier of the hash function with its digest length and value to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
 
 This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
