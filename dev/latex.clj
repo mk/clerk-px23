@@ -45,7 +45,7 @@
       (sh "open" "README.pdf")))
 ;; to produce `README.pdf` from latex.
 ;;
-;; * Upload to CAS (you'll need a github personal token with `org:read` permissions).
+;; * Upload to CAS. You'll need a (classic) github personal access token with `org:read` and `user:read` permissions (https://github.com/settings/tokens).
 (comment
   (-> (cas-client/put {:path "README.pdf"
                        :namespace "nextjournal"
