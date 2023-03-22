@@ -479,11 +479,13 @@ We've chosen a few quotes from Clerk's user base to give a sense of how the Cloj
 >
 > – Jeffrey Simon
 
-Another often elusive aspect in the academic discourse on programming is aesthetics. We believe the ability to generate decently designed output, without extra effort, contributes to  people having a positive experience when using the tool. As exemplified by the following quote.
+Another often elusive aspect in the academic discourse on programming is aesthetics. 
 
-> I think Clerk is just so freaking beautiful. “The Book of Clerk” is so pleasing to look at, I actually find myself admiring it over and over. Kudos to everyone involved [...]
->
-> – Gene Kim
+> Attractive things do work better—their attractiveness produces positive emotions, causing mental processes to be more creative, more tolerant of minor difficulties.
+> 
+> – Don Norman, Emotional Design
+
+We believe the ability to generate decently designed output, without extra effort, contributes to  people having a positive experience when using the tool.
 
 ## Related
 
