@@ -78,6 +78,8 @@ At the same time, though a number of Lisp environments have included graphical p
 
 In comparison, interactive programming in Smalltalk-based systems has included GUI elements since the beginning, and work to further improve programmer experience along these lines has continued in Smalltalk-based systems like [Self](https://selflanguage.org)[^Ungar87], [Pharo](https://pharo.org), [Glamorous Toolkit](https://gtoolkit.com)[^moldable-tools] and [Newspeak](https://newspeaklanguage.org) or Ampleforth[^ample-forth], which offer completely open and customizable integrated programming environments. Glamorous Toolkit, in particular, champions the idea of using easily constructed custom tools to improve productivity and reduce time spent on code archeology, which is also a big inspiration for what we'll present here.
 
+This paper contributes a description of the Clerk system, along with its background and the motivation for its construction. We include a number of examples of things built by users of the tool, and some discussion of the feedback that it has thus far received.
+
 [^moldable-tools]: [Towards Moldable Development Tools](https://doi.org/10.1145/2846680.2846684) by Andrei Chiş, Oscar Nierstrasz and Tudor Gîrba
 
 [^ample-forth]: [Ampleforth: A Live Literate Editor](https://blog.bracha.org/Ampleforth-Live22/out/primordialsoup.html?snapshot=Live22Submission.vfuel) by Gilad Bracha
@@ -146,7 +148,7 @@ This caching behavior can be fine-tuned (or disabled) down to the level of indiv
 
 The on-disk caches use a content-addressed store where each result is stored using a filename derived from the SHA-2 hash of its contents. We use the self-describing [multihash format](https://multiformats.io/multihash/) which combines an identifier of the hash function with its digest length and value to support future changes of the hash algorithm. Additionally, a file named after the hash of a form contains a pointer to its results filename.
 
-This combination of immutability and indirection makes distributing the cache trivial: using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
+This combination of immutability and indirection makes distributing the cache trivial using last-write wins for the tiny (90 bytes) pointer files. The content-addressed result cache files are never changed and can thus be synchronized without conflict.
 
 > While I did believe, and it has been true in practice, that the vast majority of an application could be functional, I also recognized that almost all programs would need some state. Even though the host interop would provide access to (plenty of) mutable state constructs, I didn’t want state management to be the province of interop; after all, a point of Clojure was to encourage people to stop doing mutable, stateful OO. In particular I wanted a state solution that was much simpler than the inherently complex locks and mutexes approaches of the hosts for concurrency-safe state. And I wanted something that took advantage of the fact that Clojure programmers would be programming primarily with efficiently persistent immutable data.[^history-of-clojure]
 >
@@ -166,7 +168,7 @@ This extension makes Clerk's caching work naturally with idiomatic use of mutabl
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
-A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, leading to surprising errors. To help avoid this, Clerk defaults to showing an error unless it can resolve all referenced definitions in the runtime to the source code.
+A practical concern with this sort of "bottom-up" programming is that the state of the system can diverge from the state of the source file, as forms that have been deleted from the source file may still be present in the running system. This can lead to a situation where newly written code depends on values that will not exist the next time the program runs, causing surprising errors. To help avoid this, Clerk defaults to signaling an error unless it can resolve all referenced definitions in the runtime to the source code.
 
 It is our goal to match the semantics of Clojure as closely as possible but as a very dynamic language, there are limits to what Clerk's analysis can handle. Here are some of the things we currently do not support:
 
@@ -224,7 +226,7 @@ Additional affordances are automatic expansion of a nested data structure based 
          ::clerk/width :wide})
 ```
 
-Using the built-in `clerk/table` viewer, the same data structure can also be rendered as table. The table viewer is using heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
+Using the built-in `clerk/table` viewer, the same data structure can also be rendered as a table. The table viewer uses heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
 ``` clojure
 ^{::clerk/visibility {:code :show}}
@@ -340,7 +342,7 @@ Clerk also comes with an inspector for Clojure's tap system.
 
 When enabled, Clerk will attach a tap listener function and record and show the tap stream. This makes Clerk's viewer system accessible across file and namespace boundaries and independently of the caching mechanisms.
 
-### Programming by Example
+### Embedding Examples
 
 The [comment](https://clojuredocs.org/clojure.core/comment) macro in Clojure is typically used to annotate source code with rich examples that exercise the program during development and aid comprehension.
 
@@ -457,11 +459,11 @@ Also building on Clerk’s sync feature, this interactive log search uses [Lucen
 
 ### Experience
 
-Our experience as the developers and users of Clerk has been surprisingly positive: Clerk has seen solid adoption within our organization with many of us also using it for side-projects.
+Our experience as the developers and users of Clerk has been surprisingly positive, and it has seen solid adoption within our organization, including many of us also using it for side-projects.
 
-We believe this is in large parts to the purely additive design of Clerk: when one chooses to view a namespace through Clerk it evokes feelings of added power, without the loss of control that comes from needing to leave the comforting and familiar editing environment (Emacs, Vim, VS Code) behind. In hindsight, we underestimated what a big ask that is.
+We believe this is in large part due to the purely additive design of Clerk. When one chooses to view a namespace through Clerk, it evokes feelings of added power, without the loss of control that comes from leaving one's comforting and familiar editing environment (Emacs, Vim, VS Code). In hindsight, we now realize that we underestimated what a big ask that is for potential users of these sorts of systems.
 
-We've chosen a few quotes from Clerk's user base to give a sense of how the Clojure community has experienced Clerk.
+We've chosen a few quotes from Clerk's user base to give a sense of how the Clojure community has experienced Clerk. So far, even with thousands of users, we've had mostly positive feedback, aside from the usual bug reports every project receives.
 
 > [Clerk] is making the training of junior Clojure programmers a massive pleasure! [...]
 > 
@@ -479,13 +481,11 @@ We've chosen a few quotes from Clerk's user base to give a sense of how the Cloj
 >
 > – Jeffrey Simon
 
-Another often elusive aspect in the academic discourse on programming is aesthetics. 
+One often under-appreciated area in the academic discourse on programming is aesthetics. We believe the baseline level of design that is automatically inherited by any document produced with Clerk has contributed to the positive experiences our users have reported.
 
 > Attractive things do work better—their attractiveness produces positive emotions, causing mental processes to be more creative, more tolerant of minor difficulties.
 > 
 > – Don Norman, Emotional Design
-
-We believe the ability to generate decently designed output, without extra effort, contributes to  people having a positive experience when using the tool.
 
 ## Related
 
@@ -495,9 +495,9 @@ In contrast, because we have found it more persuasive to argue for the use of su
 
 * [Org mode][org-mode] is a major mode for [Emacs](https://www.gnu.org/software/emacs/) supporting polyglot literate programming based on a plain text format. Org's approach is in many ways similar to our Markdown mode, where explicit code fences are used to introduce programmatic constructs to a document, and a variety of previewers are available for org files, though in a fragmented ecosystem where each kind of application requires a different kind of previewer. We were partially inspired by positive experiences using org-mode in the design of Clerk, though we focused more on our annotated source code format.
 
-* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators. While there are several similarities between Clerk and Steamlits, the two systems have a very different focus. Streamlit is primarily a rapid application development environment, without Clerk's focus on Literate Programming and Moldable Development.
+* [Streamlit][streamlit] is a Python library that eshews a custom format and enables building a web UI on regular python scripts. Its [caching system][streamlit-cache] memoizes functions that are tagged using Python's decorators. While there are several similarities between Clerk and Steamlits, the two systems have a very different focus. Streamlit is primarily a rapid application development environment, without Clerk's focus is on combining Literate Programming and Moldable Development.
 
-We are pleased to see a number of other systems working with annotated source code, including [Pluto][pluto] and [Livebook][livebook], and consider this convergent evolution toward tools that developers will actually use a positive trend.
+We are pleased to see a number of other systems working with annotated source code, including [Pluto][pluto] and [Livebook][livebook], and consider this convergent evolution toward tools that developers are more likely to actually use as a positive trend.
 
 ## Future Work
 
@@ -508,13 +508,13 @@ Clerk's viewer API is a first example of this approach, but we want to take it f
 * provide functions to control the caching e.g. to support more efficient caching of data frames
 * letting the viewer API's `:pred` function opt into receiving more context like the path in the tree
 * make caching more granular and support caching function invocations
-* override `parse` and `eval` to support different syntaxes than markdown and different semantics
+* override `parse` and `eval` to support additional syntaxes with different semantics
 
 So far we've mainly used Clerk's caching on local machines in isolation. We plan to share a distributed cache within our dev team in order to learn about the benefits and challenges this can bring. We also want to extend Clerk to better communicate caching behavior to its users (why a value could or could not be cached, if it was cached in-memory or on-disk).
 
 We're also actively exploring different ways of bringing an exploratory Clerk notebook to production. In exploratory work one often uses global state in Clojure atoms and vars which makes a computation tangible. When serving concurrent requests in a production setting that global state can be a source of inconsistencies.
 
-We've been discussing ways to write changes originating from controls in Clerk's view back to source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported. Making a simple integration that works by overwriting source files insufficient. Because this is a significant chunk of work, and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be more effective than editing text in a code editor, we're excited to explore this direction in the future.
+We've been discussing ways to write changes originating from controls in Clerk's view back to source files. We also believe that for this to be a good developer experience, concurrent modifications without intermediate saving should be supported, making a simple integration that works by overwriting source files insufficient. Because this is a significant chunk of work, and will require a different solution for each editor, we've avoided it until now. Since there certainly are many tasks for which direct manipulation can be more effective than editing text in a code editor, we're excited to explore this direction in the future.
 
 ## Conclusion 
 
