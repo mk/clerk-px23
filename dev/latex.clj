@@ -41,8 +41,9 @@
 ;;
 ;; * Run
 (comment
-  (do (sh "tectonic" "--keep-intermediates" "README.tex")
-      (sh "open" "README.pdf")))
+  (let [{:keys [exit out err]} (sh "tectonic" "--keep-intermediates" "README.tex")]
+    (println out err)
+    (when (zero? exit) (sh "open" "README.pdf"))))
 ;; to produce `README.pdf` from latex.
 ;;
 ;; * Upload to CAS. You'll need a (classic) github personal access token with `org:read` and `user:read` permissions (https://github.com/settings/tokens).
