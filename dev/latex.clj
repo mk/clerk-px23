@@ -145,7 +145,9 @@
                {:t "RawInline" :c ["tex" (str "\\autoref{" (subs href 1) "}")]}
                {:t "Span" :c [["" [] []]
                               (cond-> [{:t "Link" :c [["" [] []] (into [] (keep md->pandoc) content) [(:href attrs) ""]]}]
-                                (not (str/includes? href "clojuredocs.org"))
+                                ;; ad-hoc hack for overflowing URLs
+                                (not (or (str/includes? href "clojuredocs.org")
+                                         (str/includes? href "changes.md")))
                                 (conj (if *in-footnote?*
                                         {:t "Str" :c (str " (" href ")")}
                                         {:t "Note" :c [{:t "Plain" :c [{:t "Str" :c href}]}]})))]})))
