@@ -106,7 +106,7 @@ While there are some rough edges around a few particularly tricky language featu
 
 Clerk combines Lisp-style interactive programming with the benefits of computational notebooks, literate programming, and moldable development, all without asking programmers to abandon their favorite tools or give up their existing software engineering practices. Its design stems partially from the difficult lessons we learned after years of unsuccessfully trying to get our _own team_ to use an [online browser-based notebook platform][nextjournal] that we also developed.
 
-When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as [seen in _Clerk side-by-side with Emacs_](#clerk-side-by-side-with-emacs).
+When working with Clerk, a split-view is typically used with a code editor next to a browser showing Clerk’s representation of the same notebook, as seen in [_Clerk side-by-side with Emacs_](#clerk-side-by-side-with-emacs).
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmVYLx5SByNZi9hFnK2zx1K6Bz8FZqQ7wYtAwzYCxEhvfh?content-type=video/mp4"
@@ -330,7 +330,7 @@ The process of selecting viewers happens programmatically on the server side, th
 
 To help with creating interactive tools using Clerk, it also supports bidirectional sync of state between the client and server Clojure environments. If a Clojure `atom` on the server is annotated with metadata indicating it is `sync`, Clerk will create a corresponding var in the client environment. Both of these atoms will be automatically instrumented with an update watcher that broadcasts a _diff_ to the other side.
 
-In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in the [Regex Dictionary Example](#interactive-regex-dictionary).
+In addition, a server-side change will trigger a refresh of the currently active document, which will then re-calculate the minimum subset of the document that is dependent on that atom's value. This allows us to use Clerk for small local-first apps, as shown in [the Regex Dictionary Example](#interactive-regex-dictionary).
 
 ### Tap Stream Inspector
 
