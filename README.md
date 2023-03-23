@@ -140,7 +140,7 @@ The caching works on the level of top-level forms. A hash is computed for each t
 When Clerk is asked to show a notebook, it will only evaluate forms that aren't cached in one of Clerk's two caches:
 
 * an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
-* An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations[^data-ingestion]. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+* An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations.[^data-ingestion] Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 
 [^data-ingestion]: In tasks with intensive data preparation steps, this savings can be considerable.
 
@@ -156,7 +156,7 @@ This combination of immutability and indirection makes distributing the cache tr
 
 [^history-of-clojure]: [A History of Clojure](https://doi.org/10.1145/3386321), Rich Hickey
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state[^clojure-state]. While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojuredocs.org/clojure.core/deref) and updating it's value with [`swap!`](https://clojuredocs.org/clojure.core/swap!).
+It is idiomatic in Clojure to use boxed containers to manage mutable state.[^clojure-state] While there are several of these constructs in the language, in practice [atoms](https://clojure.org/reference/atoms) are the most popular by far. An atom allows reading the current value inside it with [`deref/@`](https://clojuredocs.org/clojure.core/deref) and updating it's value with [`swap!`](https://clojuredocs.org/clojure.core/swap!).
 
 [^clojure-state]: [Values and Change: Clojure’s approach to Identity and State](https://clojure.org/about/state)
 
@@ -181,7 +181,7 @@ We have included a mechanism to override Clerk's error checking in cases where t
 
 ### Presentation
 
-Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user's development environment. The client executes in a web browser running an embedded Clojure interpreter[^sci].
+Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user's development environment. The client executes in a web browser running an embedded Clojure interpreter.[^sci]
 
 [^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
@@ -310,7 +310,7 @@ Clerk’s viewers are an ordered (and thus prioritized) collection of plain Cloj
 * `:render-fn` is a quoted form that will be sent to the browser, where it will be turned into a function that will be called to display the data
 * `:page-size` is a number that indicates how many items to send in each chunk during elision/pagination
 
-Here, for example, is the `code` viewer, which shows a piece of Clojure code with idiomatic syntax highlighting[^self-rendered]:
+Here, for example, is the `code` viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:[^self-rendered]
 
 [^self-rendered]: The source code here is rendered by the viewer that it describes.
 

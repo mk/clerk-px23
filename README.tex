@@ -398,7 +398,7 @@ When Clerk is asked to show a notebook, it will only evaluate forms that aren\te
 \item
   an in-memory cache stores a map of the hash of a given form to its current result. This cache is limited to the current forms of the active document.
 \item
-  An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations\footnote{In tasks with intensive data preparation steps, this savings can be considerable.}. Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
+  An on-disk-cache stores the same information but to allow the user to continue work after a restart without recomputing potentially expensive operations.\footnote{In tasks with intensive data preparation steps, this savings can be considerable.} Because Clojure supports lazy evaluation of potentially infinite sequences, safeguards are in place to skip caching unreasonable values.
 \end{itemize}
 
 This caching behavior can be fine-tuned (or disabled) down to the level of individual forms.
@@ -413,7 +413,7 @@ While I did believe, and it has been true in practice, that the vast majority of
 -- Rich Hickey
 \end{quote}
 
-It is idiomatic in Clojure to use boxed containers to manage mutable state\footnote{{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State} (https://clojure.org/about/state)}}. While there are several of these constructs in the language, in practice {\href{https://clojure.org/reference/atoms}{atoms}\footnote{https://clojure.org/reference/atoms}} are the most popular by far. An atom allows reading the current value inside it with {\href{https://clojuredocs.org/clojure.core/deref}{\passthrough{\lstinline!deref/@!}}} and updating it\textquotesingle s value with {\href{https://clojuredocs.org/clojure.core/swap!}{\passthrough{\lstinline"swap!"}}}.
+It is idiomatic in Clojure to use boxed containers to manage mutable state.\footnote{{\href{https://clojure.org/about/state}{Values and Change: Clojure's approach to Identity and State} (https://clojure.org/about/state)}} While there are several of these constructs in the language, in practice {\href{https://clojure.org/reference/atoms}{atoms}\footnote{https://clojure.org/reference/atoms}} are the most popular by far. An atom allows reading the current value inside it with {\href{https://clojuredocs.org/clojure.core/deref}{\passthrough{\lstinline!deref/@!}}} and updating it\textquotesingle s value with {\href{https://clojuredocs.org/clojure.core/swap!}{\passthrough{\lstinline"swap!"}}}.
 
 When Clerk encounters an expression in which an atom\textquotesingle s mutable value is being read using \passthrough{\lstinline!deref!}, it will try to compute a hash based on the value \emph{inside} the atom  at runtime, and extend the expression\textquotesingle s static hash with it.
 
@@ -445,7 +445,7 @@ We have included a mechanism to override Clerk\textquotesingle s error checking 
 \hypertarget{presentation}{%
 \subsection{Presentation}\label{presentation}}
 
-Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user\textquotesingle s development environment. The client executes in a web browser running an embedded Clojure interpreter\footnote{{\href{https://github.com/babashka/sci}{Small Clojure Interpreter} (https://github.com/babashka/sci)} by Michiel Borkent}.
+Clerk uses a client/server architecture. The server runs in the JVM process that hosts the user\textquotesingle s development environment. The client executes in a web browser running an embedded Clojure interpreter.\footnote{{\href{https://github.com/babashka/sci}{Small Clojure Interpreter} (https://github.com/babashka/sci)} by Michiel Borkent}
 
 The process of conveying a value to the client is a \emph{presentation}, a
 term taken from Common Lisp systems that support similar features.\footnote{This feature originated on the Lisp Machine, and lives on in a reduced form as a feature of the emacs package {\href{https://slime.common-lisp.dev/doc/html/Presentations.html}{Slime} (https://slime.common-lisp.dev/doc/html/Presentations.html)}.} The process of presentation makes use of \emph{viewers}, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
@@ -594,7 +594,7 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
   \passthrough{\lstinline!:page-size!} is a number that indicates how many items to send in each chunk during elision/pagination
 \end{itemize}
 
-Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting\footnote{The source code here is rendered by the viewer that it describes.}:
+Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:\footnote{The source code here is rendered by the viewer that it describes.}
 
 \includegraphics{images/anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC-result.png}
 
