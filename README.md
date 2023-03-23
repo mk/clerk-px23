@@ -56,11 +56,11 @@ Knuth's _Literate Programming_[^literateprogramming][^knuth84] emphasized the im
 [^knuth84]: [Literate Programming](https://doi.org/10.1093/comjnl/27.2.97)
 [^literateprogramming]: An extensive archive of related material is maintained [here](http://www.literateprogramming.com).
 
-At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's _Milo_, PARC's _Tioga_ and _Camino Real_, and commercial software like _MathCAD_[^mathematical-software].
+At the same time, other software was developed to target scientific use cases rather than program documentation. These systems, which prefigured modern computational notebooks, ranged from REPL-driven approaches like Macsyma and Mathematica to integrated WYSIWYG editors like Ron Avitzur's _Milo_, PARC's _Tioga_ and _Camino Real_, and commercial software like _MathCAD_.[^mathematical-software]
 
 [^mathematical-software]: See [A Survey of User Interfaces for Computer Algebra Systems](https://people.eecs.berkeley.edu/~fateman/temp/kajler-soiffer.pdf) for a history of these systems up until 1998 ([DOI](https://doi.org/10.1006/jsco.1997.0170)).
 
-In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like [Jupyter](https://jupyter.org), [Observable](https://observablehq.com), [Pluto][pluto], and [Livebook][livebook]. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices)[^notebook-pain-points].
+In contemporary data science and software engineering practice, we often see interfaces that combine these two approaches, like [Jupyter](https://jupyter.org), [Observable](https://observablehq.com), [Pluto][pluto], and [Livebook][livebook]. In these notebooks, a user can mix prose, code, and visualizations in a single document that provides the advantages of Knuth's Literate Programming with those of a scientific computing environment. Unfortunately, most such systems require the programmer to use a browser-based editing environment (which alienates programmers with a strong investment in their own tooling) and custom file formats (which cause problems for integration with broader software engineering practices).[^notebook-pain-points]
 
 [^notebook-pain-points]: See [What’s Wrong with Computational Notebooks? Pain Points, Needs, and Design Opportunities](https://doi.org/10.1145/3313831.3376729) by Souti Chattopadhyay, Ishita Prasad, Austin Z. Henley, Anita Sarma and Titus Barik.
 
@@ -117,7 +117,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
          :video? true})
 ```
 
-As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation[^maria]. This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
+As shown here, our _notebooks_ are just source files containing regular Clojure code. Block comments are treated as markdown text with added support for LaTeX, data visualization, and so on, while top-level forms are treated as code cells that show the result of their evaluation.[^maria] This format allows us to use Clerk in the context of production code that resides in revision control. Because files decorated with these comment blocks are legal code without Clerk loaded, they can be used in many contexts where traditional notebook-specific code cannot. This has led, among other things, to Clerk being used extensively to publish documentation for libraries that are then able to ship artifacts that have no dependency on Clerk itself.
 
 [^maria]: We have borrowed this approach from [maria.cloud][maria], a web-hosted interactive Clojure learning tool created by [Matt Huebert](https://matt.is), [Dave Liepmann](https://www.daveliepmann.com/), and [Jack Rusher](https://jackrusher.com/). Maria grew out of [work presented at PX16](https://px16.matt.is) by Matt Huebert.
 
@@ -186,7 +186,7 @@ Clerk uses a client/server architecture. The server runs in the JVM process that
 [^sci]: [Small Clojure Interpreter](https://github.com/babashka/sci) by Michiel Borkent
 
 The process of conveying a value to the client is a _presentation_, a
-term taken from Common Lisp systems that support similar features [^presentations]. The process of presentation makes use of _viewers_, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
+term taken from Common Lisp systems that support similar features.[^presentations] The process of presentation makes use of _viewers_, each of which is a hash map from well-known keys to quoted forms containing source code for Clojure functions that specify how the client should render data structures of a given type. When a viewer form is received on the client side, it is compiled into a function that will be then called on data later sent by the server.
 
 [^presentations]: This feature originated on the Lisp Machine, and lives on in a reduced form as a feature of the emacs package [Slime](https://slime.common-lisp.dev/doc/html/Presentations.html).
 
@@ -362,7 +362,7 @@ Clerk's example macro expands on that by showing the source code next to the eva
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from _some_ computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with “code-fenced” source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
-This format is very similar to other markdown-based notebooks, like [R Markdown](https://rmarkdown.rstudio.com), but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located [on Github](https://github.com/mk/clerk-px23)[^github-format].
+This format is very similar to other markdown-based notebooks, like [R Markdown](https://rmarkdown.rstudio.com), but specifically tailored to Clojure. We used this approach to write this paper, the source for which is located [on Github](https://github.com/mk/clerk-px23).[^github-format]
 
 [^github-format]: One nice thing about this approach is that other systems, like Github, are able to render a reasonable version of the document, though without evaluation.
 
@@ -409,7 +409,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 
 ### Rich documentation features
 
-This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package[^color-package]. They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
+This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package.[^color-package] They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
 [^color-package]: The full documentation is
 [here](https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html).
@@ -489,7 +489,7 @@ One often under-appreciated area in the academic discourse on programming is aes
 
 ## Related
 
-Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems. Many of them introduce the viewing layer to the editor itself, as seen in various Smalltalk experiments (Moldable Development[^moldable-tools],  Newspeak[^newspeak],  Babylonian Programming[^babylonian], etc), and in recent work on LiveLits[^filling-typed-holes] and visual syntactic extensions to the Racket programming language[^interactive-visual-syntax].
+Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems. Many of them introduce the viewing layer to the editor itself, as seen in various Smalltalk experiments (Moldable Development[^moldable-tools],  Newspeak[^newspeak],  Babylonian Programming[^babylonian], etc), and in recent work on LiveLits[^filling-typed-holes] and visual syntactic extensions to the Racket programming language.[^interactive-visual-syntax]
 
 In contrast, because we have found it more persuasive to argue for the use of such systems in the context of a user's existing tooling, we've focused on an approach that supplements existing workflows with a sidecar previewer. Other systems that have taken a similar approach include:
 
