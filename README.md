@@ -389,7 +389,7 @@ We were able to automatically translate these names using a metaschema extracted
 
 ```clojure
 (figure {:src "https://cdn.nextjournal.com/data/QmbGFKpEXLGyqngHe7q1dqAsEAWfotSHG8XxYZPQfHirQ1?content-type=video/mp4"
-         :poster-frame-src "https://cdn.nextjournal.com/data/QmcqwupbADWEDjHYNnEJFNuWSB4TQdx39qwJrxeMwwEpNJ?filename=repl-inspect-query.png&content-type=image/png"
+         :poster-frame-src "https://cdn.nextjournal.com/data/QmagkcNvHsscf3DEq18nuXi6z3u4CyQWGzaRLf1hUm5a32?filename=repl-inspecting-a-query.png&content-type=image/png"
          :video? true
          :id "inspecting-a-query-using-the-repl"
          :caption "Inspecting A Query Using the REPL"
@@ -487,7 +487,7 @@ One often under-appreciated area in the academic discourse on programming is aes
 > 
 > – Don Norman, Emotional Design
 
-## Related
+## Related Work
 
 Besides the systems mentioned earlier in the paper, there are a number of other contemporary related systems. Many of them introduce the viewing layer to the editor itself, as seen in various Smalltalk experiments (Moldable Development[^moldable-tools],  Newspeak[^newspeak],  Babylonian Programming[^babylonian], etc), and in recent work on LiveLits[^filling-typed-holes] and visual syntactic extensions to the Racket programming language.[^interactive-visual-syntax]
 
