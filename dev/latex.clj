@@ -335,7 +335,8 @@
 (defn manual-fixes [tex]
   (-> tex
       (str/replace "\"bottom-up\"" "``bottom-up\"")
-      (str/replace "\"notebook\"" "``notebook\"")))
+      (str/replace "\"notebook\"" "``notebook\"")
+      (str/replace "(https://en.wikipedia.org/w/index.php" "(https://en.wikipedia.org/w/index.php\\newline")))
 
 (defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
   (let [out-file (str (first (fs/split-ext file)) ".tex")]
