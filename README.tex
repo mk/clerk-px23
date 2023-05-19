@@ -493,7 +493,7 @@ Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data s
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
+\includegraphics[width=0.45\textwidth]{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
 
 Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive {\href{https://vega.github.io/vega-lite/}{Vega-Lite}\footnote{https://vega.github.io/vega-lite/}} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
 
@@ -565,15 +565,18 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
   :rows (->> datasets/air-passengers
              (group-by :year)
              (map (fn [[year months]]
-                    (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
-                      (concat [year] 
-                              qs 
-                              [(sparkline (map :n months))]))))
+                    (let [qs (->> months (map :n)
+                                  (partition 3)
+                                  (map #(reduce + %)))]
+                      (concat [year]
+                              qs
+                              [(sparkline
+                                (map :n months))]))))
              (sort-by first))})
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dsSs4YJ9LYoxsu8USvFMpW5wGuDa3-result.png}
+\includegraphics[width=0.45\textwidth]{images/anon-expr-5dsSs4YJ9LYoxsu8USvFMpW5wGuDa3-result.png}
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 

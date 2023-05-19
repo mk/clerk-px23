@@ -292,10 +292,13 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
   :rows (->> datasets/air-passengers
              (group-by :year)
              (map (fn [[year months]]
-                    (let [qs (->> months (map :n) (partition 3) (map #(reduce + %)))]
-                      (concat [year] 
-                              qs 
-                              [(sparkline (map :n months))]))))
+                    (let [qs (->> months (map :n)
+                                  (partition 3)
+                                  (map #(reduce + %)))]
+                      (concat [year]
+                              qs
+                              [(sparkline
+                                (map :n months))]))))
              (sort-by first))})
 ```
 
