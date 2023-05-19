@@ -1,0 +1,206 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{11}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Andersen et~al\mbox{.}(2020)]%
+        {Andersen_2020}
+\bibfield{author}{\bibinfo{person}{Leif Andersen}, \bibinfo{person}{Michael
+  Ballantyne}, {and} \bibinfo{person}{Matthias Felleisen}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Adding interactive visual syntax to textual code}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the {ACM} on Programming
+  Languages}} \bibinfo{volume}{4}, \bibinfo{number}{{OOPSLA}}
+  (\bibinfo{date}{nov} \bibinfo{year}{2020}), \bibinfo{pages}{1--28}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3428290}
+\showDOI{\tempurl}
+
+
+\bibitem[Chattopadhyay et~al\mbox{.}(2020)]%
+        {Chattopadhyay_2020}
+\bibfield{author}{\bibinfo{person}{Souti Chattopadhyay},
+  \bibinfo{person}{Ishita Prasad}, \bibinfo{person}{Austin~Z. Henley},
+  \bibinfo{person}{Anita Sarma}, {and} \bibinfo{person}{Titus Barik}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{What{\textquotesingle}s Wrong with Computational
+  Notebooks? Pain Points, Needs, and Design Opportunities}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 2020 {CHI} Conference on Human
+  Factors in Computing Systems}}. \bibinfo{publisher}{{ACM}}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3313831.3376729}
+\showDOI{\tempurl}
+
+
+\bibitem[Chi{\c{s}} et~al\mbox{.}(2015)]%
+        {Chi__2015}
+\bibfield{author}{\bibinfo{person}{Andrei Chi{\c{s}}}, \bibinfo{person}{Oscar
+  Nierstrasz}, {and} \bibinfo{person}{Tudor G{\^{\i}}rba}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Towards moldable development tools}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 6th Workshop on Evaluation and
+  Usability of Programming Languages and Tools}}. \bibinfo{publisher}{{ACM}}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2846680.2846684}
+\showDOI{\tempurl}
+
+
+\bibitem[Engelbart(1962)]%
+        {Engelbart_1962}
+\bibfield{author}{\bibinfo{person}{D.~C. Engelbart}.}
+  \bibinfo{year}{1962}\natexlab{}.
+\newblock \bibinfo{title}{{Augmenting Human Intellect: A Conceptual
+  Framework}}.
+\newblock \bibinfo{howpublished}{Air Force Office of Scientific Research, SRI
+  Summary Report AFOSR-3223}.
+\newblock
+\urldef\tempurl%
+\url{https://www.dougengelbart.org/pubs/augment-3906.html}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Hickey(2020)]%
+        {Hickey_2020}
+\bibfield{author}{\bibinfo{person}{Rich Hickey}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{A history of Clojure}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the {ACM} on Programming
+  Languages}} \bibinfo{volume}{4}, \bibinfo{number}{{HOPL}}
+  (\bibinfo{date}{jun} \bibinfo{year}{2020}), \bibinfo{pages}{1--46}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3386321}
+\showDOI{\tempurl}
+
+
+\bibitem[Kajler and Soiffer(1998)]%
+        {Kajler_1998}
+\bibfield{author}{\bibinfo{person}{N. Kajler} {and} \bibinfo{person}{N.
+  Soiffer}.} \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{A Survey of User Interfaces for Computer Algebra
+  Systems}.
+\newblock \bibinfo{journal}{\emph{Journal of Symbolic Computation}}
+  \bibinfo{volume}{25}, \bibinfo{number}{2} (\bibinfo{date}{feb}
+  \bibinfo{year}{1998}), \bibinfo{pages}{127--159}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1006/jsco.1997.0170}
+\showDOI{\tempurl}
+
+
+\bibitem[Knuth(1984)]%
+        {Knuth_1984}
+\bibfield{author}{\bibinfo{person}{D.~E. Knuth}.}
+  \bibinfo{year}{1984}\natexlab{}.
+\newblock \showarticletitle{Literate Programming}.
+\newblock \bibinfo{journal}{\emph{Comput. J.}} \bibinfo{volume}{27},
+  \bibinfo{number}{2} (\bibinfo{date}{feb} \bibinfo{year}{1984}),
+  \bibinfo{pages}{97--111}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1093/comjnl/27.2.97}
+\showDOI{\tempurl}
+
+
+\bibitem[Omar et~al\mbox{.}(2021)]%
+        {Omar_2021}
+\bibfield{author}{\bibinfo{person}{Cyrus Omar}, \bibinfo{person}{David Moon},
+  \bibinfo{person}{Andrew Blinn}, \bibinfo{person}{Ian Voysey},
+  \bibinfo{person}{Nick Collins}, {and} \bibinfo{person}{Ravi Chugh}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Filling typed holes with live {GUIs}}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 42nd {ACM} {SIGPLAN}
+  International Conference on Programming Language Design and Implementation}}.
+  \bibinfo{publisher}{{ACM}}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3453483.3454059}
+\showDOI{\tempurl}
+
+
+\bibitem[Rauch et~al\mbox{.}(2019)]%
+        {Rauch_2019}
+\bibfield{author}{\bibinfo{person}{David Rauch}, \bibinfo{person}{Patrick
+  Rein}, \bibinfo{person}{Stefan Ramson}, \bibinfo{person}{Jens Lincke}, {and}
+  \bibinfo{person}{Robert Hirschfeld}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Babylonian-style Programming: Design and
+  Implementation of an Integration of Live Examples into General-purpose Source
+  Code}.
+\newblock \bibinfo{journal}{\emph{The Art, Science, and Engineering of
+  Programming}} \bibinfo{volume}{3}, \bibinfo{number}{3} (\bibinfo{date}{feb}
+  \bibinfo{year}{2019}).
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.22152/programming-journal.org/2019/3/9}
+\showDOI{\tempurl}
+
+
+\bibitem[Sandewall(1978)]%
+        {Sandewall_1978}
+\bibfield{author}{\bibinfo{person}{Erik Sandewall}.}
+  \bibinfo{year}{1978}\natexlab{}.
+\newblock \showarticletitle{Programming in an Interactive Environment: the
+  {\textasciigrave}{\textasciigrave}Lisp{\textquotesingle}{\textquotesingle}
+  Experience}.
+\newblock \bibinfo{journal}{\emph{Comput. Surveys}} \bibinfo{volume}{10},
+  \bibinfo{number}{1} (\bibinfo{date}{mar} \bibinfo{year}{1978}),
+  \bibinfo{pages}{35--71}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/356715.356719}
+\showDOI{\tempurl}
+
+
+\bibitem[Ungar and Smith(1987)]%
+        {Ungar_1987}
+\bibfield{author}{\bibinfo{person}{David Ungar} {and}
+  \bibinfo{person}{Randall~B. Smith}.} \bibinfo{year}{1987}\natexlab{}.
+\newblock \showarticletitle{Self: The power of simplicity}.
+\newblock \bibinfo{journal}{\emph{{ACM} {SIGPLAN} Notices}}
+  \bibinfo{volume}{22}, \bibinfo{number}{12} (\bibinfo{date}{dec}
+  \bibinfo{year}{1987}), \bibinfo{pages}{227--242}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/38807.38828}
+\showDOI{\tempurl}
+
+
+\end{thebibliography}
