@@ -336,7 +336,9 @@
   (-> tex
       (str/replace "\"bottom-up\"" "``bottom-up\"")
       (str/replace "\"notebook\"" "``notebook\"")
-      (str/replace "(https://en.wikipedia.org/w/index.php" "(https://en.wikipedia.org/w/index.php\\newline")))
+      (str/replace "(https://en.wikipedia.org/w/index.php" "(https://en.wikipedia.org/w/index.php\\newline")
+      (str/replace #"(\nUsing the built-in .* structure of the data:\n)" "$1\\\\vspace{2em}\n")
+      (str/replace #"(\nTogether with .* viewer:\n)" "\n\\\\vspace{4em}$1\\\\vspace{2em}\n")))
 
 (defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
   (let [out-file (str (first (fs/split-ext file)) ".tex")]
