@@ -420,7 +420,7 @@ When Clerk encounters an expression in which an atom\textquotesingle s mutable v
 This extension makes Clerk\textquotesingle s caching work naturally with idiomatic use of mutable state, and frees programmers from the need to manually opt out of caching for those expressions.
 
 \hypertarget{semantic-differences-from-regular-clojure}{%
-\subsection{Semantic differences from regular Clojure}\label{semantic-differences-from-regular-clojure}}
+\subsection{Semantic Differences from Regular Clojure}\label{semantic-differences-from-regular-clojure}}
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
@@ -645,7 +645,7 @@ Clerk\textquotesingle s example macro expands on that by showing the source code
 \includegraphics{images/anon-expr-5dtPQwixfSw57U4Tdiwqwrsj2tVHu1-result.png}
 
 \hypertarget{prose-oriented-documents}{%
-\subsection{Prose-oriented Documents}\label{prose-oriented-documents}}
+\subsection{Prose-Oriented Documents}\label{prose-oriented-documents}}
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from \emph{some} computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with ``code-fenced'' source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
@@ -659,7 +659,7 @@ During the review process for this paper, one of the reviewers mentioned that th
 In addition to the sorts of traditional data science use cases that one might expect from something that has ``notebook" features, we intend Clerk to be a general purpose programmer\textquotesingle s assistant\footnote{We use this term in appreciation of pioneering historical work by Warren Teitelman.} that allows the rapid construction of tiny interfaces during daily work. Here are a few samples of tools and documentation created in this manner.
 
 \hypertarget{augmenting-table-names}{%
-\subsection{Augmenting table names}\label{augmenting-table-names}}
+\subsection{Augmenting Table Names}\label{augmenting-table-names}}
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database's column names are made up of largely human-unreadable 8 character sequences:
 
@@ -692,7 +692,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 \end{figure}
 
 \hypertarget{rich-documentation-features}{%
-\subsection{Rich documentation features}\label{rich-documentation-features}}
+\subsection{Rich Documentation Features}\label{rich-documentation-features}}
 
 This example illustrates the use of Clerk to create rich documentation for \passthrough{\lstinline!clojure2d!}'s colors package.\footnote{The full documentation is\\
   {\href{https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html}{here} (https://clojure2d.github.io/clojure2d/docs/notebooks/notebooks/color.html)}.} They used Clerk's Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
@@ -729,7 +729,7 @@ It is built using a Clojure atom containing the text input's current value that 
 \end{figure}
 
 \hypertarget{lurk:-interactive-lucene-powered-log-search}{%
-\subsection[: Interactive Lucene-powered Log Search]{\texorpdfstring{{\href{https://github.com/nextjournal/lurk}{Lurk}\footnote{https://github.com/nextjournal/lurk}}: Interactive Lucene-powered Log Search}{Lurk: Interactive Lucene-powered Log Search}}\label{lurk:-interactive-lucene-powered-log-search}}
+\subsection[: Interactive Lucene-Powered Log Search]{\texorpdfstring{{\href{https://github.com/nextjournal/lurk}{Lurk}\footnote{https://github.com/nextjournal/lurk}}: Interactive Lucene-Powered Log Search}{Lurk: Interactive Lucene-Powered Log Search}}\label{lurk:-interactive-lucene-powered-log-search}}
 
 Also building on Clerk's sync feature, this interactive log search uses {\href{https://lucene.apache.org/}{Lucene}\footnote{https://lucene.apache.org/}} on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk\textquotesingle s default notebook styling via Clerk's CSS customization options.
 

@@ -164,7 +164,7 @@ When Clerk encounters an expression in which an atom's mutable value is being re
 
 This extension makes Clerk's caching work naturally with idiomatic use of mutable state, and frees programmers from the need to manually opt out of caching for those expressions.
 
-### Semantic differences from regular Clojure
+### Semantic Differences from Regular Clojure
 
 Clojure uses a single-pass, whole-file compilation strategy in which each evaluated form is added to the state of the running system. One positive aspect of this approach is that manually evaluating a series of forms produces the same result as loading a file containing the same forms in the same order, which is a useful property when interactively building up a program.
 
@@ -361,7 +361,7 @@ Clerk's example macro expands on that by showing the source code next to the eva
 ```
 
 
-### Prose-oriented Documents
+### Prose-Oriented Documents
 
 The first and primary use case for Clerk was adding prose, visualizations, and interactivity to Clojure namespaces. However, when writing documents that are mainly prose, but would benefit from _some_ computational elements, it is rather tedious to write everything in comment blocks. To make this easier, Clerk can also operate on markdown files with “code-fenced” source code blocks. All Clojure source blocks in such a file are evaluated and replaced in the generated document with their result.
 
@@ -377,7 +377,7 @@ In addition to the sorts of traditional data science use cases that one might ex
 
 [^programmers-assistant]: We use this term in appreciation of pioneering historical work by Warren Teitelman.
 
-### Augmenting table names
+### Augmenting Table Names
 
 This example illustrates an approach we used to make working with a legacy DB2 database easier. The database’s column names are made up of largely human-unreadable 8 character sequences:
 
@@ -410,7 +410,7 @@ With Clerk, were able to render the output as a graphical table without the limi
          ::clerk/width :wide})
 ```
 
-### Rich documentation features
+### Rich Documentation Features
 
 This example illustrates the use of Clerk to create rich documentation for `clojure2d`’s colors package.[^color-package] They used Clerk’s Viewer API to implement custom viewers to visualize colors, gradients and color spaces, then publish that documentation on the web by generating a static website directly from the source code of the library.
 
@@ -448,7 +448,7 @@ It is built using a Clojure atom containing the text input’s current value tha
          :src "https://cdn.nextjournal.com/data/QmNS2jigrDn2WdS7AVa4qMiWtwZovJmfzYbWczwg1Ptaqk?filename=Regex+Value+Cut.png&content-type=image/png"})
 ```
 
-### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-powered Log Search
+### [Lurk](https://github.com/nextjournal/lurk): Interactive Lucene-Powered Log Search
 
 Also building on Clerk’s sync feature, this interactive log search uses [Lucene](https://lucene.apache.org/) on the JVM side to index and search a large number of log entries. In addition to using query input, logs can also be filtered by timeframe via an interactive chart. It is worth noting that this example uses a full-screen layout by opting out of Clerk's default notebook styling via Clerk’s CSS customization options.
 
