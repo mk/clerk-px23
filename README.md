@@ -229,7 +229,7 @@ Additional affordances are automatic expansion of a nested data structure based 
 Using the built-in `clerk/table` viewer, the same data structure can also be rendered as a table. The table viewer uses heuristics to infer the makeup of the table, such as column headers, from the structure of the data:
 
 ``` clojure
-^{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show} ::clerk/latex-graphics-opts "width=0.45\\textwidth"}
 (clerk/table datasets/iris)
 ```
 
@@ -286,7 +286,7 @@ Then, a `sparkline` function is defined and tested to generate graphs (using `cl
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
 ```clojure
-^{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show} ::clerk/latex-graphics-opts "width=0.45\\textwidth"}
 (clerk/table
  {:head ["Year" "Q1" "Q2" "Q3" "Q4" "Trend"]
   :rows (->> datasets/air-passengers

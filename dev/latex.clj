@@ -336,11 +336,7 @@
   (-> tex
       (str/replace "\"bottom-up\"" "``bottom-up\"")
       (str/replace "\"notebook\"" "``notebook\"")
-      (str/replace "(https://en.wikipedia.org/w/index.php" "(https://en.wikipedia.org/w/index.php\\newline")
-      (str/replace "\\includegraphics{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}"
-                   "\\includegraphics[width=0.45\\textwidth]{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}")
-      (str/replace "\\includegraphics{images/anon-expr-5dr28YWkT1KitTsVou6NEy6JRWh9wg-result.png}"
-                   "\\includegraphics[width=0.45\\textwidth]{images/anon-expr-5dr28YWkT1KitTsVou6NEy6JRWh9wg-result.png}")))
+      (str/replace "(https://en.wikipedia.org/w/index.php" "(https://en.wikipedia.org/w/index.php\\newline")))
 
 (defn clerk->latex! [{:keys [file] :or {file "README.md"}}]
   (let [out-file (str (first (fs/split-ext file)) ".tex")]
