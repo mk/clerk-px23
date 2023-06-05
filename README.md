@@ -236,7 +236,7 @@ Using the built-in `clerk/table` viewer, the same data structure can also be ren
 Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same `iris` dataset, as shown in the above table example, is used to render an interactive [Vega-Lite](https://vega.github.io/vega-lite/) plot using the `clerk/vl` viewer:
 
 ``` clojure
-^{::clerk/visibility {:code :show}}
+^{::clerk/visibility {:code :show} ::clerk/latex-graphics-opts "height=0.30\\textwidth"}
 (clerk/vl {:data {:values datasets/iris}
            :width 500
            :height 500
