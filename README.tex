@@ -363,7 +363,7 @@ When working with Clerk, a split-view is typically used with a code editor next 
 \begin{figure}
 \hypertarget{clerk-side-by-side-with-emacs}{%
 \centering
-\includegraphics{images/QmSVeZpH3a5ag52AvodLDgBMA3AwnRrfawg5h2SQHk1rY3.png}
+\includegraphics{QmSVeZpH3a5ag52AvodLDgBMA3AwnRrfawg5h2SQHk1rY3.png}
 \caption{Clerk side-by-side with Emacs}\label{clerk-side-by-side-with-emacs}
 }
 \end{figure}
@@ -473,14 +473,14 @@ datasets/iris
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT-result.png}
+\includegraphics{anon-expr-5dtc44qrw3zUvpTfiAXJDH7mtADdRT-result.png}
 
 Additional affordances are automatic expansion of a nested data structure based on its shape and expanding multiple sub-structures on the same level, as demonstrated in this video:
 
 \begin{figure}
 \hypertarget{expanding-multiple-sub-structures-at-once}{%
 \centering
-\includegraphics{images/QmcABdFREVjdAcruW3Qb45PLAwD7E337BWgU2gvU2gXw1B.png}
+\includegraphics{QmcABdFREVjdAcruW3Qb45PLAwD7E337BWgU2gvU2gXw1B.png}
 \caption{Expanding multiple sub-structures at once}\label{expanding-multiple-sub-structures-at-once}
 }
 \end{figure}
@@ -494,7 +494,7 @@ Using the built-in \passthrough{\lstinline!clerk/table!} viewer, the same data s
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics[width=0.45\textwidth]{images/anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
+\includegraphics[width=0.45\textwidth]{anon-expr-5dtuc4aWdsThsN1ZehoANzcdjAoyh5-result.png}
 
 \vspace{4em}
 Together with tables, plots are the most commonly used viewer for Data Science use cases. In the following figure, the same \passthrough{\lstinline!iris!} dataset, as shown in the above table example, is used to render an interactive {\href{https://vega.github.io/vega-lite/}{Vega-Lite}\footnote{https://vega.github.io/vega-lite/}} plot using the \passthrough{\lstinline!clerk/vl!} viewer:
@@ -519,7 +519,7 @@ Together with tables, plots are the most commonly used viewer for Data Science u
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv-result.png}
+\includegraphics{anon-expr-5dtjeGHWCqJb9X8RfQtspB6Cyeo8Yv-result.png}
 
 It is important to note that Clerk's viewers work in a way that encourages composition. Multiple viewers can be combined to suit a specific use case such as the following example showing a table of airline passenger numbers\footnote{using a {\href{https://github.com/applied-science/edn-datasets}{Clojure port} (https://github.com/applied-science/edn-datasets)} of R's built-in dataset of {\href{https://search.r-project.org/R/refmans/datasets/html/AirPassengers.html}{Box \& Jenkins classic airline data} (https://search.r-project.org/R/refmans/datasets/html/AirPassengers.html)}.} by year and quarter and embedding a sparkline graph into the table row for each year.
 
@@ -531,7 +531,7 @@ datasets/air-passengers
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j-result.png}
+\includegraphics{anon-expr-5drcDeJRcpX2uPqZi7XJch2DedHM6j-result.png}
 
 Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to generate graphs (using \passthrough{\lstinline!clerk/vl!}) that will be embedded into each table row later:
 
@@ -549,7 +549,7 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to ge
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/sparkline-result.png}
+\includegraphics{sparkline-result.png}
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}
@@ -557,7 +557,7 @@ Then, a \passthrough{\lstinline!sparkline!} function is defined and tested to ge
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics[width=0.15\textwidth]{images/anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
+\includegraphics[width=0.15\textwidth]{anon-expr-5dr3uWTA777Ny4ajSWGaWCymacQXhQ-result.png}
 
 Finally, the data is reduced to quarters and years, adding the sparkline graphs in a final step:
 
@@ -579,7 +579,7 @@ Finally, the data is reduced to quarters and years, adding the sparkline graphs 
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics[width=0.45\textwidth]{images/anon-expr-5dr28YWkT1KitTsVou6NEy6JRWh9wg-result.png}
+\includegraphics[width=0.45\textwidth]{anon-expr-5dr28YWkT1KitTsVou6NEy6JRWh9wg-result.png}
 
 This sort of gradual refinement is a hallmark of exploratory programming, and is especially enjoyable with access to the full power of a general purpose programming language.
 
@@ -602,7 +602,7 @@ Clerk's viewers are an ordered (and thus prioritized) collection of plain Clojur
 
 Here, for example, is the \passthrough{\lstinline!code!} viewer, which shows a piece of Clojure code with idiomatic syntax highlighting:\footnote{The source code here is rendered by the viewer that it describes.}
 
-\includegraphics{images/anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC-result.png}
+\includegraphics{anon-expr-5drCPuwp8LirNTWeyr5WSDHWVV2rnC-result.png}
 
 Viewers can also be explicitly selected by wrapping a value in the \passthrough{\lstinline!clerk/with-viewer!} function, which produces a presentation for that value using that viewer. Alternatively, viewers can be selected by placing a Clojure metadata declaration before a form. Because of the way Clojure handles compilation, metadata in this position is ultimately ignored in the generated code. So far as we know, this is a novel mechanism for out-of-band signaling to a specialized Clojure parser.
 
@@ -645,7 +645,7 @@ Clerk\textquotesingle s example macro expands on that by showing the source code
 \end{lstlisting}
 \end{minipage}
 
-\includegraphics{images/anon-expr-5dtPQwixfSw57U4Tdiwqwrsj2tVHu1-result.png}
+\includegraphics{anon-expr-5dtPQwixfSw57U4Tdiwqwrsj2tVHu1-result.png}
 
 \hypertarget{prose-oriented-documents}{%
 \subsection{Prose-Oriented Documents}\label{prose-oriented-documents}}
@@ -669,7 +669,7 @@ This example illustrates an approach we used to make working with a legacy DB2 d
 \begin{figure}
 \hypertarget{as400-column-names}{%
 \centering
-\includegraphics{images/QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t.png}
+\includegraphics{QmWnzjc5c9qpUUaLoK3ytZk4Zs1AzDpZj1Tx5FF4ZR8a5t.png}
 \caption{AS/400 Column Names}\label{as400-column-names}
 }
 \end{figure}
@@ -679,7 +679,7 @@ We were able to automatically translate these names using a metaschema extracted
 \begin{figure}
 \hypertarget{inspecting-a-query-using-the-repl}{%
 \centering
-\includegraphics{images/QmagkcNvHsscf3DEq18nuXi6z3u4CyQWGzaRLf1hUm5a32.png}
+\includegraphics{QmagkcNvHsscf3DEq18nuXi6z3u4CyQWGzaRLf1hUm5a32.png}
 \caption{Inspecting A Query Using the REPL}\label{inspecting-a-query-using-the-repl}
 }
 \end{figure}
@@ -689,7 +689,7 @@ With Clerk, were able to render the output as a graphical table without the limi
 \begin{figure}
 \hypertarget{augmented-table-headings}{%
 \centering
-\includegraphics{images/QmVdGBFtcK7AAksAzmCH4t18f1RvCbepLZPixaq4ncz4cq.png}
+\includegraphics{QmVdGBFtcK7AAksAzmCH4t18f1RvCbepLZPixaq4ncz4cq.png}
 \caption{Augmented Table Headings}\label{augmented-table-headings}
 }
 \end{figure}
@@ -703,7 +703,7 @@ This example illustrates the use of Clerk to create rich documentation for \pass
 \begin{figure}
 \hypertarget{custom-viewers-for-clojure2ds-colors-library}{%
 \centering
-\includegraphics{images/QmQZ5kZwRYEEXUfNfWPsaidpoN88ugdSXYqEUVT5q1FyAE.png}
+\includegraphics{QmQZ5kZwRYEEXUfNfWPsaidpoN88ugdSXYqEUVT5q1FyAE.png}
 \caption{Custom Viewers for Clojure2d's Colors Library}\label{custom-viewers-for-clojure2ds-colors-library}
 }
 \end{figure}
@@ -716,7 +716,7 @@ Built as a showcase for Clerk's sync feature, this example allows entering a reg
 \begin{figure}
 \hypertarget{interactive-regex-dictionary}{%
 \centering
-\includegraphics{images/QmWo1npCDCK5F1t7Aofc65pbbeMfoQNMVje4F6UMTBK4CK.png}
+\includegraphics{QmWo1npCDCK5F1t7Aofc65pbbeMfoQNMVje4F6UMTBK4CK.png}
 \caption{Interactive Regex Dictionary}\label{interactive-regex-dictionary}
 }
 \end{figure}
@@ -726,7 +726,7 @@ It is built using a Clojure atom containing the text input's current value that 
 \begin{figure}
 \hypertarget{printing-the-value-of-a-synced-clojure-atom}{%
 \centering
-\includegraphics{images/QmRvfwCT5wJCbU8ALLghhD7v9chKob8MXcUV3vAf6XTbm8.png}
+\includegraphics{QmRvfwCT5wJCbU8ALLghhD7v9chKob8MXcUV3vAf6XTbm8.png}
 \caption{Printing the value of a synced Clojure atom}\label{printing-the-value-of-a-synced-clojure-atom}
 }
 \end{figure}
@@ -739,7 +739,7 @@ Also building on Clerk's sync feature, this interactive log search uses {\href{h
 \begin{figure}
 \hypertarget{interactive-log-search}{%
 \centering
-\includegraphics{images/QmcebVp6BGydcUUJhkjMurj5bBAdnDwbeiMjrmD6avKji4.png}
+\includegraphics{QmcebVp6BGydcUUJhkjMurj5bBAdnDwbeiMjrmD6avKji4.png}
 \caption{Interactive Log Search}\label{interactive-log-search}
 }
 \end{figure}

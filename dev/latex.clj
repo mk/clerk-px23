@@ -31,7 +31,7 @@
 {::clerk/visibility {:code :show}}
 ;; * Take screenshots of results (only when results change, snapshots are stored in the `/images` folder and ignored by git. Notebook needs to be currently shown at `localhost:7676`):
 (comment
-  (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/images"
+  (sh "yarn" "nbb" "-m" "screenshots" "--url" "http://localhost:7676" "--out-dir" "../../clerk-px23/"
       :dir "../clerk/ui_tests"))
 
 ;; * Run
@@ -248,17 +248,17 @@
   ;; CDN url responds with 451 (Unavailable for legal reasons)
   (assert id) (assert (or poster-frame-src src))
   (let [url (URL. (str/replace (or poster-frame-src src) "cdn." ""))
-        path (fs/path "images"
+        path (fs/path #_ "images"
                       (str (or (second (re-find #"/data/(\w+)" (or poster-frame-src src))) id)
                            ".png"))]
-    (fs/create-dirs "images")
+    #_ (fs/create-dirs "images")
     (when-not (fs/exists? path)
       (ImageIO/write (ImageIO/read url) "png" (fs/file path)))
     (str path)))
 
 (defn convert-result [{:as block :keys [id result form]}]
   (let [{:as opts :keys [src poster-frame-src caption] :latex/keys [hide?] label :id} (v/->value result)
-        result-screenshot-path (str "images/" (name id) "-result.png")
+        result-screenshot-path (str #_ "images/" (name id) "-result.png")
         {::clerk/keys [latex-graphics-opts]} (meta form)]
     (when-not hide?
       (cond
