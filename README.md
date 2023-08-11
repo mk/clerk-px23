@@ -357,7 +357,7 @@ Clerk's example macro expands on that by showing the source code next to the eva
   (+ 40 2)
   (-> 42 range shuffle)
   (clerk/code (macroexpand '(clerk/example (inc 41))))
-  (clerk/html [:h1 "👋"]))
+  (clerk/html [:h1 "Hello Clerk"]))
 ```
 
 
